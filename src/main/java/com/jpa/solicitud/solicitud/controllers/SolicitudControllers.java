@@ -8,12 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jpa.solicitud.solicitud.models.dto.SolicitudDerivacionDto;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDto;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.services.SolicitudService;
@@ -51,5 +53,15 @@ public class SolicitudControllers {
     @GetMapping("/list-solicitudes")
     public List<Solicitud> showSolicitud(){
         return solicitudService.findAll();
+    }
+
+    @GetMapping("/solicitudesPorDepartamento/{departamentoCodigo}")
+    public ResponseEntity<List<SolicitudDerivacionDto>> obtenerSolicitudesPorDepartamento(@PathVariable Long departamentoCodigo) {
+        try {
+            List<SolicitudDerivacionDto> solicitudes = solicitudService.obtenerSolicitudesPorDepartamento(departamentoCodigo);
+            return new ResponseEntity<>(solicitudes, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

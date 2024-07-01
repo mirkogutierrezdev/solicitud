@@ -4,11 +4,13 @@ import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jpa.solicitud.solicitud.models.dto.SolicitudDerivacionDto;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDto;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
@@ -102,7 +104,31 @@ public class SolicitudService {
         derivacionRepository.save(derivacion);
     }
 
-   public List<Solicitud> findAll(){
-    return solicitudRespository.findAll();
-   }
+    public List<Solicitud> findAll() {
+        return solicitudRespository.findAll();
+    }
+
+    public List<SolicitudDerivacionDto> obtenerSolicitudesPorDepartamento(Long departamentoCodigo) {
+        List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoCodigo(departamentoCodigo);
+
+        return derivaciones.stream().map(derivacion -> {
+            SolicitudDerivacionDto dto = new SolicitudDerivacionDto();
+            dto.setSolicitudId(derivacion.getSolicitud().getId());
+            dto.setFuncionarioId(derivacion.getSolicitud().getFuncionario().getId());
+            dto.setFechaSolicitud(derivacion.getSolicitud().getFechaSolicitud());
+            dto.setFechaInicio(derivacion.getSolicitud().getFechaInicio());
+            dto.setFechaFin(derivacion.getSolicitud().getFechaFin());
+            dto.setTipoSolicitudId(derivacion.getSolicitud().getTipoSolicitud().getId());
+            dto.setEstadoId(derivacion.getSolicitud().getEstado().getId());
+            dto.setDerivacionId(derivacion.getId());
+            dto.setFechaDerivacion(derivacion.getFechaDerivacion());
+            dto.setDepartamentoCodigo(derivacion.getDepartamentoCodigo());
+            dto.setComentarios(derivacion.getComentarios());
+            dto.setRut(derivacion.getSolicitud().getFuncionario().getRut());
+            dto.setNombreEstado(derivacion.getEstado().getNombre());
+            dto.setNombreSolicitud(derivacion.getSolicitud().getTipoSolicitud().getNombre());
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
 }
