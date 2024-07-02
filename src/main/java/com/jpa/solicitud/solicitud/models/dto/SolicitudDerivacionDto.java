@@ -18,6 +18,7 @@ public class SolicitudDerivacionDto {
     private Long departamentoCodigo;
     private String comentarios;
 
+    
     // Getters y setters
 
     public Long getSolicitudId() {

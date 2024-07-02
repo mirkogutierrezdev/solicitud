@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
 
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDerivacionDto;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDto;
@@ -41,6 +44,13 @@ public class SolicitudService {
     @Autowired
     private IDerivacionRepository derivacionRepository;
 
+    
+    private final RestTemplate restTemplate;
+
+   
+    public SolicitudService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
     public long calcularDiasHabiles(Date sqlStartDate, Date sqlEndDate) {
         LocalDate startDate = sqlStartDate.toLocalDate();
         LocalDate endDate = sqlEndDate.toLocalDate();
@@ -109,26 +119,34 @@ public class SolicitudService {
     }
 
     public List<SolicitudDerivacionDto> obtenerSolicitudesPorDepartamento(Long departamentoCodigo) {
-        List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoCodigo(departamentoCodigo);
+        List<Derivacion> derivaciones = derivacionRepository.findSolicitudesByDepartamentoCodigo(departamentoCodigo);
+    
+        return derivaciones.stream()
+            .filter(derivacion -> !isJefe(derivacion.getSolicitud().getFuncionario().getRut()))
+            .map(derivacion -> {
+                SolicitudDerivacionDto dto = new SolicitudDerivacionDto();
+                dto.setSolicitudId(derivacion.getSolicitud().getId());
+                dto.setFuncionarioId(derivacion.getSolicitud().getFuncionario().getId());
+                dto.setFechaSolicitud(derivacion.getSolicitud().getFechaSolicitud());
+                dto.setFechaInicio(derivacion.getSolicitud().getFechaInicio());
+                dto.setFechaFin(derivacion.getSolicitud().getFechaFin());
+                dto.setTipoSolicitudId(derivacion.getSolicitud().getTipoSolicitud().getId());
+                dto.setEstadoId(derivacion.getSolicitud().getEstado().getId());
+                dto.setDerivacionId(derivacion.getId());
+                dto.setFechaDerivacion(derivacion.getFechaDerivacion());
+                dto.setDepartamentoCodigo(derivacion.getDepartamentoCodigo());
+                dto.setComentarios(derivacion.getComentarios());
+                dto.setRut(derivacion.getSolicitud().getFuncionario().getRut());
+                dto.setNombreEstado(derivacion.getEstado().getNombre());
+                dto.setNombreSolicitud(derivacion.getSolicitud().getTipoSolicitud().getNombre());
+    
+                return dto;
+            }).collect(Collectors.toList());
+    }
 
-        return derivaciones.stream().map(derivacion -> {
-            SolicitudDerivacionDto dto = new SolicitudDerivacionDto();
-            dto.setSolicitudId(derivacion.getSolicitud().getId());
-            dto.setFuncionarioId(derivacion.getSolicitud().getFuncionario().getId());
-            dto.setFechaSolicitud(derivacion.getSolicitud().getFechaSolicitud());
-            dto.setFechaInicio(derivacion.getSolicitud().getFechaInicio());
-            dto.setFechaFin(derivacion.getSolicitud().getFechaFin());
-            dto.setTipoSolicitudId(derivacion.getSolicitud().getTipoSolicitud().getId());
-            dto.setEstadoId(derivacion.getSolicitud().getEstado().getId());
-            dto.setDerivacionId(derivacion.getId());
-            dto.setFechaDerivacion(derivacion.getFechaDerivacion());
-            dto.setDepartamentoCodigo(derivacion.getDepartamentoCodigo());
-            dto.setComentarios(derivacion.getComentarios());
-            dto.setRut(derivacion.getSolicitud().getFuncionario().getRut());
-            dto.setNombreEstado(derivacion.getEstado().getNombre());
-            dto.setNombreSolicitud(derivacion.getSolicitud().getTipoSolicitud().getNombre());
-
-            return dto;
-        }).collect(Collectors.toList());
+    public boolean isJefe(Integer rut) {
+        String url = "http://localhost:8080/api/esjefe/" + rut;
+        ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
+        return response.getBody() != null && response.getBody(); // Retornar true si es jefe
     }
 }
