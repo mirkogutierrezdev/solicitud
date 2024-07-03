@@ -119,7 +119,7 @@ public class SolicitudService {
     }
 
     public List<SolicitudDerivacionDto> obtenerSolicitudesPorDepartamento(Long departamentoCodigo) {
-        List<Derivacion> derivaciones = derivacionRepository.findSolicitudesByDepartamentoCodigo(departamentoCodigo);
+        List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoCodigo(departamentoCodigo);
     
         return derivaciones.stream()
             .filter(derivacion -> !isJefe(derivacion.getSolicitud().getFuncionario().getRut()))
