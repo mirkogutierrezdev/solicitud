@@ -17,6 +17,7 @@ public class SolicitudDerivacionDto {
     private Date fechaDerivacion;
     private Long departamentoCodigo;
     private String comentarios;
+    private String nombre;
 
     
     // Getters y setters
@@ -132,5 +133,15 @@ public class SolicitudDerivacionDto {
     public void setNombreEstado(String nombreEstado) {
         this.nombreEstado = nombreEstado;
     }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    
 
 }

@@ -67,6 +67,8 @@ public class SolicitudControllers {
 
     @GetMapping("/solicitudesPorRut/{rut}")
     public ResponseEntity<List<SolicitudDerivacionDto>> obtenerSolicitudesPorRut(@PathVariable Integer rut) {
+
+    
         try {
             List<SolicitudDerivacionDto> solicitudes = solicitudService.obtenerSolicitudesPorRut(rut);
             return new ResponseEntity<>(solicitudes, HttpStatus.OK);
@@ -74,6 +76,4 @@ public class SolicitudControllers {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 }
