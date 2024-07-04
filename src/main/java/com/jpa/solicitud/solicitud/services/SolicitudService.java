@@ -144,6 +144,33 @@ public class SolicitudService {
             }).collect(Collectors.toList());
     }
 
+    public List<SolicitudDerivacionDto> obtenerSolicitudesPorRut(Integer rut) {
+        List<Derivacion> derivaciones = derivacionRepository.findByFuncionarioRut(rut);
+    
+        return derivaciones.stream()
+                .map(derivacion -> {
+                    SolicitudDerivacionDto dto = new SolicitudDerivacionDto();
+                    dto.setSolicitudId(derivacion.getSolicitud().getId());
+                    dto.setFuncionarioId(derivacion.getSolicitud().getFuncionario().getId());
+                    dto.setFechaSolicitud(derivacion.getSolicitud().getFechaSolicitud());
+                    dto.setFechaInicio(derivacion.getSolicitud().getFechaInicio());
+                    dto.setFechaFin(derivacion.getSolicitud().getFechaFin());
+                    dto.setTipoSolicitudId(derivacion.getSolicitud().getTipoSolicitud().getId());
+                    dto.setEstadoId(derivacion.getSolicitud().getEstado().getId());
+                    dto.setDerivacionId(derivacion.getId());
+                    dto.setFechaDerivacion(derivacion.getFechaDerivacion());
+                    dto.setDepartamentoCodigo(derivacion.getDepartamentoCodigo());
+                    dto.setComentarios(derivacion.getComentarios());
+                    dto.setRut(derivacion.getSolicitud().getFuncionario().getRut());
+                    dto.setNombreEstado(derivacion.getEstado().getNombre());
+                    dto.setNombreSolicitud(derivacion.getSolicitud().getTipoSolicitud().getNombre());
+    
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+    
+
     public boolean isJefe(Integer rut) {
         String url = "http://localhost:8080/api/esjefe/" + rut;
         ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
