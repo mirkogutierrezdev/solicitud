@@ -16,8 +16,11 @@ public class SolicitudDerivacionDto {
     private Long derivacionId;
     private Date fechaDerivacion;
     private Long departamentoCodigo;
+    private String nombreDepartamento;
+
     private String comentarios;
     private String nombre;
+    private Boolean leida;
 
     
     // Getters y setters
@@ -141,6 +144,23 @@ public class SolicitudDerivacionDto {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    public Boolean getLeida() {
+        return leida;
+    }
+
+    public void setLeida(Boolean leida) {
+        this.leida = leida;
+    }
+
+    public String getNombreDepartamento() {
+        return nombreDepartamento;
+    }
+
+    public void setNombreDepartamento(String nombreDepartamento) {
+        this.nombreDepartamento = nombreDepartamento;
+    }
+    
 
     
 

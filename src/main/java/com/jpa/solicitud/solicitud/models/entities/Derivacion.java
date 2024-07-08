@@ -24,7 +24,9 @@ public class Derivacion {
     @JoinColumn(name = "solicitud_id", nullable = false)
     private Solicitud solicitud;
 
-    private Long departamentoCodigo;
+    @ManyToOne
+    @JoinColumn(name = "departamento_id", nullable = false) 
+    private Departamento departamento;  
    
     private Date fechaDerivacion;
 
@@ -34,6 +36,9 @@ public class Derivacion {
 
     @Lob
     private String comentarios;
+
+    private Boolean leida;
+
 
     public Long getId() {
         return id;
@@ -51,13 +56,6 @@ public class Derivacion {
         this.solicitud = solicitud;
     }
 
-    public Long getDepartamentoCodigo() {
-        return departamentoCodigo;
-    }
-
-    public void setDepartamentoCodigo(Long departamentoCodigo) {
-        this.departamentoCodigo = departamentoCodigo;
-    }
 
     public Date getFechaDerivacion() {
         return fechaDerivacion;
@@ -82,5 +80,23 @@ public class Derivacion {
     public void setComentarios(String comentarios) {
         this.comentarios = comentarios;
     }
+
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
+    public Boolean getLeida() {
+        return leida;
+    }
+
+    public void setLeida(Boolean leida) {
+        this.leida = leida;
+    }
+
+    
 }
 

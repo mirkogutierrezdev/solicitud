@@ -1,8 +1,6 @@
 package com.jpa.solicitud.solicitud.services;
 
 import java.sql.Date;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,19 +13,24 @@ import org.springframework.web.client.RestTemplate;
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDerivacionDto;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDto;
+import com.jpa.solicitud.solicitud.models.entities.Departamento;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.models.entities.TipoSolicitud;
+import com.jpa.solicitud.solicitud.repositories.IDepartamentoRepository;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
 import com.jpa.solicitud.solicitud.repositories.ITipoSolicitudRepository;
+import com.jpa.solicitud.solicitud.utils.FeriadoUtils;
 
 @Service
 public class SolicitudService {
+
+    //*inyección de dependencias de las interfaces repository */
 
     @Autowired
     private IFuncionarioRespository funcionarioRespository;
@@ -45,32 +48,24 @@ public class SolicitudService {
     private IDerivacionRepository derivacionRepository;
 
     @Autowired
+    private IDepartamentoRepository departamentoRepository;
+
+    @Autowired
     private SmcService smcService;
 
     private final RestTemplate restTemplate;
 
+
+    //*RestTemplate para la api a smc  */
     public SolicitudService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
+
+   /*Metodo que devuele los dias habiles entre fechas, ****falta restar dias feriados******* */
     public long calcularDiasHabiles(Date sqlStartDate, Date sqlEndDate) {
-        LocalDate startDate = sqlStartDate.toLocalDate();
-        LocalDate endDate = sqlEndDate.toLocalDate();
-
-        if (startDate.isAfter(endDate)) {
-            return 0;
-        }
-
-        long workingDays = 0;
-        LocalDate date = startDate;
-        while (!date.isAfter(endDate)) {
-            if (date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY) {
-                workingDays++;
-            }
-            date = date.plusDays(1);
-        }
-
-        return workingDays;
+        
+        return FeriadoUtils.calcularDiasHabiles(sqlStartDate, sqlEndDate);
     }
 
     @Transactional
@@ -106,10 +101,18 @@ public class SolicitudService {
         solicitud.setEstado(estado);
         solicitud = solicitudRespository.save(solicitud);
 
+        Departamento departamento = new Departamento();
+        departamento.setDepto(solicitudDto.getDepto());
+        departamento.setNombre(solicitudDto.getNombre_departamento());
+        departamento = departamentoRepository.save(departamento);
+
+    
+
         // Crear y persistir la derivación
         Derivacion derivacion = new Derivacion();
         derivacion.setFechaDerivacion(solicitudDto.getFechaDer());
-        derivacion.setDepartamentoCodigo(solicitudDto.getDepto());
+        derivacion.setLeida(false);
+        derivacion.setDepartamento(departamento);
         derivacion.setSolicitud(solicitud);
         derivacion.setEstado(estado);
         derivacion.setComentarios("Prueba de derivacion");
@@ -121,7 +124,8 @@ public class SolicitudService {
     }
 
     public List<SolicitudDerivacionDto> obtenerSolicitudesPorDepartamento(Long departamentoCodigo) {
-        List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoCodigo(departamentoCodigo);
+        List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoDepto(departamentoCodigo);
+
 
         StringBuilder nombres = new StringBuilder();
 
@@ -140,7 +144,9 @@ public class SolicitudService {
                     dto.setEstadoId(derivacion.getSolicitud().getEstado().getId());
                     dto.setDerivacionId(derivacion.getId());
                     dto.setFechaDerivacion(derivacion.getFechaDerivacion());
-                    dto.setDepartamentoCodigo(derivacion.getDepartamentoCodigo());
+                    dto.setDepartamentoCodigo(derivacion.getDepartamento().getDepto());
+                    dto.setLeida(derivacion.getLeida());
+                    dto.setNombreDepartamento(derivacion.getDepartamento().getNombre());
                     dto.setComentarios(derivacion.getComentarios());
                     dto.setRut(derivacion.getSolicitud().getFuncionario().getRut());
                     dto.setNombreEstado(derivacion.getEstado().getNombre());
@@ -170,7 +176,7 @@ public class SolicitudService {
                     dto.setEstadoId(derivacion.getSolicitud().getEstado().getId());
                     dto.setDerivacionId(derivacion.getId());
                     dto.setFechaDerivacion(derivacion.getFechaDerivacion());
-                    dto.setDepartamentoCodigo(derivacion.getDepartamentoCodigo());
+                    dto.setDepartamentoCodigo(derivacion.getDepartamento().getDepto());
                     dto.setComentarios(derivacion.getComentarios());
                     dto.setRut(derivacion.getSolicitud().getFuncionario().getRut());
                     dto.setNombreEstado(derivacion.getEstado().getNombre());
@@ -180,6 +186,8 @@ public class SolicitudService {
                 })
                 .collect(Collectors.toList());
     }
+
+    
 
     public boolean isJefe(Integer rut) {
         String url = "http://localhost:8080/api/esjefe/" + rut;
