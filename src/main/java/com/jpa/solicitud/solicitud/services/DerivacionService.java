@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 
+
 import jakarta.transaction.Transactional;
 
 @Service
@@ -28,5 +29,7 @@ public class DerivacionService {
     public void marcarComoNoLeida(Long idDerivacion, Long idSolicutd, Boolean estado) {
         derivacionRepository.marcarComoNoLeida(idDerivacion, idSolicutd, estado);
     }
+
+
 
 }
