@@ -62,5 +62,4 @@ public class Salida {
         this.fechaSalida = fechaSalida;
     }
 
-   
 }

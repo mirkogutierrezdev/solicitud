@@ -61,6 +61,4 @@ public class Entrada {
         this.fechaEntrada = fechaEntrada;
     }
 
-  
-
 }

@@ -9,13 +9,9 @@ import jakarta.persistence.Table;
 @Table(name = "tipos_solicitudes")
 public class TipoSolicitud {
 
-    
-
     @Id
-       private Long id;
+    private Long id;
 
-
-  
     private String nombre;
 
     public Long getId() {
@@ -34,4 +30,3 @@ public class TipoSolicitud {
         this.nombre = nombre;
     }
 }
-

@@ -11,8 +11,7 @@ public class TipoSolService {
     @Autowired
     private ITipoSolicitudRepository tipoSolicitudRepository;
 
-
-    public Long getIdByName(String nombre){
+    public Long getIdByName(String nombre) {
 
         return tipoSolicitudRepository.findIdByNombre(nombre);
     }

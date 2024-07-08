@@ -11,7 +11,7 @@ public class Estado {
 
     @Id
     private Long id;
-  
+
     private String nombre;
 
     public Long getId() {

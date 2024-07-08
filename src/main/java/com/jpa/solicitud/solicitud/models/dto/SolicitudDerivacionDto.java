@@ -22,7 +22,6 @@ public class SolicitudDerivacionDto {
     private String nombre;
     private Boolean leida;
 
-    
     // Getters y setters
 
     public Long getSolicitudId() {
@@ -160,8 +159,5 @@ public class SolicitudDerivacionDto {
     public void setNombreDepartamento(String nombreDepartamento) {
         this.nombreDepartamento = nombreDepartamento;
     }
-    
-
-    
 
 }

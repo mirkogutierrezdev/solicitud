@@ -13,7 +13,7 @@ public class SolicitudDto {
     private String estado;
     private Date fechaDer;
     private String nombre_departamento;
-    
+
     public SolicitudDto() {
     }
 
@@ -89,7 +89,4 @@ public class SolicitudDto {
         this.nombre_departamento = nombre_departamento;
     }
 
-    
-
-    
 }

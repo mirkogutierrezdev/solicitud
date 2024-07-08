@@ -11,7 +11,6 @@ import jakarta.persistence.Table;
 
 import java.sql.Date;
 
-
 @Entity
 @Table(name = "derivaciones")
 public class Derivacion {
@@ -25,9 +24,9 @@ public class Derivacion {
     private Solicitud solicitud;
 
     @ManyToOne
-    @JoinColumn(name = "departamento_id", nullable = false) 
-    private Departamento departamento;  
-   
+    @JoinColumn(name = "departamento_id", nullable = false)
+    private Departamento departamento;
+
     private Date fechaDerivacion;
 
     @ManyToOne
@@ -38,7 +37,6 @@ public class Derivacion {
     private String comentarios;
 
     private Boolean leida;
-
 
     public Long getId() {
         return id;
@@ -55,7 +53,6 @@ public class Derivacion {
     public void setSolicitud(Solicitud solicitud) {
         this.solicitud = solicitud;
     }
-
 
     public Date getFechaDerivacion() {
         return fechaDerivacion;
@@ -97,6 +94,4 @@ public class Derivacion {
         this.leida = leida;
     }
 
-    
 }
-

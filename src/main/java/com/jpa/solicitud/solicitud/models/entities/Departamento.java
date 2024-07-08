@@ -29,7 +29,6 @@ public class Departamento {
         this.id = id;
     }
 
-  
     public String getNombre() {
         return nombre;
     }
@@ -46,5 +45,4 @@ public class Departamento {
         this.depto = depto;
     }
 
-    
 }

@@ -1,8 +1,6 @@
 package com.jpa.solicitud.solicitud.models.entities;
 
-
 import java.sql.Date;
-
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,11 +26,11 @@ public class Solicitud {
     @ManyToOne
     @JoinColumn(name = "tipo_solicitud_id", nullable = false)
     private TipoSolicitud tipoSolicitud;
-  
+
     private Date fechaSolicitud;
- 
+
     private Date fechaInicio;
-    
+
     private Date fechaFin;
 
     @Lob
@@ -106,5 +104,4 @@ public class Solicitud {
         this.estado = estado;
     }
 
-     
 }

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import com.jpa.solicitud.solicitud.models.entities.Departamento;
 
 @Repository
-public interface IDepartamentoRepository extends JpaRepository<Departamento,Long> {
+public interface IDepartamentoRepository extends JpaRepository<Departamento, Long> {
 
     @Query("SELECT d.depto FROM Departamento d WHERE d.depto = :depto")
-     Departamento findFirstByDepto(@Param("depto")Long depto);
+    Departamento findFirstByDepto(@Param("depto") Long depto);
 
 }

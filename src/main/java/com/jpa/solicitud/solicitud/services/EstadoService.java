@@ -11,7 +11,7 @@ public class EstadoService {
     @Autowired
     private IEstadoRepository estadoRepository;
 
-    public Long getIdByName(String nombre){
+    public Long getIdByName(String nombre) {
 
         return estadoRepository.findIdByNombre(nombre);
     }

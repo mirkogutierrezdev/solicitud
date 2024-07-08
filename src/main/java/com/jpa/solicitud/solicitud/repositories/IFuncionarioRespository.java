@@ -7,9 +7,8 @@ import com.jpa.solicitud.solicitud.models.entities.Funcionario;
 
 import java.util.Optional;
 
-
 @Repository
-public interface IFuncionarioRespository extends JpaRepository<Funcionario,Long> {
+public interface IFuncionarioRespository extends JpaRepository<Funcionario, Long> {
 
      Optional<Funcionario> findById(Long id);
 

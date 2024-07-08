@@ -4,7 +4,6 @@ import java.util.List;
 
 public class SmcFuncionario extends SmcPersona {
 
-
     private String area;
     private SmcDepartamento departamento;
     private SmcContrato contrato;
@@ -72,8 +71,4 @@ public class SmcFuncionario extends SmcPersona {
     public void setDiasAdm(SmcDiasAdm diasAdm) {
         this.diasAdm = diasAdm;
     }
-
-
-    
-
 }

@@ -22,16 +22,11 @@ public class SmcService {
         return response.getBody();
     }
 
-    public SmcPersona getPersonaByRut(Integer rut){
+    public SmcPersona getPersonaByRut(Integer rut) {
         String url = "http://localhost:8080/api/persona/buscar/" + rut;
         ResponseEntity<SmcPersona> response = restTemplate.getForEntity(url, SmcPersona.class);
         return response.getBody();
 
-
-
     }
-
-
-
 
 }

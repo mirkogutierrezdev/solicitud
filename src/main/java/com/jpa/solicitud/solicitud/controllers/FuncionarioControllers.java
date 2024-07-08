@@ -1,7 +1,5 @@
 package com.jpa.solicitud.solicitud.controllers;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
@@ -15,18 +13,16 @@ import com.jpa.solicitud.solicitud.apimodels.SmcFuncionario;
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.services.SmcService;
 
-
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
-@RequestMapping("/smc")
+@RequestMapping("/api/smc")
 public class FuncionarioControllers {
 
     @Autowired
     private SmcService smcService;
 
-
-     @GetMapping("/buscar/{rut}")
-     public ResponseEntity<SmcFuncionario> showSmc(@PathVariable Integer rut) {
+    @GetMapping("/byRut/{rut}")
+    public ResponseEntity<SmcFuncionario> showSmc(@PathVariable Integer rut) {
         SmcFuncionario funcionario = smcService.getFuncionarioByRut(rut);
         if (funcionario != null) {
             return ResponseEntity.ok(funcionario);
@@ -35,18 +31,13 @@ public class FuncionarioControllers {
         }
     }
 
-    
-    @GetMapping("/buscar/persona/{rut}")
+    @GetMapping("/byRut/person/{rut}")
     public ResponseEntity<SmcPersona> showPersonaSmc(@PathVariable Integer rut) {
         SmcPersona funcionario = smcService.getPersonaByRut(rut);
-       if (funcionario != null) {
-           return ResponseEntity.ok(funcionario);
-       } else {
-           return ResponseEntity.notFound().build();
-       }
-   }
-
-    
-
-
+        if (funcionario != null) {
+            return ResponseEntity.ok(funcionario);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

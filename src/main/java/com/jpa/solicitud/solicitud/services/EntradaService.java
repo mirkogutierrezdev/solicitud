@@ -1,5 +1,6 @@
 package com.jpa.solicitud.solicitud.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import com.jpa.solicitud.solicitud.models.entities.Funcionario;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEntradaRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class EntradaService {
@@ -27,10 +30,11 @@ public class EntradaService {
 
     public Entrada saveEntrada(EntradaDto entradaDto) {
         Derivacion derivacion = derivacionRepository.findDerivacionByIdAndFuncionario(
-            entradaDto.getDerivacionId(), entradaDto.getFuncionarioId());
+                entradaDto.getDerivacionId(), entradaDto.getFuncionarioId());
 
         if (derivacion == null) {
-            throw new IllegalArgumentException("La derivación proporcionada no existe o no está asociada al funcionario");
+            throw new IllegalArgumentException(
+                    "La derivación proporcionada no existe o no está asociada al funcionario");
         }
 
         Optional<Funcionario> funcionarioOpt = funcionarioRespository.findById(entradaDto.getFuncionarioId());
@@ -47,7 +51,15 @@ public class EntradaService {
 
         return entradaRepository.save(entrada);
     }
+
+    public List<Entrada> findAll() {
+
+        return entradaRepository.findAll();
+
+    }
+
+    public Entrada findById(Long id) {
+        return entradaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Entrada no encontrada con id: " + id));
+    }
 }
- 
-
-

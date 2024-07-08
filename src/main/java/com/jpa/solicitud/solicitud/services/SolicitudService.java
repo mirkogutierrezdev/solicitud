@@ -1,6 +1,5 @@
 package com.jpa.solicitud.solicitud.services;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,12 +24,11 @@ import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
 import com.jpa.solicitud.solicitud.repositories.ITipoSolicitudRepository;
-import com.jpa.solicitud.solicitud.utils.FeriadoUtils;
 
 @Service
 public class SolicitudService {
 
-    //*inyección de dependencias de las interfaces repository */
+    // *inyección de dependencias de las interfaces repository */
 
     @Autowired
     private IFuncionarioRespository funcionarioRespository;
@@ -55,17 +53,9 @@ public class SolicitudService {
 
     private final RestTemplate restTemplate;
 
-
-    //*RestTemplate para la api a smc  */
+    // *RestTemplate para la api a smc */
     public SolicitudService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-    }
-
-
-   /*Metodo que devuele los dias habiles entre fechas, ****falta restar dias feriados******* */
-    public long calcularDiasHabiles(Date sqlStartDate, Date sqlEndDate) {
-        
-        return FeriadoUtils.calcularDiasHabiles(sqlStartDate, sqlEndDate);
     }
 
     @Transactional
@@ -106,8 +96,6 @@ public class SolicitudService {
         departamento.setNombre(solicitudDto.getNombre_departamento());
         departamento = departamentoRepository.save(departamento);
 
-    
-
         // Crear y persistir la derivación
         Derivacion derivacion = new Derivacion();
         derivacion.setFechaDerivacion(solicitudDto.getFechaDer());
@@ -125,7 +113,6 @@ public class SolicitudService {
 
     public List<SolicitudDerivacionDto> obtenerSolicitudesPorDepartamento(Long departamentoCodigo) {
         List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoDepto(departamentoCodigo);
-
 
         StringBuilder nombres = new StringBuilder();
 
@@ -160,13 +147,13 @@ public class SolicitudService {
     }
 
     public List<SolicitudDerivacionDto> obtenerSolicitudesPorRut(Integer rut) {
-        
+
         List<Derivacion> derivaciones = derivacionRepository.findByFuncionarioRut(rut);
-   
+
         return derivaciones.stream()
                 .map(derivacion -> {
                     SolicitudDerivacionDto dto = new SolicitudDerivacionDto();
-                    
+
                     dto.setSolicitudId(derivacion.getSolicitud().getId());
                     dto.setFuncionarioId(derivacion.getSolicitud().getFuncionario().getId());
                     dto.setFechaSolicitud(derivacion.getSolicitud().getFechaSolicitud());
@@ -186,8 +173,6 @@ public class SolicitudService {
                 })
                 .collect(Collectors.toList());
     }
-
-    
 
     public boolean isJefe(Integer rut) {
         String url = "http://localhost:8080/api/esjefe/" + rut;

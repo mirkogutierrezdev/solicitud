@@ -30,4 +30,3 @@ public class DepartamentoUtils {
         return !esSeccion(codigo) && !esDepartamento(codigo) && !esDireccion(codigo);
     }
 }
-

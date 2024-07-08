@@ -8,9 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
 
 @Repository
-public interface IEstadoRepository extends JpaRepository<Estado,Long> {
+public interface IEstadoRepository extends JpaRepository<Estado, Long> {
 
-    
     Estado findByNombre(String nombre);
 
     @Query("SELECT e.id FROM Estado e WHERE e.nombre = :nombre")

@@ -6,8 +6,7 @@ import java.time.LocalDate;
 
 public class FeriadoUtils {
 
-
-     public static long calcularDiasHabiles(Date sqlStartDate, Date sqlEndDate) {
+    public static long calcularDiasHabiles(Date sqlStartDate, Date sqlEndDate) {
         LocalDate startDate = sqlStartDate.toLocalDate();
         LocalDate endDate = sqlEndDate.toLocalDate();
 
