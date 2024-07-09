@@ -15,22 +15,10 @@ public class UtilsService {
         return FeriadoUtils.calcularDiasHabiles(sqlStartDate, sqlEndDate);
     }
 
-    public String determinaDerivacion(Long depto) {
-        String codigo = depto.toString();
-    
-        if (DepartamentoUtils.esDepartamento(codigo)) {
-            return codigo.substring(0,2).concat("000000");
-        }
-    
-        if (DepartamentoUtils.esSeccion(codigo)) {
-            return codigo.substring(0,4).concat("0000");
-        }
-    
-        if (DepartamentoUtils.esOficina(codigo)) {
-            return codigo.substring(0,6).concat("00");
-        }
-    
-        return codigo;
+    public String determinaDerivacion(Long depto){
+        return DepartamentoUtils.determinaDerivacion(depto);
     }
+
+
 
 }

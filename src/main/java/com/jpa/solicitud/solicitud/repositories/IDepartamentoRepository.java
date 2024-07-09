@@ -13,4 +13,7 @@ public interface IDepartamentoRepository extends JpaRepository<Departamento, Lon
     @Query("SELECT d.depto FROM Departamento d WHERE d.depto = :depto")
     Departamento findFirstByDepto(@Param("depto") Long depto);
 
+   
+
+
 }

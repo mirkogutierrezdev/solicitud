@@ -1,6 +1,7 @@
 package com.jpa.solicitud.solicitud.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jpa.solicitud.solicitud.apimodels.SmcDepartamento;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.services.DerivacionService;
 
@@ -52,5 +54,10 @@ public class DerivacionControllers {
         }
     }
 
+
+    @GetMapping("/test/{depto}")
+    public SmcDepartamento showPrueba( @PathVariable Long depto){
+        return derivacionService.saveDerivacion(depto);
+    }
    
 }

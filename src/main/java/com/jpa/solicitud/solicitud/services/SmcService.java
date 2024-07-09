@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.jpa.solicitud.solicitud.apimodels.SmcDepartamento;
 import com.jpa.solicitud.solicitud.apimodels.SmcFuncionario;
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 
@@ -25,6 +26,13 @@ public class SmcService {
     public SmcPersona getPersonaByRut(Integer rut) {
         String url = "http://localhost:8080/api/persona/buscar/" + rut;
         ResponseEntity<SmcPersona> response = restTemplate.getForEntity(url, SmcPersona.class);
+        return response.getBody();
+
+    }
+
+    public SmcDepartamento getDepartamento(String depto){
+        String url = "http://localhost:8080/api/test/" + depto;
+        ResponseEntity<SmcDepartamento> response = restTemplate.getForEntity(url, SmcDepartamento.class);
         return response.getBody();
 
     }
