@@ -65,4 +65,18 @@ public class EntradaControllers {
                     .body("{\"error\": \"Error al crear la solicitud: " + e.getMessage() + "\"}");
         }
     }
+
+    @GetMapping("buscarDepto/{depto}")
+    public ResponseEntity<List<Entrada>> showEntradaDepto(@PathVariable Long depto){
+        try {
+            List<Entrada> entrada = entradaService.findEntradaByDepto(depto);
+            return new ResponseEntity<>(entrada,HttpStatus.OK);
+            
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    
 }

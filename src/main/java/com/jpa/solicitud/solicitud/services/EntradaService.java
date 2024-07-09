@@ -62,4 +62,8 @@ public class EntradaService {
         return entradaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Entrada no encontrada con id: " + id));
     }
+
+    public List<Entrada> findEntradaByDepto(Long depto){
+        return entradaRepository.findEntradaByDepto(depto);
+    }
 }
