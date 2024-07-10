@@ -22,10 +22,10 @@ public class UtilsControllers {
     private UtilsService utilsService;
 
     @GetMapping("/calcular")
-    public ResponseEntity<Long> calcularDiasHabiles(@RequestParam("fechaInicio") Date fechaInicio,
+    public ResponseEntity<Long> getWorkDays(@RequestParam("fechaInicio") Date fechaInicio,
             @RequestParam("fechaFin") Date fechaFin) {
         try {
-            long diasHabiles = utilsService.calcularDiasHabiles(fechaInicio, fechaFin);
+            long diasHabiles = utilsService.getWorkDays(fechaInicio, fechaFin);
             return new ResponseEntity<>(diasHabiles, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

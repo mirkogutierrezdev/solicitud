@@ -32,7 +32,7 @@ public class SolicitudControllers {
     public ResponseEntity<?> createSolicitud(@RequestBody SolicitudDto solicitudDto) {
 
         try {
-            solicitudService.procesarSolicitud(solicitudDto);
+            solicitudService.saveSolicitud(solicitudDto);
             return ResponseEntity.status(HttpStatus.CREATED).body("{\"message\": \"Solicitud creada exitosamente\"}");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -44,16 +44,16 @@ public class SolicitudControllers {
     }
 
     @GetMapping("/list")
-    public List<Solicitud> showSolicitud() {
+    public List<Solicitud> getSolicitud() {
         return solicitudService.findAll();
     }
 
     @GetMapping("/byDepto/{depto}")
-    public ResponseEntity<List<SolicitudDerivacionDto>> obtenerSolicitudesPorDepartamento(
+    public ResponseEntity<List<SolicitudDerivacionDto>> getSolicitudesByDepto(
             @PathVariable Long depto) {
         try {
             List<SolicitudDerivacionDto> solicitudes = solicitudService
-                    .obtenerSolicitudesPorDepartamento(depto);
+                    .getSolicitudesByDepto(depto);
             return new ResponseEntity<>(solicitudes, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -61,9 +61,9 @@ public class SolicitudControllers {
     }
 
     @GetMapping("/byRut/{rut}")
-    public ResponseEntity<List<SolicitudDerivacionDto>> obtenerSolicitudesPorRut(@PathVariable Integer rut) {
+    public ResponseEntity<List<SolicitudDerivacionDto>> getSolicitudesByRut(@PathVariable Integer rut) {
         try {
-            List<SolicitudDerivacionDto> solicitudes = solicitudService.obtenerSolicitudesPorRut(rut);
+            List<SolicitudDerivacionDto> solicitudes = solicitudService.getSolicitudesByRut(rut);
             return new ResponseEntity<>(solicitudes, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

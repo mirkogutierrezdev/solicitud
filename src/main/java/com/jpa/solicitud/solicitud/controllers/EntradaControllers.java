@@ -67,7 +67,7 @@ public class EntradaControllers {
     }
 
     @GetMapping("buscarDepto/{depto}")
-    public ResponseEntity<List<Entrada>> showEntradaDepto(@PathVariable Long depto){
+    public ResponseEntity<List<Entrada>> getEntradaByDepto(@PathVariable Long depto){
         try {
             List<Entrada> entrada = entradaService.findEntradaByDepto(depto);
             return new ResponseEntity<>(entrada,HttpStatus.OK);

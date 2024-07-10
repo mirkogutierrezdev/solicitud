@@ -10,17 +10,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jpa.solicitud.solicitud.apimodels.SmcDepartamento;
 import com.jpa.solicitud.solicitud.models.dto.DerivacionDto;
-import com.jpa.solicitud.solicitud.models.entities.Departamento;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
-import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.services.DerivacionService;
 
 @RestController
@@ -32,14 +28,14 @@ public class DerivacionControllers {
     private DerivacionService derivacionService;
 
     @PostMapping("/read/{idDerivacion}/{idSolicitud}")
-    public ResponseEntity<Void> actualizarLeida(@PathVariable Long idDerivacion, @PathVariable Long idSolicitud,
+    public ResponseEntity<Void> updateRead(@PathVariable Long idDerivacion, @PathVariable Long idSolicitud,
             @RequestParam boolean estado) {
-        derivacionService.marcarComoNoLeida(idDerivacion, idSolicitud, estado);
+        derivacionService.checkRead(idDerivacion, idSolicitud, estado);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/unreadbydepto/{codigoDepto}")
-    public ResponseEntity<List<Derivacion>> obtenerSolicitudesNoLeidasPorDepto(@PathVariable Long codigoDepto) {
+    public ResponseEntity<List<Derivacion>> getSolicitudesUnreadByDepto(@PathVariable Long codigoDepto) {
 
         try {
             List<Derivacion> derivaciones = derivacionService.findNoLeidas(codigoDepto);
@@ -50,7 +46,7 @@ public class DerivacionControllers {
     }
 
     @GetMapping("/byId/{id}")
-    public ResponseEntity<List<Derivacion>> obtenerSolicitudesPorId(@PathVariable Long id) {
+    public ResponseEntity<List<Derivacion>> getSolicitudesById(@PathVariable Long id) {
         try {
             List<Derivacion> derivaciones = derivacionService.findBySolicitudId(id);
             return new ResponseEntity<>(derivaciones, HttpStatus.OK);
@@ -61,7 +57,7 @@ public class DerivacionControllers {
 
 
   @PostMapping("/create")
-    public ResponseEntity<Object> showPrueba(@RequestBody DerivacionDto derivacionDto) {
+    public ResponseEntity<Object> createSolicitud(@RequestBody DerivacionDto derivacionDto) {
         try {
             Derivacion derivacion = derivacionService.saveDerivacion(derivacionDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(derivacion);

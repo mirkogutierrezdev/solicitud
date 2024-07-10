@@ -10,7 +10,7 @@ import com.jpa.solicitud.solicitud.utils.FeriadoUtils;
 @Service
 public class UtilsService {
 
-    public long calcularDiasHabiles(Date sqlStartDate, Date sqlEndDate) {
+    public long getWorkDays(Date sqlStartDate, Date sqlEndDate) {
 
         return FeriadoUtils.calcularDiasHabiles(sqlStartDate, sqlEndDate);
     }

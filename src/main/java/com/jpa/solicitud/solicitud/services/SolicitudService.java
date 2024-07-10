@@ -59,7 +59,7 @@ public class SolicitudService {
     }
 
     @Transactional
-    public void procesarSolicitud(SolicitudDto solicitudDto) {
+    public void saveSolicitud(SolicitudDto solicitudDto) {
         // Crear y persistir el funcionario
         Funcionario funcionario = new Funcionario();
         funcionario.setRut(solicitudDto.getRut());
@@ -111,7 +111,7 @@ public class SolicitudService {
         return solicitudRespository.findAll();
     }
 
-    public List<SolicitudDerivacionDto> obtenerSolicitudesPorDepartamento(Long departamentoCodigo) {
+    public List<SolicitudDerivacionDto> getSolicitudesByDepto(Long departamentoCodigo) {
         List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoDepto(departamentoCodigo);
 
         StringBuilder nombres = new StringBuilder();
@@ -146,7 +146,7 @@ public class SolicitudService {
                 }).collect(Collectors.toList());
     }
 
-    public List<SolicitudDerivacionDto> obtenerSolicitudesPorRut(Integer rut) {
+    public List<SolicitudDerivacionDto> getSolicitudesByRut(Integer rut) {
 
         List<Derivacion> derivaciones = derivacionRepository.findByFuncionarioRut(rut);
 

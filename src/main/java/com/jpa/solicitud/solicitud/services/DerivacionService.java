@@ -2,7 +2,6 @@ package com.jpa.solicitud.solicitud.services;
 
 import java.sql.Date;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class DerivacionService {
     }
 
     @Transactional
-    public void marcarComoNoLeida(Long idDerivacion, Long idSolicutd, Boolean estado) {
+    public void checkRead(Long idDerivacion, Long idSolicutd, Boolean estado) {
         derivacionRepository.marcarComoNoLeida(idDerivacion, idSolicutd, estado);
     }
 
