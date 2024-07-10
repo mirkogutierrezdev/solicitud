@@ -15,7 +15,12 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface IDerivacionRepository extends JpaRepository<Derivacion, Long> {
 
-        List<Derivacion> findByDepartamentoDepto(Long depto);
+        @Query("SELECT d FROM Derivacion d " +
+                        "JOIN FETCH d.solicitud s " +
+                        "JOIN FETCH s.funcionario f " +
+                        "JOIN FETCH d.departamento de " +
+                        "WHERE d.departamento.depto = :depto" )
+        List<Derivacion> findByDepartamentoDepto(@Param("depto") Long depto);
 
         @Query("SELECT d FROM Derivacion d " +
                         "JOIN FETCH d.solicitud s " +

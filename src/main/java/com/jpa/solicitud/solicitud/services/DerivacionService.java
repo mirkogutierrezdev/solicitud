@@ -12,10 +12,14 @@ import com.jpa.solicitud.solicitud.models.dto.DerivacionDto;
 import com.jpa.solicitud.solicitud.models.entities.Departamento;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
+import com.jpa.solicitud.solicitud.models.entities.Funcionario;
+import com.jpa.solicitud.solicitud.models.entities.Salida;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentoRepository;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
+import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
+import com.jpa.solicitud.solicitud.repositories.ISalidaRepository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
 import com.jpa.solicitud.solicitud.utils.DepartamentoUtils;
 
@@ -39,6 +43,12 @@ public class DerivacionService {
     @Autowired
     private IEstadoRepository estadoRepository;
 
+    @Autowired
+    private ISalidaRepository salidaRepository;
+
+    @Autowired
+    private IFuncionarioRespository funcionarioRespository;
+
     public List<Derivacion> findBySolicitudId(Long id) {
         return derivacionRepository.findBySolicitudId(id);
     }
@@ -56,7 +66,7 @@ public class DerivacionService {
     public Derivacion saveDerivacion(DerivacionDto derivacionDto) {
 
         Long depto = derivacionDto.getDepto();
-        Long idSolicitud = derivacionDto.getIdSolicitud();
+       Long idSolicitud = derivacionDto.getIdSolicitud();
         String estado = derivacionDto.getEstado();
         Date fechaDerivacion = derivacionDto.getFechaDerivacion();
 
@@ -85,7 +95,6 @@ public class DerivacionService {
 
         estadoSol.setNombre(estado);
 
-        
         derivacion.setSolicitud(solicitud.get());
         derivacion.setDepartamento(deptoDestino);
         derivacion.setEstado(estadoSol);
@@ -93,7 +102,20 @@ public class DerivacionService {
         derivacion.setComentarios("Prueba de derivacion");
         derivacion.setLeida(false);
 
-        derivacionRepository.save(derivacion);
+        derivacion = derivacionRepository.save(derivacion);
+
+        Salida salida = new Salida();
+
+        salida = salidaRepository.save(salida);
+
+        Funcionario funcionario = new Funcionario();
+
+        funcionario = funcionarioRespository.save(funcionario);
+        funcionario.setRut(derivacionDto.getRut());
+
+        salida.setDerivacion(derivacion);
+        salida.setFuncionario(funcionario);
+        salida.setFechaSalida(derivacionDto.getFechaDerivacion());
 
         return derivacion;
 

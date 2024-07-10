@@ -8,6 +8,7 @@ public class EntradaDto {
     private Long funcionarioId;
     private Long derivacionId;
     private Date fechaEntrada;
+    private Integer rut;
 
     public Long getSolicitudId() {
         return solicitudId;
@@ -40,4 +41,14 @@ public class EntradaDto {
     public void setFechaEntrada(Date fechaEntrada) {
         this.fechaEntrada = fechaEntrada;
     }
+
+    public Integer getRut() {
+        return rut;
+    }
+
+    public void setRut(Integer rut) {
+        this.rut = rut;
+    }
+
+    
 }

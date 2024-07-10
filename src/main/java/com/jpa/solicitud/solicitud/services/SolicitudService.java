@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -51,15 +50,12 @@ public class SolicitudService {
     @Autowired
     private SmcService smcService;
 
-    private final RestTemplate restTemplate;
-
     // *RestTemplate para la api a smc */
     public SolicitudService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
     }
 
     @Transactional
-    public void saveSolicitud(SolicitudDto solicitudDto) {
+    public Solicitud saveSolicitud(SolicitudDto solicitudDto) {
         // Crear y persistir el funcionario
         Funcionario funcionario = new Funcionario();
         funcionario.setRut(solicitudDto.getRut());
@@ -105,6 +101,8 @@ public class SolicitudService {
         derivacion.setEstado(estado);
         derivacion.setComentarios("Prueba de derivacion");
         derivacionRepository.save(derivacion);
+
+        return solicitud;
     }
 
     public List<Solicitud> findAll() {
@@ -117,7 +115,8 @@ public class SolicitudService {
         StringBuilder nombres = new StringBuilder();
 
         return derivaciones.stream()
-                .filter(derivacion -> !isJefe(derivacion.getSolicitud().getFuncionario().getRut()))
+                 .filter(derivacion -> !smcService.isJefe(derivacion.getSolicitud().getFuncionario().getRut()))
+                
                 .map(derivacion -> {
                     SolicitudDerivacionDto dto = new SolicitudDerivacionDto();
                     SmcPersona persona = smcService
@@ -174,9 +173,5 @@ public class SolicitudService {
                 .collect(Collectors.toList());
     }
 
-    public boolean isJefe(Integer rut) {
-        String url = "http://localhost:8080/api/esjefe/" + rut;
-        ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
-        return response.getBody() != null && response.getBody(); // Retornar true si es jefe
-    }
+    
 }

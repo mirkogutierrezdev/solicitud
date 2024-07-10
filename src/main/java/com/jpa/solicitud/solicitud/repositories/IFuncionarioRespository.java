@@ -12,4 +12,6 @@ public interface IFuncionarioRespository extends JpaRepository<Funcionario, Long
 
      Optional<Funcionario> findById(Long id);
 
+
+
 }

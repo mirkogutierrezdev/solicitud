@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jpa.solicitud.solicitud.models.dto.EntradaDto;
+import com.jpa.solicitud.solicitud.models.dto.SolicitudEntradaDto;
 import com.jpa.solicitud.solicitud.models.entities.Entrada;
 import com.jpa.solicitud.solicitud.services.EntradaService;
 
@@ -67,9 +68,9 @@ public class EntradaControllers {
     }
 
     @GetMapping("buscarDepto/{depto}")
-    public ResponseEntity<List<Entrada>> getEntradaByDepto(@PathVariable Long depto){
+    public ResponseEntity<List<SolicitudEntradaDto>> getEntradaByDepto(@PathVariable Long depto){
         try {
-            List<Entrada> entrada = entradaService.findEntradaByDepto(depto);
+            List<SolicitudEntradaDto> entrada = entradaService.findEntradaByDepto(depto);
             return new ResponseEntity<>(entrada,HttpStatus.OK);
             
         } catch (Exception e) {
