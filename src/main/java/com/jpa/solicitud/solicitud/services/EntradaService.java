@@ -1,6 +1,7 @@
 package com.jpa.solicitud.solicitud.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,11 @@ public class EntradaService {
 
                     SolicitudEntradaDto dto = new SolicitudEntradaDto();
 
-                    SmcPersona persona = smcService.getPersonaByRut(entrada.getFuncionario().getRut());
+                    
+                    Long funcionariId = entrada.getDerivacion().getSolicitud().getFuncionario().getId();
+                    Optional<Funcionario> funcionarioOpt = funcionarioRespository.findById(funcionariId);
+                  
+                    SmcPersona persona = smcService.getPersonaByRut(funcionarioOpt.get().getRut());
 
                     dto.setNombre(persona.getNombres());
                     dto.setDepartamentoCodigo(entrada.getDerivacion().getDepartamento().getDepto());

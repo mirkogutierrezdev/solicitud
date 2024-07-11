@@ -23,6 +23,7 @@ import com.jpa.solicitud.solicitud.repositories.ISalidaRepository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
 import com.jpa.solicitud.solicitud.utils.DepartamentoUtils;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -63,62 +64,66 @@ public class DerivacionService {
     }
 
     @Transactional
-    public Derivacion saveDerivacion(DerivacionDto derivacionDto) {
+   public Derivacion saveDerivacion(DerivacionDto derivacionDto) {
+    Long depto = derivacionDto.getDepto();
+    Long idSolicitud = derivacionDto.getIdSolicitud();
+    String estado = derivacionDto.getEstado();
+    Date fechaDerivacion = derivacionDto.getFechaDerivacion();
 
-        Long depto = derivacionDto.getDepto();
-       Long idSolicitud = derivacionDto.getIdSolicitud();
-        String estado = derivacionDto.getEstado();
-        Date fechaDerivacion = derivacionDto.getFechaDerivacion();
+    // Crear y configurar la entidad Derivacion
+    Derivacion derivacion = new Derivacion();
 
-        Derivacion derivacion = new Derivacion();
-
-        Optional<Solicitud> solicitud = solicitudRespository.findById(idSolicitud);
-
-        String strDeptoDestino = DepartamentoUtils.determinaDerivacion(depto);
-
-        SmcDepartamento smcDepartamento = smcService.getDepartamento(strDeptoDestino);
-
-        Departamento deptoDestino = new Departamento();
-
-        Long intDepto = Long.parseLong(strDeptoDestino);
-
-        deptoDestino.setDepto(intDepto);
-        deptoDestino.setNombre(smcDepartamento.getNombre_departamento());
-
-        deptoDestino = departamentoRepository.save(deptoDestino);
-
-        Estado estadoSol = new Estado();
-
-        Long codEstado = estadoRepository.findIdByNombre(estado);
-
-        estadoSol.setId(codEstado);
-
-        estadoSol.setNombre(estado);
-
-        derivacion.setSolicitud(solicitud.get());
-        derivacion.setDepartamento(deptoDestino);
-        derivacion.setEstado(estadoSol);
-        derivacion.setFechaDerivacion(fechaDerivacion);
-        derivacion.setComentarios("Prueba de derivacion");
-        derivacion.setLeida(false);
-
-        derivacion = derivacionRepository.save(derivacion);
-
-        Salida salida = new Salida();
-
-        salida = salidaRepository.save(salida);
-
-        Funcionario funcionario = new Funcionario();
-
-        funcionario = funcionarioRespository.save(funcionario);
-        funcionario.setRut(derivacionDto.getRut());
-
-        salida.setDerivacion(derivacion);
-        salida.setFuncionario(funcionario);
-        salida.setFechaSalida(derivacionDto.getFechaDerivacion());
-
-        return derivacion;
-
+    // Buscar la solicitud relacionada
+    Optional<Solicitud> solicitudOpt = solicitudRespository.findById(idSolicitud);
+    if (!solicitudOpt.isPresent()) {
+        throw new EntityNotFoundException("Solicitud no encontrada con ID: " + idSolicitud);
     }
+    Solicitud solicitud = solicitudOpt.get();
+
+    // Determinar el departamento de destino
+    String strDeptoDestino = DepartamentoUtils.determinaDerivacion(depto);
+    SmcDepartamento smcDepartamento = smcService.getDepartamento(strDeptoDestino);
+
+    // Crear y configurar la entidad Departamento
+    Departamento deptoDestino = new Departamento();
+    Long intDepto = Long.parseLong(strDeptoDestino);
+    deptoDestino.setDepto(intDepto);
+    deptoDestino.setNombre(smcDepartamento.getNombre_departamento());
+
+    // Guardar el departamento
+    deptoDestino = departamentoRepository.save(deptoDestino);
+
+    // Crear y configurar la entidad Estado
+    Long codEstado = estadoRepository.findIdByNombre(estado);
+    Estado estadoSol = new Estado();
+    estadoSol.setId(codEstado);
+    estadoSol.setNombre(estado);
+
+    // Configurar la entidad Derivacion con las entidades relacionadas
+    derivacion.setSolicitud(solicitud);
+    derivacion.setDepartamento(deptoDestino);
+    derivacion.setEstado(estadoSol);
+    derivacion.setFechaDerivacion(fechaDerivacion);
+    derivacion.setComentarios("Prueba de derivacion");
+    derivacion.setLeida(false);
+
+    // Guardar la derivacion
+    derivacion = derivacionRepository.save(derivacion);
+
+    // Crear y configurar la entidad Funcionario
+    Funcionario funcionario = new Funcionario();
+    funcionario.setRut(derivacionDto.getRut());
+    funcionario = funcionarioRespository.save(funcionario);
+
+    // Crear y configurar la entidad Salida
+    Salida salida = new Salida();
+    salida.setDerivacion(derivacion);
+    salida.setFuncionario(funcionario);
+    salida.setFechaSalida(derivacionDto.getFechaDerivacion());
+    salida = salidaRepository.save(salida);
+
+    return derivacion;
+}
+
 
 }
