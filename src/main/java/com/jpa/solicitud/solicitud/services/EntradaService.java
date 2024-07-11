@@ -1,15 +1,11 @@
 package com.jpa.solicitud.solicitud.services;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+/* import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.EntradaDto;
-import com.jpa.solicitud.solicitud.models.dto.SolicitudEntradaDto;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Entrada;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
@@ -19,9 +15,9 @@ import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
 
 import jakarta.persistence.EntityNotFoundException;
 
-@Service
+@Service */
 public class EntradaService {
-
+/* 
     @Autowired
     private IEntradaRepository entradaRepository;
 
@@ -31,8 +27,6 @@ public class EntradaService {
     @Autowired
     private IFuncionarioRespository funcionarioRespository;
 
-    @Autowired
-    private SmcService smcService;
 
     public Entrada saveEntrada(EntradaDto entradaDto) {
         Derivacion derivacion = derivacionRepository.findDerivacionByIdAndFuncionario(
@@ -66,51 +60,6 @@ public class EntradaService {
         return entradaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Entrada no encontrada con id: " + id));
     }
-
-    public List<SolicitudEntradaDto> findEntradaByDepto(Long depto){
-
-          List<Entrada> entradas = entradaRepository.findEntradaByDepto(depto);
-
-          return entradas.stream()
-                  .map(entrada ->{
-
-                    SolicitudEntradaDto dto = new SolicitudEntradaDto();
-
-                    
-                    Long funcionariId = entrada.getDerivacion().getSolicitud().getFuncionario().getId();
-                    Optional<Funcionario> funcionarioOpt = funcionarioRespository.findById(funcionariId);
-                  
-                    SmcPersona persona = smcService.getPersonaByRut(funcionarioOpt.get().getRut());
-
-                    dto.setNombre(persona.getNombres());
-                    dto.setDepartamentoCodigo(entrada.getDerivacion().getDepartamento().getDepto());
-                    dto.setFechaEntrada(entrada.getFechaEntrada());
-                    dto.setFechaSolicitud(entrada.getDerivacion().getSolicitud().getFechaSolicitud());
-                    dto.setSolicitudId(entrada.getDerivacion().getSolicitud().getId());
-                    dto.setRut(entrada.getFuncionario().getRut());
-                    dto.setFechaInicio(entrada.getDerivacion().getSolicitud().getFechaInicio());
-                    dto.setFechaFin(entrada.getDerivacion().getSolicitud().getFechaFin());
-                    dto.setTipoSolicitudId(entrada.getDerivacion().getSolicitud().getId());
-                    dto.setNombreSolicitud(entrada.getDerivacion().getSolicitud().getTipoSolicitud().getNombre());
-                    dto.setEstadoId(entrada.getDerivacion().getEstado().getId());
-                    dto.setNombreEstado(entrada.getDerivacion().getSolicitud().getEstado().getNombre());
-                    dto.setFuncionarioId(entrada.getFuncionario().getId());
-                    dto.setNombreDepartamento(entrada.getDerivacion().getDepartamento().getNombre());
-
-                    System.out.println("id " + entrada.getDerivacion().getSolicitud().getId());
-
-
-
-
-                    return dto;
-
-
-                  }).collect(Collectors.toList());
-
-
-
-
-
-
-    }
+ */
+  
 }

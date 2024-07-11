@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jpa.solicitud.solicitud.models.dto.SolicitudDerivacionDto;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDto;
-
+import com.jpa.solicitud.solicitud.models.dto.SolicitudWithDerivacionesDTO;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 
 import com.jpa.solicitud.solicitud.services.SolicitudService;
@@ -48,25 +47,9 @@ public class SolicitudControllers {
         return solicitudService.findAll();
     }
 
-    @GetMapping("/byDepto/{depto}")
-    public ResponseEntity<List<SolicitudDerivacionDto>> getSolicitudesByDepto(
-            @PathVariable Long depto) {
-        try {
-            List<SolicitudDerivacionDto> solicitudes = solicitudService
-                    .getSolicitudesByDepto(depto);
-            return new ResponseEntity<>(solicitudes, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
-    @GetMapping("/byRut/{rut}")
-    public ResponseEntity<List<SolicitudDerivacionDto>> getSolicitudesByRut(@PathVariable Integer rut) {
-        try {
-            List<SolicitudDerivacionDto> solicitudes = solicitudService.getSolicitudesByRut(rut);
-            return new ResponseEntity<>(solicitudes, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/departamento/{departamentoId}")
+    public List<SolicitudWithDerivacionesDTO> getSolicitudesWithDerivacionesByDepartamento(@PathVariable Long departamentoId) {
+        return solicitudService.getSolicitudesWithDerivacionesByDepartamento(departamentoId);
     }
 }

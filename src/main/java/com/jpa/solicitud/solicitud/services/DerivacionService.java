@@ -1,6 +1,6 @@
 package com.jpa.solicitud.solicitud.services;
 
-import java.sql.Date;
+/* import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +26,10 @@ import com.jpa.solicitud.solicitud.utils.DepartamentoUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
-@Service
+@Service */
 public class DerivacionService {
 
-    @Autowired
+  /*   @Autowired
     private IDerivacionRepository derivacionRepository;
 
     @Autowired
@@ -123,7 +123,9 @@ public class DerivacionService {
     salida = salidaRepository.save(salida);
 
     return derivacion;
-}
+} */
+
+
 
 
 }

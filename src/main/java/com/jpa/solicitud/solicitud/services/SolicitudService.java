@@ -8,19 +8,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
-import com.jpa.solicitud.solicitud.models.dto.SolicitudDerivacionDto;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDto;
+import com.jpa.solicitud.solicitud.models.dto.SolicitudWithDerivacionesDTO;
 import com.jpa.solicitud.solicitud.models.entities.Departamento;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
+import com.jpa.solicitud.solicitud.models.entities.Entrada;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
+import com.jpa.solicitud.solicitud.models.entities.Salida;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.models.entities.TipoSolicitud;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentoRepository;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
+import com.jpa.solicitud.solicitud.repositories.IEntradaRepository;
 import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
+import com.jpa.solicitud.solicitud.repositories.ISalidaRepository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
 import com.jpa.solicitud.solicitud.repositories.ITipoSolicitudRepository;
 
@@ -48,7 +51,14 @@ public class SolicitudService {
     private IDepartamentoRepository departamentoRepository;
 
     @Autowired
+    private IEntradaRepository entradaRepository;
+
+    @Autowired
+    private ISalidaRepository salidaRepository;
+
+/*     @Autowired
     private SmcService smcService;
+ */
 
     // *RestTemplate para la api a smc */
     public SolicitudService(RestTemplate restTemplate) {
@@ -109,68 +119,36 @@ public class SolicitudService {
         return solicitudRespository.findAll();
     }
 
-    public List<SolicitudDerivacionDto> getSolicitudesByDepto(Long departamentoCodigo) {
-        List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoDepto(departamentoCodigo);
+    
 
-        StringBuilder nombres = new StringBuilder();
-
-        return derivaciones.stream()
-                 .filter(derivacion -> !smcService.isJefe(derivacion.getSolicitud().getFuncionario().getRut()))
-                
-                .map(derivacion -> {
-                    SolicitudDerivacionDto dto = new SolicitudDerivacionDto();
-                    SmcPersona persona = smcService
-                            .getPersonaByRut(derivacion.getSolicitud().getFuncionario().getRut());
-                    dto.setSolicitudId(derivacion.getSolicitud().getId());
-                    dto.setFuncionarioId(derivacion.getSolicitud().getFuncionario().getId());
-                    dto.setFechaSolicitud(derivacion.getSolicitud().getFechaSolicitud());
-                    dto.setFechaInicio(derivacion.getSolicitud().getFechaInicio());
-                    dto.setFechaFin(derivacion.getSolicitud().getFechaFin());
-                    dto.setTipoSolicitudId(derivacion.getSolicitud().getTipoSolicitud().getId());
-                    dto.setEstadoId(derivacion.getSolicitud().getEstado().getId());
-                    dto.setDerivacionId(derivacion.getId());
-                    dto.setFechaDerivacion(derivacion.getFechaDerivacion());
-                    dto.setDepartamentoCodigo(derivacion.getDepartamento().getDepto());
-                    dto.setLeida(derivacion.getLeida());
-                    dto.setNombreDepartamento(derivacion.getDepartamento().getNombre());
-                    dto.setComentarios(derivacion.getComentarios());
-                    dto.setRut(derivacion.getSolicitud().getFuncionario().getRut());
-                    dto.setNombreEstado(derivacion.getEstado().getNombre());
-                    dto.setNombreSolicitud(derivacion.getSolicitud().getTipoSolicitud().getNombre());
-                    nombres.append(persona.getNombres()).append(" ").append(persona.getApellidopaterno());
-                    dto.setNombre(nombres.toString());
-                    nombres.setLength(0);
-
-                    return dto;
-                }).collect(Collectors.toList());
-    }
-
-    public List<SolicitudDerivacionDto> getSolicitudesByRut(Integer rut) {
-
-        List<Derivacion> derivaciones = derivacionRepository.findByFuncionarioRut(rut);
-
-        return derivaciones.stream()
-                .map(derivacion -> {
-                    SolicitudDerivacionDto dto = new SolicitudDerivacionDto();
-
-                    dto.setSolicitudId(derivacion.getSolicitud().getId());
-                    dto.setFuncionarioId(derivacion.getSolicitud().getFuncionario().getId());
-                    dto.setFechaSolicitud(derivacion.getSolicitud().getFechaSolicitud());
-                    dto.setFechaInicio(derivacion.getSolicitud().getFechaInicio());
-                    dto.setFechaFin(derivacion.getSolicitud().getFechaFin());
-                    dto.setTipoSolicitudId(derivacion.getSolicitud().getTipoSolicitud().getId());
-                    dto.setEstadoId(derivacion.getSolicitud().getEstado().getId());
-                    dto.setDerivacionId(derivacion.getId());
-                    dto.setFechaDerivacion(derivacion.getFechaDerivacion());
-                    dto.setDepartamentoCodigo(derivacion.getDepartamento().getDepto());
-                    dto.setComentarios(derivacion.getComentarios());
-                    dto.setRut(derivacion.getSolicitud().getFuncionario().getRut());
-                    dto.setNombreEstado(derivacion.getEstado().getNombre());
-                    dto.setNombreSolicitud(derivacion.getSolicitud().getTipoSolicitud().getNombre());
-
-                    return dto;
-                })
-                .collect(Collectors.toList());
+    public List<SolicitudWithDerivacionesDTO> getSolicitudesWithDerivacionesByDepartamento(Long departamentoId) {
+        // Obtener todas las derivaciones del departamento
+        List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoDepto(departamentoId);
+    
+        // Obtener todas las solicitudes a partir de las derivaciones
+        List<Solicitud> solicitudes = derivaciones.stream()
+                                                  .map(Derivacion::getSolicitud)
+                                                  .distinct()
+                                                  .collect(Collectors.toList());
+    
+        // Crear el DTO para cada solicitud
+        return solicitudes.stream().map(solicitud -> {
+            List<Derivacion> derivacionesSolicitud = derivacionRepository.findBySolicitudId(solicitud.getId());
+            List<Entrada> entradas = derivacionesSolicitud.stream()
+                                                          .flatMap(derivacion -> entradaRepository.findByDerivacionId(derivacion.getId()).stream())
+                                                          .collect(Collectors.toList());
+            List<Salida> salidas = derivacionesSolicitud.stream()
+                                                        .flatMap(derivacion -> salidaRepository.findByDerivacion_Id(derivacion.getId()).stream())
+                                                        .collect(Collectors.toList());
+    
+            SolicitudWithDerivacionesDTO dto = new SolicitudWithDerivacionesDTO();
+            dto.setSolicitud(solicitud);
+            dto.setDerivaciones(derivacionesSolicitud);
+            dto.setEntradas(entradas);
+            dto.setSalidas(salidas);
+    
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     
