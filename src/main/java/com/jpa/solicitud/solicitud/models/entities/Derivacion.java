@@ -1,5 +1,7 @@
 package com.jpa.solicitud.solicitud.models.entities;
 
+import java.sql.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,8 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
-import java.sql.Date;
 
 @Entity
 @Table(name = "derivaciones")
@@ -26,6 +26,10 @@ public class Derivacion {
     @ManyToOne
     @JoinColumn(name = "departamento_id", nullable = false)
     private Departamento departamento;
+
+    @ManyToOne
+    @JoinColumn(name = "funcionario_id", nullable = false) // Agregado para identificar al funcionario que hizo la derivación
+    private Funcionario funcionario;
 
     private Date fechaDerivacion;
 
@@ -54,12 +58,28 @@ public class Derivacion {
         this.solicitud = solicitud;
     }
 
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
+    public Funcionario getFuncionario() {
+        return funcionario;
+    }
+
+    public void setFuncionario(Funcionario funcionario) {
+        this.funcionario = funcionario;
+    }
+
     public Date getFechaDerivacion() {
         return fechaDerivacion;
     }
 
-    public void setFechaDerivacion(Date fechaDer) {
-        this.fechaDerivacion = fechaDer;
+    public void setFechaDerivacion(Date fechaDerivacion) {
+        this.fechaDerivacion = fechaDerivacion;
     }
 
     public Estado getEstado() {
@@ -78,14 +98,6 @@ public class Derivacion {
         this.comentarios = comentarios;
     }
 
-    public Departamento getDepartamento() {
-        return departamento;
-    }
-
-    public void setDepartamento(Departamento departamento) {
-        this.departamento = departamento;
-    }
-
     public Boolean getLeida() {
         return leida;
     }
@@ -94,4 +106,5 @@ public class Derivacion {
         this.leida = leida;
     }
 
+   
 }

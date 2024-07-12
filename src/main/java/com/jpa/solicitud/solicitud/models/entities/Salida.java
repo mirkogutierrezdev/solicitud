@@ -24,7 +24,7 @@ public class Salida {
     private Derivacion derivacion;
 
     @ManyToOne
-    @JoinColumn(name = "funcionario_id")
+    @JoinColumn(name = "funcionario_id", nullable = false) // Agregado para identificar al funcionario que hizo la salida
     private Funcionario funcionario;
 
     @Column(name = "fecha_salida")
@@ -62,4 +62,5 @@ public class Salida {
         this.fechaSalida = fechaSalida;
     }
 
+   
 }

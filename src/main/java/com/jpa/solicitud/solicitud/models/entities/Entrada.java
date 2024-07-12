@@ -18,12 +18,13 @@ public class Entrada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "derivacion_id", nullable = false)
     private Derivacion derivacion;
 
     @ManyToOne
-    @JoinColumn(name = "funcionario_id")
+    @JoinColumn(name = "funcionario_id", nullable = false) // Agregado para identificar al funcionario que hizo la entrada
     private Funcionario funcionario;
 
     @Column(name = "fecha_entrada")
@@ -61,4 +62,5 @@ public class Entrada {
         this.fechaEntrada = fechaEntrada;
     }
 
+ 
 }

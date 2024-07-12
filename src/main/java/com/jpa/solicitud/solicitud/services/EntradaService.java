@@ -1,10 +1,12 @@
 package com.jpa.solicitud.solicitud.services;
 
-/* import java.util.List;
+import java.util.List;
 
+import org.apache.catalina.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.EntradaDto;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Entrada;
@@ -12,12 +14,13 @@ import com.jpa.solicitud.solicitud.models.entities.Funcionario;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEntradaRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
+import com.jpa.solicitud.solicitud.utils.StringUtils;
 
 import jakarta.persistence.EntityNotFoundException;
 
-@Service */
+@Service
 public class EntradaService {
-/* 
+
     @Autowired
     private IEntradaRepository entradaRepository;
 
@@ -27,10 +30,15 @@ public class EntradaService {
     @Autowired
     private IFuncionarioRespository funcionarioRespository;
 
+    @Autowired
+    private SmcService smcService;
+
 
     public Entrada saveEntrada(EntradaDto entradaDto) {
         Derivacion derivacion = derivacionRepository.findDerivacionByIdAndFuncionario(
                 entradaDto.getDerivacionId(), entradaDto.getFuncionarioId());
+
+                SmcPersona persona = smcService.getPersonaByRut(entradaDto.getRut());
 
         if (derivacion == null) {
             throw new IllegalArgumentException(
@@ -41,6 +49,13 @@ public class EntradaService {
         Funcionario funcionario = new Funcionario();
         funcionario = funcionarioRespository.save(funcionario);
         funcionario.setRut(entradaDto.getRut());
+        funcionario.setNombre(
+            StringUtils.buildName(persona.getNombres(), 
+            persona.getApellidomaterno(),
+             persona.getApellidomaterno())
+        );
+
+        
 
         Entrada entrada = new Entrada();
         entrada.setFechaEntrada(entradaDto.getFechaEntrada());
@@ -60,6 +75,6 @@ public class EntradaService {
         return entradaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Entrada no encontrada con id: " + id));
     }
- */
+
   
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDto;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudWithDerivacionesDTO;
 import com.jpa.solicitud.solicitud.models.entities.Departamento;
@@ -56,6 +57,8 @@ public class SolicitudService {
     @Autowired
     private ISalidaRepository salidaRepository;
 
+    @Autowired SmcService smcService;
+
 /*     @Autowired
     private SmcService smcService;
  */
@@ -67,9 +70,21 @@ public class SolicitudService {
     @Transactional
     public Solicitud saveSolicitud(SolicitudDto solicitudDto) {
         // Crear y persistir el funcionario
+        SmcPersona persona = smcService.getPersonaByRut(solicitudDto.getRut());
+
+        StringBuilder nombres = new StringBuilder();
+
+        nombres.append(persona.getNombres()).append(" ").append(persona.getApellidopaterno()).append(" ").append(persona.getApellidopaterno());
+
+
+
+       
         Funcionario funcionario = new Funcionario();
         funcionario.setRut(solicitudDto.getRut());
+        funcionario.setNombre(nombres.toString());
+        
         funcionario = funcionarioRespository.save(funcionario);
+        
 
         // Obtener el tipo de solicitud por nombre y lanzar excepción si no se encuentra
         Long idSol = tipoSolicitudRepository.findIdByNombre(solicitudDto.getTipoSolicitud());
@@ -110,6 +125,7 @@ public class SolicitudService {
         derivacion.setSolicitud(solicitud);
         derivacion.setEstado(estado);
         derivacion.setComentarios("Prueba de derivacion");
+        derivacion.setFuncionario(funcionario);
         derivacionRepository.save(derivacion);
 
         return solicitud;
