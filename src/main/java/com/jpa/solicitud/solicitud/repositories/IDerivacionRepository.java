@@ -48,12 +48,12 @@ public interface IDerivacionRepository extends JpaRepository<Derivacion, Long> {
 
                         @Param("estado") Boolean estado);
 
- */        @Query("SELECT d FROM Derivacion d " +
+ */     /*    @Query("SELECT d FROM Derivacion d " +
                         "JOIN FETCH d.solicitud s " +
                         "JOIN FETCH s.funcionario f " +
                         "JOIN FETCH d.departamento de " +
-                        "WHERE d.id = :idDerivacion AND f.id = :funcionarioId")
-        Derivacion findDerivacionByIdAndFuncionario(@Param("idDerivacion") Long idDerivacion,@Param("funcionarioId") Long funcionarioId);
+                        "WHERE d.id = :idDerivacion")
+        Derivacion findDerivacionByIdAndFuncionario(@Param("idDerivacion") Long idDerivacion,@Param("funcionarioId") Long funcionarioId); */
 
         List<Derivacion> findByDepartamentoId(Long departamentoId);
 

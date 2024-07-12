@@ -1,8 +1,8 @@
 package com.jpa.solicitud.solicitud.services;
 
+import java.util.Comparator;
 import java.util.List;
 
-import org.apache.catalina.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,34 +33,41 @@ public class EntradaService {
     @Autowired
     private SmcService smcService;
 
-
     public Entrada saveEntrada(EntradaDto entradaDto) {
-        Derivacion derivacion = derivacionRepository.findDerivacionByIdAndFuncionario(
-                entradaDto.getDerivacionId(), entradaDto.getFuncionarioId());
+        // Encuentra todas las derivaciones asociadas a la solicitud
+        List<Derivacion> derivaciones = derivacionRepository.findBySolicitudId(entradaDto.getSolicitudId());
 
-                SmcPersona persona = smcService.getPersonaByRut(entradaDto.getRut());
-
-        if (derivacion == null) {
-            throw new IllegalArgumentException(
-                    "La derivación proporcionada no existe o no está asociada al funcionario");
+        if (derivaciones.isEmpty()) {
+            throw new IllegalArgumentException("No hay derivaciones asociadas a la solicitud proporcionada.");
         }
 
-        
+        // Encuentra la última derivación basada en el id
+        Derivacion ultimaDerivacion = derivaciones.stream()
+                .max(Comparator.comparing(Derivacion::getId))
+                .orElseThrow(() -> new IllegalArgumentException("No se pudo encontrar la última derivación."));
+
+        // Obtiene nombre de la base de datos Personas de Smc
+        SmcPersona persona = smcService.getPersonaByRut(entradaDto.getRut());
+
+        // Crea y persiste Objeto Funcionario con los datos traidos de Smc
         Funcionario funcionario = new Funcionario();
-        funcionario = funcionarioRespository.save(funcionario);
-        funcionario.setRut(entradaDto.getRut());
+        funcionario.setRut(persona.getRut());
+
+        // Utiliza metodo estatico Buildname para concatenar el nombre
         funcionario.setNombre(
-            StringUtils.buildName(persona.getNombres(), 
-            persona.getApellidomaterno(),
-             persona.getApellidomaterno())
-        );
+                StringUtils.buildName(persona.getNombres(),
+                        persona.getApellidopaterno(),
+                        persona.getApellidomaterno()));
 
-        
+        funcionario = funcionarioRespository.save(funcionario);
 
+        // Crea Y persiste Entrada
         Entrada entrada = new Entrada();
         entrada.setFechaEntrada(entradaDto.getFechaEntrada());
-        entrada.setDerivacion(derivacion);
+        entrada.setDerivacion(ultimaDerivacion);
         entrada.setFuncionario(funcionario);
+
+        ultimaDerivacion.setLeida(true);
 
         return entradaRepository.save(entrada);
     }
@@ -76,5 +83,4 @@ public class EntradaService {
                 .orElseThrow(() -> new EntityNotFoundException("Entrada no encontrada con id: " + id));
     }
 
-  
 }
