@@ -12,6 +12,7 @@ import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDto;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudWithDerivacionesDTO;
 import com.jpa.solicitud.solicitud.models.entities.Departamento;
+import com.jpa.solicitud.solicitud.models.entities.Departamentos;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Entrada;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
@@ -20,6 +21,7 @@ import com.jpa.solicitud.solicitud.models.entities.Salida;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.models.entities.TipoSolicitud;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentoRepository;
+import com.jpa.solicitud.solicitud.repositories.IDepartamentosRepository;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEntradaRepository;
 import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
@@ -58,6 +60,9 @@ public class SolicitudService {
     private ISalidaRepository salidaRepository;
 
     @Autowired SmcService smcService;
+
+    @Autowired
+    private IDepartamentosRepository departamentosRepository;
 
 /*     @Autowired
     private SmcService smcService;
@@ -113,8 +118,11 @@ public class SolicitudService {
         solicitud = solicitudRespository.save(solicitud);
 
         Departamento departamento = new Departamento();
-        departamento.setDepto(solicitudDto.getDepto());
-        departamento.setNombre(solicitudDto.getNombre_departamento());
+        
+        Departamentos depto = departamentosRepository.findByDepto(solicitudDto.getDepto());
+
+        departamento.setDepto(depto.getDeptoInt());
+        departamento.setNombre(depto.getNombre_departamento());
         departamento = departamentoRepository.save(departamento);
 
         // Crear y persistir la derivación
@@ -138,8 +146,10 @@ public class SolicitudService {
     
 
     public List<SolicitudWithDerivacionesDTO> getSolicitudesWithDerivacionesByDepartamento(Long departamentoId) {
+
+        Departamentos departamentos = departamentosRepository.findByDepto(departamentoId);
         // Obtener todas las derivaciones del departamento
-        List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoDepto(departamentoId);
+        List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoDepto(departamentos.getDeptoInt());
     
         // Obtener todas las solicitudes a partir de las derivaciones
         List<Solicitud> solicitudes = derivaciones.stream()

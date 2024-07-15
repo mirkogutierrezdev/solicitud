@@ -11,15 +11,12 @@ import com.jpa.solicitud.solicitud.repositories.IDepartamentosRepository;
 @Service
 public class DepartamentosService {
 
-
     @Autowired
     private IDepartamentosRepository departamentosRepository;
 
-
-    public List<Departamentos> saveAllDepartamentos(List<Departamentos> departamentos){
+    public List<Departamentos> saveAllDepartamentos(List<Departamentos> departamentos) {
 
         return departamentosRepository.saveAll(departamentos);
-
 
     }
 

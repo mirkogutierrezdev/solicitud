@@ -7,16 +7,18 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jpa.solicitud.solicitud.apimodels.SmcDepartamento;
+
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.DerivacionDto;
 import com.jpa.solicitud.solicitud.models.entities.Departamento;
+import com.jpa.solicitud.solicitud.models.entities.Departamentos;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
 import com.jpa.solicitud.solicitud.models.entities.Salida;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentoRepository;
+import com.jpa.solicitud.solicitud.repositories.IDepartamentosRepository;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
@@ -52,6 +54,9 @@ public class DerivacionService {
     @Autowired
     private IFuncionarioRespository funcionarioRespository;
 
+    @Autowired
+    private IDepartamentosRepository departamentosRepository;
+
     public List<Derivacion> findBySolicitudId(Long id) {
         return derivacionRepository.findBySolicitudId(id);
     }
@@ -62,6 +67,7 @@ public class DerivacionService {
         Long idSolicitud = derivacionDto.getIdSolicitud();
         String estado = derivacionDto.getEstado();
         Date fechaDerivacion = derivacionDto.getFechaDerivacion();
+        
     
         // Crear y configurar la entidad Derivacion
         Derivacion derivacion = new Derivacion();
@@ -72,17 +78,26 @@ public class DerivacionService {
             throw new EntityNotFoundException("Solicitud no encontrada con ID: " + idSolicitud);
         }
         Solicitud solicitud = solicitudOpt.get();
+
+
+        Departamentos deptoSmc = departamentosRepository.findByDepto(depto);
+        Long deptoInt = deptoSmc.getDeptoInt();
+
+
+        
     
         // Determinar el departamento de destino
-        String strDeptoDestino = DepartamentoUtils.determinaDerivacion(depto);
-        SmcDepartamento smcDepartamento = smcService.getDepartamento(strDeptoDestino);
+        String strDeptoDestino = DepartamentoUtils.determinaDerivacion(deptoInt);
+      //  SmcDepartamento smcDepartamento = smcService.getDepartamento(strDeptoDestino);
         SmcPersona persona = smcService.getPersonaByRut(derivacionDto.getRut());
+
+        System.out.println(strDeptoDestino);
     
         // Crear y configurar la entidad Departamento
         Departamento deptoDestino = new Departamento();
         Long intDepto = Long.parseLong(strDeptoDestino);
         deptoDestino.setDepto(intDepto);
-        deptoDestino.setNombre(smcDepartamento.getNombre_departamento());
+        deptoDestino.setNombre(deptoSmc.getNombre_departamento());
     
         // Guardar el departamento
         deptoDestino = departamentoRepository.save(deptoDestino);

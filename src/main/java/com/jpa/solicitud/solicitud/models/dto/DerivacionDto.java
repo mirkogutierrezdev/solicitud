@@ -10,6 +10,7 @@ public class DerivacionDto {
     private  Date fechaDerivacion ;
     private Integer rut;
     private Long derivacionId;
+    private String nombreDepartamento;
 
     
     public Long getDepto() {
@@ -48,6 +49,14 @@ public class DerivacionDto {
     public void setDerivacionId(Long derivacionId) {
         this.derivacionId = derivacionId;
     }
+    public String getNombreDepartamento() {
+        return nombreDepartamento;
+    }
+    public void setNombreDepartamento(String nombreDepartamento) {
+        this.nombreDepartamento = nombreDepartamento;
+    }
+
+    
 
 
     

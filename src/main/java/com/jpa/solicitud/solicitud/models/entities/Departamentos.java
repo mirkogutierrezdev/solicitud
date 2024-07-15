@@ -19,7 +19,7 @@ public class Departamentos {
     private Long deptoInt;
 
     @Column(name = "depto_smc", nullable = true)
-    private String depto;
+    private Long depto;
 
     @Column(name = "nombre_depto_smc", nullable = true)
     private String nombre_departamento;
@@ -30,8 +30,8 @@ public class Departamentos {
     @Column(name = "cargo_departamento_smc", nullable = true)
     private String cargo_jefe;
 
-    @Column(name = "rut_jefe",nullable = true)
-    private Integer rutJefe;
+    @Column(name = "rut_jefe", nullable = true)
+    private String rut_jefe;
 
     public Long getId() {
         return id;
@@ -49,11 +49,11 @@ public class Departamentos {
         this.deptoInt = deptoInt;
     }
 
-    public String getDepto() {
+    public Long getDepto() {
         return depto;
     }
 
-    public void setDepto(String depto) {
+    public void setDepto(Long depto) {
         this.depto = depto;
     }
 
@@ -81,14 +81,12 @@ public class Departamentos {
         this.cargo_jefe = cargo_jefe;
     }
 
-    public Integer getRutJefe() {
-        return rutJefe;
+    public String getRut_jefe() {
+        return rut_jefe;
     }
 
-    public void setRutJefe(Integer rutJefe) {
-        this.rutJefe = rutJefe;
+    public void setRut_jefe(String rut_jefe) {
+        this.rut_jefe = rut_jefe;
     }
-
-   
 
 }

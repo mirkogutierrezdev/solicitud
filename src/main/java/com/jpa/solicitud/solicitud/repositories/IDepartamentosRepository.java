@@ -8,4 +8,6 @@ import com.jpa.solicitud.solicitud.models.entities.Departamentos;
 @Repository
 public interface IDepartamentosRepository extends JpaRepository<Departamentos,Long> {
 
+ Departamentos findByDepto(Long Depto);
+
 }
