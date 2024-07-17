@@ -68,7 +68,6 @@ public class DerivacionService {
         String estado = derivacionDto.getEstado();
         Date fechaDerivacion = derivacionDto.getFechaDerivacion();
         
-    
         // Crear y configurar la entidad Derivacion
         Derivacion derivacion = new Derivacion();
     
@@ -78,25 +77,21 @@ public class DerivacionService {
             throw new EntityNotFoundException("Solicitud no encontrada con ID: " + idSolicitud);
         }
         Solicitud solicitud = solicitudOpt.get();
-
-
+    
         Departamentos deptoSmc = departamentosRepository.findByDepto(depto);
         Long deptoInt = deptoSmc.getDeptoInt();
-
-
-        
     
         // Determinar el departamento de destino
         String strDeptoDestino = DepartamentoUtils.determinaDerivacion(deptoInt);
-      //  SmcDepartamento smcDepartamento = smcService.getDepartamento(strDeptoDestino);
         SmcPersona persona = smcService.getPersonaByRut(derivacionDto.getRut());
-
-        System.out.println(strDeptoDestino);
+    
+        
     
         // Crear y configurar la entidad Departamento
         Departamento deptoDestino = new Departamento();
         Long intDepto = Long.parseLong(strDeptoDestino);
         deptoDestino.setDepto(intDepto);
+        deptoDestino.setDeptoSmc(deptoSmc.getDepto());
         deptoDestino.setNombre(deptoSmc.getNombre_departamento());
     
         // Guardar el departamento
@@ -119,11 +114,10 @@ public class DerivacionService {
         // Configurar la entidad Derivacion con las entidades relacionadas
         derivacion.setSolicitud(solicitud);
         derivacion.setDepartamento(deptoDestino);
-       
         derivacion.setFechaDerivacion(fechaDerivacion);
         derivacion.setComentarios("Prueba de derivacion");
         derivacion.setLeida(false);
-        derivacion.setFuncionario(funcionario); // Establecer el funcionario en la derivacion
+        derivacion.setFuncionario(funcionario);
     
         // Guardar la derivacion
         derivacion = derivacionRepository.save(derivacion);
@@ -137,6 +131,7 @@ public class DerivacionService {
     
         return derivacion;
     }
+    
     
 
 }

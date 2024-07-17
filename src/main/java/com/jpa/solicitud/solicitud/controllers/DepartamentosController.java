@@ -46,4 +46,9 @@ public class DepartamentosController {
         return departamentosService.existsByDeptoIntAndRutJefe(depto, rut);
     }
 
+    @GetMapping("/buscar/{depto}")
+    public Departamentos findByDepto(@PathVariable Long depto){
+        return departamentosService.findByDepto(depto);
+    }
+
 }

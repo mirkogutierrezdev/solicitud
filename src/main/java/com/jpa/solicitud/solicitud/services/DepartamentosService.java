@@ -20,13 +20,18 @@ public class DepartamentosService {
 
     }
 
-    public boolean existsByDeptoIntAndRutJefe(Long depto,Integer rut){
+    public boolean existsByDeptoIntAndRutJefe(Long depto, Integer rut) {
 
         Departamentos deptoSmc = departamentosRepository.findByDepto(depto);
 
         Long deptoInt = deptoSmc.getDeptoInt();
 
         return departamentosRepository.existsByDeptoIntAndRutJefe(deptoInt, rut);
+    }
+
+    public Departamentos findByDepto(Long depto) {
+
+        return departamentosRepository.findByDepto(depto);
     }
 
 }
