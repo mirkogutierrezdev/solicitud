@@ -119,7 +119,7 @@ public class DerivacionService {
         // Configurar la entidad Derivacion con las entidades relacionadas
         derivacion.setSolicitud(solicitud);
         derivacion.setDepartamento(deptoDestino);
-        derivacion.setEstado(estadoSol);
+       
         derivacion.setFechaDerivacion(fechaDerivacion);
         derivacion.setComentarios("Prueba de derivacion");
         derivacion.setLeida(false);

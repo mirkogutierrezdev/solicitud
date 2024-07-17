@@ -2,6 +2,7 @@ package com.jpa.solicitud.solicitud.services;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,8 +48,9 @@ public class EntradaService {
                 .orElseThrow(() -> new IllegalArgumentException("No se pudo encontrar la última derivación."));
 
         // Obtiene nombre de la base de datos Personas de Smc
+    
         SmcPersona persona = smcService.getPersonaByRut(entradaDto.getRut());
-
+       
         // Crea y persiste Objeto Funcionario con los datos traidos de Smc
         Funcionario funcionario = new Funcionario();
         funcionario.setRut(persona.getRut());
@@ -61,8 +63,14 @@ public class EntradaService {
 
         funcionario = funcionarioRespository.save(funcionario);
 
+        Optional<Entrada> entradaCheck = entradaRepository.findById(ultimaDerivacion.getId());
+        if(entradaCheck.isPresent()){
+            throw new IllegalStateException("Ya existe una entrada para esta derivación.");
+        }
+
         // Crea Y persiste Entrada
         Entrada entrada = new Entrada();
+        
         entrada.setFechaEntrada(entradaDto.getFechaEntrada());
         entrada.setDerivacion(ultimaDerivacion);
         entrada.setFuncionario(funcionario);

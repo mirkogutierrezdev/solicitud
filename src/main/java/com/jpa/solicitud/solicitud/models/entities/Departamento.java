@@ -21,6 +21,11 @@ public class Departamento {
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
+    @Column(name = "deptosmc", nullable = false)
+    private Long deptoSmc;
+
+    
+
     public Long getId() {
         return id;
     }
@@ -43,6 +48,14 @@ public class Departamento {
 
     public void setDepto(Long depto) {
         this.depto = depto;
+    }
+
+    public Long getDeptoSmc() {
+        return deptoSmc;
+    }
+
+    public void setDeptoSmc(Long deptoSmc) {
+        this.deptoSmc = deptoSmc;
     }
 
 }

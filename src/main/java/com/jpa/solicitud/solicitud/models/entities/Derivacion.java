@@ -33,15 +33,15 @@ public class Derivacion {
 
     private Date fechaDerivacion;
 
-    @ManyToOne
-    @JoinColumn(name = "estado_id", nullable = false)
-    private Estado estado;
-
+ 
     @Lob
     private String comentarios;
 
     private Boolean leida;
 
+    private Boolean derivada;
+
+    
     public Long getId() {
         return id;
     }
@@ -82,13 +82,7 @@ public class Derivacion {
         this.fechaDerivacion = fechaDerivacion;
     }
 
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
-    }
+  
 
     public String getComentarios() {
         return comentarios;
@@ -104,6 +98,14 @@ public class Derivacion {
 
     public void setLeida(Boolean leida) {
         this.leida = leida;
+    }
+
+    public Boolean getDerivada() {
+        return derivada;
+    }
+
+    public void setDerivada(Boolean derivada) {
+        this.derivada = derivada;
     }
 
    

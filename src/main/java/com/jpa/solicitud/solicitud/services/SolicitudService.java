@@ -122,6 +122,7 @@ public class SolicitudService {
         Departamentos depto = departamentosRepository.findByDepto(solicitudDto.getDepto());
 
         departamento.setDepto(depto.getDeptoInt());
+        departamento.setDeptoSmc(depto.getDepto());
         departamento.setNombre(depto.getNombre_departamento());
         departamento = departamentoRepository.save(departamento);
 
@@ -131,7 +132,7 @@ public class SolicitudService {
         derivacion.setLeida(false);
         derivacion.setDepartamento(departamento);
         derivacion.setSolicitud(solicitud);
-        derivacion.setEstado(estado);
+      
         derivacion.setComentarios("Prueba de derivacion");
         derivacion.setFuncionario(funcionario);
         derivacionRepository.save(derivacion);

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,12 @@ public class DepartamentosController {
                     .body("{\"error\": \"Error al crear los departamentos: " + e.getMessage() + "\"}");
         }
 
+    }
+
+    @GetMapping("/esjefe/{depto}/{rut}")
+    public boolean existsByDeptoIntAndRutJefe(@PathVariable Long depto, @PathVariable Integer rut){
+
+        return departamentosService.existsByDeptoIntAndRutJefe(depto, rut);
     }
 
 }
