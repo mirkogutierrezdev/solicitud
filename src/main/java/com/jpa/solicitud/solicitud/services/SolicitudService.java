@@ -29,6 +29,7 @@ import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
 import com.jpa.solicitud.solicitud.repositories.ISalidaRepository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
 import com.jpa.solicitud.solicitud.repositories.ITipoSolicitudRepository;
+import com.jpa.solicitud.solicitud.utils.StringUtils;
 
 @Service
 public class SolicitudService {
@@ -76,17 +77,10 @@ public class SolicitudService {
     public Solicitud saveSolicitud(SolicitudDto solicitudDto) {
         // Crear y persistir el funcionario
         SmcPersona persona = smcService.getPersonaByRut(solicitudDto.getRut());
-
-        StringBuilder nombres = new StringBuilder();
-
-        nombres.append(persona.getNombres()).append(" ").append(persona.getApellidopaterno()).append(" ").append(persona.getApellidopaterno());
-
-
-
        
         Funcionario funcionario = new Funcionario();
         funcionario.setRut(solicitudDto.getRut());
-        funcionario.setNombre(nombres.toString());
+        funcionario.setNombre(StringUtils.buildName(persona.getNombres(), persona.getApellidopaterno(), persona.getApellidomaterno()));
         
         funcionario = funcionarioRespository.save(funcionario);
         

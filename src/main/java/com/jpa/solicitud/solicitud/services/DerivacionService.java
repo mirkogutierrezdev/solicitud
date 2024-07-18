@@ -77,22 +77,29 @@ public class DerivacionService {
             throw new EntityNotFoundException("Solicitud no encontrada con ID: " + idSolicitud);
         }
         Solicitud solicitud = solicitudOpt.get();
-    
-        Departamentos deptoSmc = departamentosRepository.findByDepto(depto);
-        Long deptoInt = deptoSmc.getDeptoInt();
+
+
+    //Busca codigo interno en tabla de conversión
+        Departamentos deptoActualSmc = departamentosRepository.findByDepto(depto);
+        Long deptoInt = deptoActualSmc.getDeptoInt();
     
         // Determinar el departamento de destino
-        String strDeptoDestino = DepartamentoUtils.determinaDerivacion(deptoInt);
-        SmcPersona persona = smcService.getPersonaByRut(derivacionDto.getRut());
+
+         String strDeptoDestino = DepartamentoUtils.determinaDerivacion(deptoInt);
+         Long intDepto = Long.parseLong(strDeptoDestino);
     
-        
+        Departamentos deptoDestinoSmc = departamentosRepository.findByDeptoInt(intDepto);
     
         // Crear y configurar la entidad Departamento
+
+
+
+
         Departamento deptoDestino = new Departamento();
-        Long intDepto = Long.parseLong(strDeptoDestino);
-        deptoDestino.setDepto(intDepto);
-        deptoDestino.setDeptoSmc(deptoSmc.getDepto());
-        deptoDestino.setNombre(deptoSmc.getNombre_departamento());
+       
+        deptoDestino.setDepto(deptoDestinoSmc.getDeptoInt());
+        deptoDestino.setDeptoSmc(deptoDestinoSmc.getDepto());
+        deptoDestino.setNombre(deptoDestinoSmc.getNombre_departamento());
     
         // Guardar el departamento
         deptoDestino = departamentoRepository.save(deptoDestino);
@@ -104,6 +111,7 @@ public class DerivacionService {
         estadoSol.setNombre(estado);
     
         // Crear y configurar la entidad Funcionario
+        SmcPersona persona = smcService.getPersonaByRut(derivacionDto.getRut());
         Funcionario funcionario = new Funcionario();
         funcionario.setRut(persona.getRut());
         funcionario.setNombre(
