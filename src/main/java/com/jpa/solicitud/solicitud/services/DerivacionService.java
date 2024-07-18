@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.DerivacionDto;
 import com.jpa.solicitud.solicitud.models.entities.Departamento;
@@ -67,10 +66,10 @@ public class DerivacionService {
         Long idSolicitud = derivacionDto.getIdSolicitud();
         String estado = derivacionDto.getEstado();
         Date fechaDerivacion = derivacionDto.getFechaDerivacion();
-        
+
         // Crear y configurar la entidad Derivacion
         Derivacion derivacion = new Derivacion();
-    
+
         // Buscar la solicitud relacionada
         Optional<Solicitud> solicitudOpt = solicitudRespository.findById(idSolicitud);
         if (!solicitudOpt.isPresent()) {
@@ -78,47 +77,43 @@ public class DerivacionService {
         }
         Solicitud solicitud = solicitudOpt.get();
 
-
-    //Busca codigo interno en tabla de conversión
+        // Busca codigo interno en tabla de conversión
         Departamentos deptoActualSmc = departamentosRepository.findByDepto(depto);
         Long deptoInt = deptoActualSmc.getDeptoInt();
-    
+
         // Determinar el departamento de destino
 
-         String strDeptoDestino = DepartamentoUtils.determinaDerivacion(deptoInt);
-         Long intDepto = Long.parseLong(strDeptoDestino);
-    
+        String strDeptoDestino = DepartamentoUtils.determinaDerivacion(deptoInt);
+        Long intDepto = Long.parseLong(strDeptoDestino);
+
         Departamentos deptoDestinoSmc = departamentosRepository.findByDeptoInt(intDepto);
-    
+
         // Crear y configurar la entidad Departamento
 
-
-
-
         Departamento deptoDestino = new Departamento();
-       
+
         deptoDestino.setDepto(deptoDestinoSmc.getDeptoInt());
         deptoDestino.setDeptoSmc(deptoDestinoSmc.getDepto());
         deptoDestino.setNombre(deptoDestinoSmc.getNombre_departamento());
-    
+
         // Guardar el departamento
         deptoDestino = departamentoRepository.save(deptoDestino);
-    
+
         // Crear y configurar la entidad Estado
         Long codEstado = estadoRepository.findIdByNombre(estado);
         Estado estadoSol = new Estado();
         estadoSol.setId(codEstado);
         estadoSol.setNombre(estado);
-    
+
         // Crear y configurar la entidad Funcionario
         SmcPersona persona = smcService.getPersonaByRut(derivacionDto.getRut());
         Funcionario funcionario = new Funcionario();
         funcionario.setRut(persona.getRut());
         funcionario.setNombre(
-            StringUtils.buildName(persona.getNombres(), persona.getApellidopaterno(), persona.getApellidomaterno())
-        );
+                StringUtils.buildName(persona.getNombres(), persona.getApellidopaterno(),
+                        persona.getApellidomaterno()));
         funcionario = funcionarioRespository.save(funcionario);
-    
+
         // Configurar la entidad Derivacion con las entidades relacionadas
         derivacion.setSolicitud(solicitud);
         derivacion.setDepartamento(deptoDestino);
@@ -126,20 +121,25 @@ public class DerivacionService {
         derivacion.setComentarios("Prueba de derivacion");
         derivacion.setLeida(false);
         derivacion.setFuncionario(funcionario);
-    
+
         // Guardar la derivacion
         derivacion = derivacionRepository.save(derivacion);
-    
+
         // Crear y configurar la entidad Salida
         Salida salida = new Salida();
         salida.setDerivacion(derivacion);
         salida.setFuncionario(funcionario);
         salida.setFechaSalida(derivacionDto.getFechaDerivacion());
         salida = salidaRepository.save(salida);
-    
+
         return derivacion;
     }
-    
-    
+
+    public Optional<Derivacion> findDerivacionById(Long id) {
+        Optional<Derivacion> derivacion = derivacionRepository.findById(id);
+        return Optional.ofNullable(derivacion.orElseThrow(() -> new RuntimeException("Derivacion not found")));
+    }
+
+
 
 }
