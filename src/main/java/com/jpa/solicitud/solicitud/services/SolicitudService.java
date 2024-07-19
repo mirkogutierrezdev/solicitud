@@ -60,14 +60,16 @@ public class SolicitudService {
     @Autowired
     private ISalidaRepository salidaRepository;
 
-    @Autowired SmcService smcService;
+    @Autowired
+    SmcService smcService;
 
     @Autowired
     private IDepartamentosRepository departamentosRepository;
 
-/*     @Autowired
-    private SmcService smcService;
- */
+    /*
+     * @Autowired
+     * private SmcService smcService;
+     */
 
     // *RestTemplate para la api a smc */
     public SolicitudService(RestTemplate restTemplate) {
@@ -77,13 +79,13 @@ public class SolicitudService {
     public Solicitud saveSolicitud(SolicitudDto solicitudDto) {
         // Crear y persistir el funcionario
         SmcPersona persona = smcService.getPersonaByRut(solicitudDto.getRut());
-       
+
         Funcionario funcionario = new Funcionario();
         funcionario.setRut(solicitudDto.getRut());
-        funcionario.setNombre(StringUtils.buildName(persona.getNombres(), persona.getApellidopaterno(), persona.getApellidomaterno()));
-        
+        funcionario.setNombre(StringUtils.buildName(persona.getNombres(), persona.getApellidopaterno(),
+                persona.getApellidomaterno()));
+
         funcionario = funcionarioRespository.save(funcionario);
-        
 
         // Obtener el tipo de solicitud por nombre y lanzar excepción si no se encuentra
         Long idSol = tipoSolicitudRepository.findIdByNombre(solicitudDto.getTipoSolicitud());
@@ -112,7 +114,7 @@ public class SolicitudService {
         solicitud = solicitudRespository.save(solicitud);
 
         Departamento departamento = new Departamento();
-        
+
         Departamentos depto = departamentosRepository.findByDepto(solicitudDto.getDepto());
 
         departamento.setDepto(depto.getDeptoInt());
@@ -126,7 +128,7 @@ public class SolicitudService {
         derivacion.setLeida(false);
         derivacion.setDepartamento(departamento);
         derivacion.setSolicitud(solicitud);
-      
+
         derivacion.setComentarios("Prueba de derivacion");
         derivacion.setFuncionario(funcionario);
         derivacionRepository.save(derivacion);
@@ -138,39 +140,36 @@ public class SolicitudService {
         return solicitudRespository.findAll();
     }
 
-    
-
     public List<SolicitudWithDerivacionesDTO> getSolicitudesWithDerivacionesByDepartamento(Long departamentoId) {
 
         Departamentos departamentos = departamentosRepository.findByDepto(departamentoId);
         // Obtener todas las derivaciones del departamento
         List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoDepto(departamentos.getDeptoInt());
-    
+
         // Obtener todas las solicitudes a partir de las derivaciones
         List<Solicitud> solicitudes = derivaciones.stream()
-                                                  .map(Derivacion::getSolicitud)
-                                                  .distinct()
-                                                  .collect(Collectors.toList());
-    
+                .map(Derivacion::getSolicitud)
+                .distinct()
+                .collect(Collectors.toList());
+
         // Crear el DTO para cada solicitud
         return solicitudes.stream().map(solicitud -> {
             List<Derivacion> derivacionesSolicitud = derivacionRepository.findBySolicitudId(solicitud.getId());
             List<Entrada> entradas = derivacionesSolicitud.stream()
-                                                          .flatMap(derivacion -> entradaRepository.findByDerivacionId(derivacion.getId()).stream())
-                                                          .collect(Collectors.toList());
+                    .flatMap(derivacion -> entradaRepository.findByDerivacionId(derivacion.getId()).stream())
+                    .collect(Collectors.toList());
             List<Salida> salidas = derivacionesSolicitud.stream()
-                                                        .flatMap(derivacion -> salidaRepository.findByDerivacion_Id(derivacion.getId()).stream())
-                                                        .collect(Collectors.toList());
-    
+                    .flatMap(derivacion -> salidaRepository.findByDerivacion_Id(derivacion.getId()).stream())
+                    .collect(Collectors.toList());
+
             SolicitudWithDerivacionesDTO dto = new SolicitudWithDerivacionesDTO();
             dto.setSolicitud(solicitud);
             dto.setDerivaciones(derivacionesSolicitud);
             dto.setEntradas(entradas);
             dto.setSalidas(salidas);
-    
+
             return dto;
         }).collect(Collectors.toList());
     }
 
-    
 }
