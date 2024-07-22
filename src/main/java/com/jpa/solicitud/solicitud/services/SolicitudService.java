@@ -121,7 +121,9 @@ public class SolicitudService {
         solicitud.setFechaInicio(solicitudDto.getFechaInicio());
         solicitud.setFechaFin(solicitudDto.getFechaFin());
         solicitud.setEstado(estado);
+        solicitud.setMotivo(solicitudDto.getMotivo());
         solicitud = solicitudRespository.save(solicitud);
+        
 
         Departamento departamento = new Departamento();
 
@@ -139,7 +141,7 @@ public class SolicitudService {
         derivacion.setDepartamento(departamento);
         derivacion.setSolicitud(solicitud);
 
-        derivacion.setComentarios("Prueba de derivacion");
+        // Obtener el funcionario por rut y lanzar excepción si no se encuentra
         derivacion.setFuncionario(funcionario);
         derivacionRepository.save(derivacion);
 

@@ -13,6 +13,7 @@ public class SolicitudDto {
     private String estado;
     private Date fechaDer;
     private String nombre_departamento;
+    private String motivo;
 
     public SolicitudDto() {
     }
@@ -87,6 +88,14 @@ public class SolicitudDto {
 
     public void setNombre_departamento(String nombre_departamento) {
         this.nombre_departamento = nombre_departamento;
+    }
+
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String comentarios) {
+        this.motivo = comentarios;
     }
 
 }
