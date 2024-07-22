@@ -11,21 +11,25 @@ import org.springframework.web.client.RestTemplate;
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDto;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudWithDerivacionesDTO;
+import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
 import com.jpa.solicitud.solicitud.models.entities.Departamento;
 import com.jpa.solicitud.solicitud.models.entities.Departamentos;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Entrada;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
+import com.jpa.solicitud.solicitud.models.entities.Rechazo;
 import com.jpa.solicitud.solicitud.models.entities.Salida;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.models.entities.TipoSolicitud;
+import com.jpa.solicitud.solicitud.repositories.IAprobacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentoRepository;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentosRepository;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEntradaRepository;
 import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
+import com.jpa.solicitud.solicitud.repositories.IRechazoRepository;
 import com.jpa.solicitud.solicitud.repositories.ISalidaRepository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
 import com.jpa.solicitud.solicitud.repositories.ITipoSolicitudRepository;
@@ -65,6 +69,12 @@ public class SolicitudService {
 
     @Autowired
     private IDepartamentosRepository departamentosRepository;
+
+    @Autowired
+    private IRechazoRepository rechazoRepository;
+
+    @Autowired
+    private IAprobacionRepository aprobacionRepository;
 
     /*
      * @Autowired
@@ -152,6 +162,8 @@ public class SolicitudService {
                 .distinct()
                 .collect(Collectors.toList());
 
+ 
+
         // Crear el DTO para cada solicitud
         return solicitudes.stream().map(solicitud -> {
             List<Derivacion> derivacionesSolicitud = derivacionRepository.findBySolicitudId(solicitud.getId());
@@ -167,6 +179,11 @@ public class SolicitudService {
             dto.setDerivaciones(derivacionesSolicitud);
             dto.setEntradas(entradas);
             dto.setSalidas(salidas);
+
+            Rechazo rechazo = rechazoRepository.findBySolicitudId(solicitud.getId());
+            Aprobacion aprobacion = aprobacionRepository.findBySolicitudId(solicitud.getId());
+            dto.setRechazo(rechazo);
+            dto.setAprobacion(aprobacion);
 
             return dto;
         }).collect(Collectors.toList());

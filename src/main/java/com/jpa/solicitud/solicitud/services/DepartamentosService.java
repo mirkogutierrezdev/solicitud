@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.models.entities.Departamentos;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentosRepository;
+import com.jpa.solicitud.solicitud.utils.DepartamentoUtils;
 
 @Service
 public class DepartamentosService {
@@ -32,6 +33,23 @@ public class DepartamentosService {
     public Departamentos findByDepto(Long depto) {
 
         return departamentosRepository.findByDepto(depto);
+    }
+
+    public boolean esSub(Long depto) {
+
+        Departamentos departamentos = departamentosRepository.findByDepto(depto);
+        Long deptos = departamentos.getDeptoInt();
+        String deptoInt = deptos.toString();
+
+    System.out.println(deptoInt);
+
+        boolean esSub = DepartamentoUtils.esSubdir(deptoInt);
+
+    
+
+        return esSub;
+   
+   
     }
 
 }

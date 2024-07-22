@@ -7,4 +7,5 @@ import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
 @Repository
 public interface IAprobacionRepository extends JpaRepository<Aprobacion, Long> {
 	// Puedes agregar métodos de consulta personalizados aquí si es necesario
+	Aprobacion findBySolicitudId(Long idSolicitud);
 }

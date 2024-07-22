@@ -41,14 +41,19 @@ public class DepartamentosController {
     }
 
     @GetMapping("/esjefe/{depto}/{rut}")
-    public boolean existsByDeptoIntAndRutJefe(@PathVariable Long depto, @PathVariable Integer rut){
+    public boolean existsByDeptoIntAndRutJefe(@PathVariable Long depto, @PathVariable Integer rut) {
 
         return departamentosService.existsByDeptoIntAndRutJefe(depto, rut);
     }
 
     @GetMapping("/buscar/{depto}")
-    public Departamentos findByDepto(@PathVariable Long depto){
+    public Departamentos findByDepto(@PathVariable Long depto) {
         return departamentosService.findByDepto(depto);
     }
 
+    @GetMapping("/esSub/{depto}")
+    public boolean esSubdir(@PathVariable Long depto) {
+        return departamentosService.esSub(depto);
+
+    }
 }

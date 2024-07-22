@@ -4,42 +4,46 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
-import com.jpa.solicitud.solicitud.models.dto.AprobacionDto;
-import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
+import com.jpa.solicitud.solicitud.models.dto.RechazoDto;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
+import com.jpa.solicitud.solicitud.models.entities.Rechazo;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
-import com.jpa.solicitud.solicitud.repositories.IAprobacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
+import com.jpa.solicitud.solicitud.repositories.IRechazoRepository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
 import com.jpa.solicitud.solicitud.utils.StringUtils;
 
 @Service
-public class AprobacionService {
-
-    @Autowired
-    private IAprobacionRepository aprobacionRepository;
-
-    @Autowired
-    private IFuncionarioRespository funcionarioRepository;
+public class RechazoService {
 
     @Autowired
     private SmcService smcService;
 
     @Autowired
+    private IFuncionarioRespository funcionarioRepository;
+
+    @Autowired  
     private ISolicitudRespository solicitudRepository;
 
-    @Autowired
+    @Autowired 
     private IEstadoRepository estadoRepository;
 
-    public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
+    @Autowired
+    private IRechazoRepository rechazoRepository;
 
-        if (aprobacionDto == null) {
+
+    public Rechazo saveRechazo(RechazoDto rechazoDto  ) {
+
+                
+
+        
+        if (rechazoDto == null) {
             throw new IllegalArgumentException("El objeto AprobacionDto no puede ser null");
         }
 
-        Integer rut = aprobacionDto.getRutFuncionario();
+        Integer rut = rechazoDto.getRutFuncionario();
         SmcPersona persona = smcService.getPersonaByRut(rut);
         if (persona == null) {
             throw new IllegalArgumentException("No se encontró un funcionario con el RUT proporcionado");
@@ -52,12 +56,12 @@ public class AprobacionService {
                         persona.getApellidomaterno()));
         funcionario = funcionarioRepository.save(funcionario); // Guardar el funcionario antes de asignarlo
 
-        Solicitud solicitud = solicitudRepository.findById(aprobacionDto.getIdSolicitud()).orElse(null);
+        Solicitud solicitud = solicitudRepository.findById(rechazoDto.getIdSolicitud()).orElse(null);
         if (solicitud == null) {
             throw new IllegalArgumentException("No se encontró una solicitud con el ID proporcionado");
         }
 
-        String estadoDto = aprobacionDto.getEstado();
+        String estadoDto = rechazoDto.getEstado();
 
         Long codEstado = estadoRepository.findIdByNombre(estadoDto);
 
@@ -68,12 +72,17 @@ public class AprobacionService {
 
         solicitud.setEstado(estado);
 
-        Aprobacion aprobacion = new Aprobacion();
-        aprobacion.setFuncionario(funcionario); // Asignar el funcionario guardado
-        aprobacion.setSolicitud(solicitud);
-        aprobacion.setFechaAprobacion(aprobacionDto.getFechaAprobacion());
+        Rechazo rechazo = new Rechazo();
+        rechazo.setFuncionario(funcionario); // Asignar el funcionario guardado
+        rechazo.setSolicitud(solicitud);
+        rechazo.setFechaRechazo(rechazoDto.getFechaRechazo());
 
         // Guardar el objeto Aprobacion en el repositorio
-        return aprobacionRepository.save(aprobacion);
-    }
+        return rechazoRepository.save(rechazo);
+       
+
+    }   
+
+
+
 }

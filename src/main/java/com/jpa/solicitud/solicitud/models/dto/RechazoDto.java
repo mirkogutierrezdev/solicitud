@@ -2,17 +2,17 @@ package com.jpa.solicitud.solicitud.models.dto;
 
 import java.sql.Date;
 
-public class AprobacionDto {
+public class RechazoDto {
 	private Long idSolicitud;
 	private Integer rutFuncionario;
-	private Date fechaAprobacion;
+	private Date fechaRechazo;
 	private String estado;
 
 	// Constructor
-	public AprobacionDto(Long idSolicitud, Integer rutFuncionario, Date fechaAprobacion) {
+	public RechazoDto(Long idSolicitud, Integer rutFuncionario, Date fechaAprobacion) {
 		this.idSolicitud = idSolicitud;
 		this.rutFuncionario = rutFuncionario;
-		this.fechaAprobacion = fechaAprobacion;
+		this.fechaRechazo = fechaAprobacion;
 	}
 
 	// Getters and Setters
@@ -32,12 +32,12 @@ public class AprobacionDto {
 		this.rutFuncionario = rutFuncionario;
 	}
 
-	public Date getFechaAprobacion() {
-		return fechaAprobacion;
+	public Date getFechaRechazo() {
+		return fechaRechazo;
 	}
 
-	public void setFechaAprobacion(Date fechaAprobacion) {
-		this.fechaAprobacion = fechaAprobacion;
+	public void setFechaRechazo(Date fechaAprobacion) {
+		this.fechaRechazo = fechaAprobacion;
 	}
 
 	public String getEstado() {

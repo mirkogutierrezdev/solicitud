@@ -33,33 +33,27 @@ public class DepartamentoUtils {
     public static boolean esOficina(String codigo) {
         return !esSeccion(codigo) && !esDepartamento(codigo) && !esDireccion(codigo);
     }
-    
-
-
 
     public static String determinaDerivacion(Long depto) {
 
-        
         String codigo = depto.toString();
 
-        
         if (DepartamentoUtils.esSubdir(codigo)) {
-            return codigo.substring(0,2).concat("00000000");
+            return codigo.substring(0, 2).concat("00000000");
         }
-    
-    
+
         if (DepartamentoUtils.esDepartamento(codigo)) {
-            return codigo.substring(0,4).concat("000000");
+            return codigo.substring(0, 4).concat("000000");
         }
-    
+
         if (DepartamentoUtils.esSeccion(codigo)) {
-            return codigo.substring(0,6).concat("0000");
+            return codigo.substring(0, 6).concat("0000");
         }
-    
+
         if (DepartamentoUtils.esOficina(codigo)) {
-            return codigo.substring(0,8).concat("00");
+            return codigo.substring(0, 8).concat("00");
         }
-    
+
         return codigo;
     }
 }

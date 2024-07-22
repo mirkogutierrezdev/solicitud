@@ -2,8 +2,10 @@ package com.jpa.solicitud.solicitud.models.dto;
 
 
 
+import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Entrada;
+import com.jpa.solicitud.solicitud.models.entities.Rechazo;
 import com.jpa.solicitud.solicitud.models.entities.Salida;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 
@@ -15,6 +17,8 @@ public class SolicitudWithDerivacionesDTO {
     private List<Derivacion> derivaciones;
     private List<Entrada> entradas;
     private List<Salida> salidas;
+    private Rechazo rechazo;
+    private Aprobacion aprobacion;
 
     // Getters y setters
 
@@ -49,4 +53,22 @@ public class SolicitudWithDerivacionesDTO {
     public void setSalidas(List<Salida> salidas) {
         this.salidas = salidas;
     }
+
+    public Rechazo getRechazo() {
+        return rechazo;
+    }
+
+    public void setRechazo(Rechazo rechazo) {
+        this.rechazo = rechazo;
+    }
+
+    public Aprobacion getAprobacion() {
+        return aprobacion;
+    }
+
+    public void setAprobacion(Aprobacion aprobacion) {
+        this.aprobacion = aprobacion;
+    }
+
+    
 }
