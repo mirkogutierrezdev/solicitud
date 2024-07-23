@@ -28,4 +28,16 @@ public class AprobacionController {
 		}
 	}
 
+    @GetMapping("bySolicitud/{solicitudId}")
+	public ResponseEntity<?> ctrlGetAprobacionBySolicitud(@PathVariable Long solicitudId){
+		try{
+			Aprobacion nuevAprobacion = aprobacionService.servGetAprobacionBySolicitud(solicitudId);
+			return ResponseEntity.ok(nuevAprobacion);
+		}catch (Exception e){
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+		.body("Error al leer la aprobacion " +  e.getMessage());
+	}
+
+	}
+
 }

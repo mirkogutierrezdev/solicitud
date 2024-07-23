@@ -1,15 +1,20 @@
 package com.jpa.solicitud.solicitud.services;
 
+import java.util.Comparator;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.AprobacionDto;
 import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
+import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.repositories.IAprobacionRepository;
+import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
@@ -32,6 +37,9 @@ public class AprobacionService {
 
     @Autowired
     private IEstadoRepository estadoRepository;
+
+    @Autowired
+    private IDerivacionRepository derivacionRepository;
 
     public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
 
@@ -57,6 +65,18 @@ public class AprobacionService {
             throw new IllegalArgumentException("No se encontró una solicitud con el ID proporcionado");
         }
 
+        List<Derivacion> derivaciones = derivacionRepository.findBySolicitudId(solicitud.getId());
+
+        if (derivaciones.isEmpty()) {
+            throw new IllegalArgumentException("No hay derivaciones asociadas a la solicitud proporcionada.");
+        }
+
+        Derivacion ultimaDerivacion = derivaciones.stream()
+                .max(Comparator.comparing(Derivacion::getId))
+                .orElseThrow(() -> new IllegalArgumentException("No se pudo encontrar la última derivación."));
+
+        ultimaDerivacion.setLeida(true);
+
         String estadoDto = aprobacionDto.getEstado();
 
         Long codEstado = estadoRepository.findIdByNombre(estadoDto);
@@ -75,5 +95,11 @@ public class AprobacionService {
 
         // Guardar el objeto Aprobacion en el repositorio
         return aprobacionRepository.save(aprobacion);
+    }
+
+
+    public Aprobacion servGetAprobacionBySolicitud(Long solicitudId){
+
+        return aprobacionRepository.findBySolicitudId(solicitudId);
     }
 }

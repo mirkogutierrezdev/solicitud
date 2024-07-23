@@ -24,21 +24,17 @@ public class RechazoService {
     @Autowired
     private IFuncionarioRespository funcionarioRepository;
 
-    @Autowired  
+    @Autowired
     private ISolicitudRespository solicitudRepository;
 
-    @Autowired 
+    @Autowired
     private IEstadoRepository estadoRepository;
 
     @Autowired
     private IRechazoRepository rechazoRepository;
 
+    public Rechazo saveRechazo(RechazoDto rechazoDto) {
 
-    public Rechazo saveRechazo(RechazoDto rechazoDto  ) {
-
-                
-
-        
         if (rechazoDto == null) {
             throw new IllegalArgumentException("El objeto AprobacionDto no puede ser null");
         }
@@ -79,10 +75,12 @@ public class RechazoService {
 
         // Guardar el objeto Aprobacion en el repositorio
         return rechazoRepository.save(rechazo);
-       
 
-    }   
+    }
 
+    public Rechazo servGetRechazoBySolicitud(Long solicitudId){
 
+        return rechazoRepository.findBySolicitudId(solicitudId);
+    }
 
 }

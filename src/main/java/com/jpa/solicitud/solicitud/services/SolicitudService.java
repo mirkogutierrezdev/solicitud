@@ -123,7 +123,6 @@ public class SolicitudService {
         solicitud.setEstado(estado);
         solicitud.setMotivo(solicitudDto.getMotivo());
         solicitud = solicitudRespository.save(solicitud);
-        
 
         Departamento departamento = new Departamento();
 
@@ -164,8 +163,6 @@ public class SolicitudService {
                 .distinct()
                 .collect(Collectors.toList());
 
- 
-
         // Crear el DTO para cada solicitud
         return solicitudes.stream().map(solicitud -> {
             List<Derivacion> derivacionesSolicitud = derivacionRepository.findBySolicitudId(solicitud.getId());
@@ -191,4 +188,8 @@ public class SolicitudService {
         }).collect(Collectors.toList());
     }
 
+    public List<Solicitud> servGetSolicitudesPorFuncionario(Integer rut) {
+
+        return solicitudRespository.findByFuncionarioRut(rut);
+    }
 }

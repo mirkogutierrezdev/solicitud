@@ -47,9 +47,22 @@ public class SolicitudControllers {
         return solicitudService.findAll();
     }
 
-
     @GetMapping("/departamento/{departamentoId}")
-    public List<SolicitudWithDerivacionesDTO> getSolicitudesWithDerivacionesByDepartamento(@PathVariable Long departamentoId) {
+    public List<SolicitudWithDerivacionesDTO> getSolicitudesWithDerivacionesByDepartamento(
+            @PathVariable Long departamentoId) {
         return solicitudService.getSolicitudesWithDerivacionesByDepartamento(departamentoId);
     }
+
+
+    @GetMapping("/byRut/{rut}")
+    public ResponseEntity<?> getSolicitudesByFuncionario(@PathVariable Integer rut) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(solicitudService.servGetSolicitudesPorFuncionario(rut));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Error al obtener las solicitudes: " + e.getMessage() + "\"}");
+        }
+    }
+   
+    
 }
