@@ -72,6 +72,7 @@ public class RechazoService {
         rechazo.setFuncionario(funcionario); // Asignar el funcionario guardado
         rechazo.setSolicitud(solicitud);
         rechazo.setFechaRechazo(rechazoDto.getFechaRechazo());
+        rechazo.setComentario(rechazoDto.getMotivo());
 
         // Guardar el objeto Aprobacion en el repositorio
         return rechazoRepository.save(rechazo);

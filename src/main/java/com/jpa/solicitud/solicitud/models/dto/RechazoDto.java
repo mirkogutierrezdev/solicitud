@@ -7,6 +7,7 @@ public class RechazoDto {
 	private Integer rutFuncionario;
 	private Date fechaRechazo;
 	private String estado;
+	private String motivo;
 
 	// Constructor
 	public RechazoDto(Long idSolicitud, Integer rutFuncionario, Date fechaAprobacion) {
@@ -46,6 +47,14 @@ public class RechazoDto {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+
+	public String getMotivo() {
+		return motivo;
+	}
+
+	public void setMotivo(String motivo) {
+		this.motivo = motivo;
 	}
 
 
