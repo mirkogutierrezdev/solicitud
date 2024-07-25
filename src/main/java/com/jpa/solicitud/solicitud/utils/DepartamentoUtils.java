@@ -2,6 +2,8 @@ package com.jpa.solicitud.solicitud.utils;
 
 public class DepartamentoUtils {
 
+
+
     public static String obtenerDireccion(String codigo) {
         return codigo.substring(0, 2) + "000000";
     }

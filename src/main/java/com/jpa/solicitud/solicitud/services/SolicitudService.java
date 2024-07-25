@@ -33,6 +33,7 @@ import com.jpa.solicitud.solicitud.repositories.IRechazoRepository;
 import com.jpa.solicitud.solicitud.repositories.ISalidaRepository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
 import com.jpa.solicitud.solicitud.repositories.ITipoSolicitudRepository;
+import com.jpa.solicitud.solicitud.utils.DepartamentoUtils;
 import com.jpa.solicitud.solicitud.utils.StringUtils;
 
 @Service
@@ -87,31 +88,22 @@ public class SolicitudService {
 
     @Transactional
     public Solicitud saveSolicitud(SolicitudDto solicitudDto) {
+        // Validar los campos necesarios en solicitudDto
+        validarSolicitudDto(solicitudDto);
+
         // Crear y persistir el funcionario
         SmcPersona persona = smcService.getPersonaByRut(solicitudDto.getRut());
-
         Funcionario funcionario = new Funcionario();
         funcionario.setRut(solicitudDto.getRut());
         funcionario.setNombre(StringUtils.buildName(persona.getNombres(), persona.getApellidopaterno(),
                 persona.getApellidomaterno()));
-
         funcionario = funcionarioRespository.save(funcionario);
 
-        // Obtener el tipo de solicitud por nombre y lanzar excepción si no se encuentra
-        Long idSol = tipoSolicitudRepository.findIdByNombre(solicitudDto.getTipoSolicitud());
-        if (idSol == null) {
-            throw new IllegalArgumentException("Tipo de solicitud no encontrado");
-        }
-        TipoSolicitud tipoSol = tipoSolicitudRepository.findById(idSol)
-                .orElseThrow(() -> new IllegalArgumentException("Tipo de solicitud no encontrado"));
+        // Obtener el tipo de solicitud
+        TipoSolicitud tipoSol = obtenerTipoSolicitud(solicitudDto.getTipoSolicitud());
 
-        // Obtener el estado por nombre y lanzar excepción si no se encuentra
-        Long idEstado = estadoRepository.findIdByNombre(solicitudDto.getEstado());
-        if (idEstado == null) {
-            throw new IllegalArgumentException("Estado no encontrado");
-        }
-        Estado estado = estadoRepository.findById(idEstado)
-                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado"));
+        // Obtener el estado
+        Estado estado = obtenerEstado(solicitudDto.getEstado());
 
         // Crear y persistir la solicitud
         Solicitud solicitud = new Solicitud();
@@ -124,27 +116,73 @@ public class SolicitudService {
         solicitud.setMotivo(solicitudDto.getMotivo());
         solicitud = solicitudRespository.save(solicitud);
 
-        Departamento departamento = new Departamento();
-
-        Departamentos depto = departamentosRepository.findByDepto(solicitudDto.getDepto());
-
-        departamento.setDepto(depto.getDeptoInt());
-        departamento.setDeptoSmc(depto.getDepto());
-        departamento.setNombre(depto.getNombre_departamento());
-        departamento = departamentoRepository.save(departamento);
-
         // Crear y persistir la derivación
-        Derivacion derivacion = new Derivacion();
-        derivacion.setFechaDerivacion(solicitudDto.getFechaDer());
-        derivacion.setLeida(false);
-        derivacion.setDepartamento(departamento);
-        derivacion.setSolicitud(solicitud);
-
-        // Obtener el funcionario por rut y lanzar excepción si no se encuentra
-        derivacion.setFuncionario(funcionario);
+        Derivacion derivacion = crearDerivacion(solicitudDto, funcionario, solicitud);
         derivacionRepository.save(derivacion);
 
         return solicitud;
+    }
+
+    private void validarSolicitudDto(SolicitudDto solicitudDto) {
+        if (solicitudDto == null) {
+            throw new IllegalArgumentException("El DTO de solicitud no puede ser nulo");
+        }
+        // Realizar otras validaciones necesarias
+    }
+
+    private TipoSolicitud obtenerTipoSolicitud(String nombreTipoSolicitud) {
+        Long idSol = tipoSolicitudRepository.findIdByNombre(nombreTipoSolicitud);
+        if (idSol == null) {
+            throw new IllegalArgumentException("Tipo de solicitud no encontrado");
+        }
+        return tipoSolicitudRepository.findById(idSol)
+                .orElseThrow(() -> new IllegalArgumentException("Tipo de solicitud no encontrado"));
+    }
+
+    private Estado obtenerEstado(String nombreEstado) {
+        Long idEstado = estadoRepository.findIdByNombre(nombreEstado);
+        if (idEstado == null) {
+            throw new IllegalArgumentException("Estado no encontrado");
+        }
+        return estadoRepository.findById(idEstado)
+                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado"));
+    }
+
+    private Derivacion crearDerivacion(SolicitudDto solicitudDto, Funcionario funcionario, Solicitud solicitud) {
+        Departamento departamentoSolicitud = new Departamento();
+        Departamentos departamentoRequest = departamentosRepository.findByDepto(solicitudDto.getDepto());
+    
+        boolean esJefe = departamentosRepository.existsByDeptoIntAndRutJefe(departamentoRequest.getDeptoInt(),
+                solicitudDto.getRut());
+        if (esJefe) {
+            Long codigoDepartamentoDestino = Long
+                    .parseLong(DepartamentoUtils.determinaDerivacion(departamentoRequest.getDeptoInt()));
+    
+            Departamentos departmentSupervisor = departamentosRepository.findByDeptoInt(codigoDepartamentoDestino);
+            if (departmentSupervisor == null) {
+                throw new IllegalArgumentException("No se encontró el departamento supervisor para el código: " + codigoDepartamentoDestino);
+            }
+    
+            departamentoSolicitud.setDepto(departmentSupervisor.getDeptoInt());
+            departamentoSolicitud.setDeptoSmc(departmentSupervisor.getDepto());
+            departamentoSolicitud.setNombre(departmentSupervisor.getNombre_departamento());
+        } else {
+            departamentoSolicitud.setDepto(departamentoRequest.getDeptoInt());
+            departamentoSolicitud.setDeptoSmc(departamentoRequest.getDepto());
+            departamentoSolicitud.setNombre(departamentoRequest.getNombre_departamento());
+        }
+    
+        // Guardar el departamento antes de asociarlo a la derivación
+        departamentoSolicitud = departamentoRepository.save(departamentoSolicitud);
+    
+        Derivacion derivacion = new Derivacion();
+        derivacion.setFechaDerivacion(solicitudDto.getFechaDer());
+        derivacion.setLeida(false);
+        derivacion.setDepartamento(departamentoSolicitud);
+        derivacion.setSolicitud(solicitud);
+        derivacion.setFuncionario(funcionario);
+    
+        return derivacion;
     }
 
     public List<Solicitud> findAll() {
