@@ -1,7 +1,7 @@
 package com.jpa.solicitud.solicitud.services;
 
 import java.io.ByteArrayInputStream;
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,24 +20,32 @@ public class PdfService {
     @Autowired
     private ISolicitudRespository solicitudRepository;
 
-    public ByteArrayInputStream generatePdf() {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PdfWriter writer = new PdfWriter(out);
-        PdfDocument pdfDoc = new PdfDocument(writer);
-        Document document = new Document(pdfDoc);
+    public ByteArrayInputStream generatePdf(Long solicitudId) {
 
-        // Obtener las solicitudes de la base de datos
-        List<Solicitud> solicitudes = solicitudRepository.findAll();
+        Optional<Solicitud> solicitud = solicitudRepository.findById(solicitudId);
 
-        // Añadir contenido al documento
-        for (Solicitud solicitud : solicitudes) {
-            document.add(new Paragraph("Solicitud ID: " + solicitud.getId()));
-            document.add(new Paragraph("Nombre: " + solicitud.getMotivo()));
-        
-            document.add(new Paragraph("\n"));
+        if(solicitud.isPresent()){
+            Solicitud solicitudData = solicitud.get();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PdfWriter writer = new PdfWriter(out);
+            PdfDocument pdfDoc = new PdfDocument(writer);
+            Document document = new Document(pdfDoc);
+
+            document.add(new Paragraph("Solicitud ID: " + solicitudData.getId()));
+            document.add(new Paragraph("Motivo: " + solicitudData.getMotivo()));
+            document.add(new Paragraph("Fecha de inicio: " + solicitudData.getFechaInicio()));
+            document.add(new Paragraph("Fecha de término: " + solicitudData.getFechaFin()));
+            document.add(new Paragraph("Estado: " + solicitudData.getEstado().getNombre()));
+            document.add(new Paragraph("Funcionario: " + solicitudData.getFuncionario().getNombre()));
+            document.add(new Paragraph("Tipo de Solicitud: " + solicitudData.getTipoSolicitud().getNombre()));
+
+
+            document.close();
+            return new ByteArrayInputStream(out.toByteArray());
+        } else {
+            return null;
         }
 
-        document.close();
-        return new ByteArrayInputStream(out.toByteArray());
+
     }
 }
