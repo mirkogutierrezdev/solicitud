@@ -24,7 +24,7 @@ public class PdfService {
 
         Optional<Solicitud> solicitud = solicitudRepository.findById(solicitudId);
 
-        if(solicitud.isPresent()){
+        if (solicitud.isPresent()) {
             Solicitud solicitudData = solicitud.get();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             PdfWriter writer = new PdfWriter(out);
@@ -37,15 +37,14 @@ public class PdfService {
             document.add(new Paragraph("Fecha de término: " + solicitudData.getFechaFin()));
             document.add(new Paragraph("Estado: " + solicitudData.getEstado().getNombre()));
             document.add(new Paragraph("Funcionario: " + solicitudData.getFuncionario().getNombre()));
+            document.add(new Paragraph("Funcionario: " + solicitudData.getFuncionario().getRut()));
             document.add(new Paragraph("Tipo de Solicitud: " + solicitudData.getTipoSolicitud().getNombre()));
-
 
             document.close();
             return new ByteArrayInputStream(out.toByteArray());
         } else {
             return null;
         }
-
 
     }
 }
