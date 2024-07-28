@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -25,6 +26,11 @@ public class Aprobacion {
 	@ManyToOne
 	@JoinColumn(name = "funcionario_id", nullable = false)
 	private Funcionario funcionario;
+
+	@Lob
+    private byte[] pdf;
+
+
 
 	private Date fechaAprobacion;
 
@@ -70,5 +76,13 @@ public class Aprobacion {
 
 	public void setComentario(String comentario) {
 		this.comentario = comentario;
+	}
+
+	public byte[] getPdf() {
+		return pdf;
+	}
+
+	public void setPdf(byte[] pdf) {
+		this.pdf = pdf;
 	}
 }

@@ -1,13 +1,20 @@
 package com.jpa.solicitud.solicitud.services;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.jpa.solicitud.solicitud.apimodels.SmcFuncionario;
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.AprobacionDto;
+import com.jpa.solicitud.solicitud.models.dto.PdfDto;
 import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
@@ -41,8 +48,11 @@ public class AprobacionService {
     @Autowired
     private IDerivacionRepository derivacionRepository;
 
-    public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
+    @Autowired
+    private JsonService jsonService;
 
+    @Transactional
+    public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) throws Exception {
         if (aprobacionDto == null) {
             throw new IllegalArgumentException("El objeto AprobacionDto no puede ser null");
         }
@@ -93,13 +103,66 @@ public class AprobacionService {
         aprobacion.setSolicitud(solicitud);
         aprobacion.setFechaAprobacion(aprobacionDto.getFechaAprobacion());
 
+        // Generar el PDF y guardar en la base de datos
+        byte[] pdfBytes = preparePdf(solicitud);
+        aprobacion.setPdf(pdfBytes);
+
         // Guardar el objeto Aprobacion en el repositorio
         return aprobacionRepository.save(aprobacion);
     }
 
-
-    public Aprobacion servGetAprobacionBySolicitud(Long solicitudId){
-
+    public Aprobacion servGetAprobacionBySolicitud(Long solicitudId) {
         return aprobacionRepository.findBySolicitudId(solicitudId);
+    }
+
+    public Solicitud servGetSolicitudById(Long solicitudId) {
+        return solicitudRepository.findById(solicitudId).orElse(null);
+    }
+
+    public byte[] preparePdf(Solicitud solicitud) throws Exception {
+        Date sqlFechaInicio = solicitud.getFechaInicio();
+        Date sqlFechaTermino = solicitud.getFechaFin();
+
+        // Convertir java.sql.Date a java.time.LocalDate
+        LocalDate fechaInicio = sqlFechaInicio.toLocalDate();
+        LocalDate fechaTermino = sqlFechaTermino.toLocalDate();
+
+        Integer rut = solicitud.getFuncionario().getRut();
+        SmcFuncionario funcionario = smcService.getFuncionarioByRut(rut);
+        SmcPersona persona = smcService.getPersonaByRut(rut);
+
+        String departamento = funcionario.getDepartamento().getNombre_departamento();
+        String escalafon = funcionario.getContrato().getEscalafon();
+        Integer grado = funcionario.getContrato().getGrado();
+
+        // Obtener el día y mes inicial
+        String diaInicio = String.valueOf(fechaInicio.getDayOfMonth());
+        String mesInicio = fechaInicio.getMonth().getDisplayName(TextStyle.FULL,
+                new Locale.Builder().setLanguage("es").setRegion("ES").build());
+
+        // Obtener el día y mes final
+        String diaFin = String.valueOf(fechaTermino.getDayOfMonth());
+        String mesFin = fechaTermino.getMonth().getDisplayName(TextStyle.FULL,
+                new Locale.Builder().setLanguage("es").setRegion("ES").build());
+
+        PdfDto pdfDto = new PdfDto();
+        pdfDto.setNroIniDia(diaInicio);
+        pdfDto.setMesIni(mesInicio);
+        pdfDto.setNroFinDia(diaFin);
+        pdfDto.setMesFin(mesFin);
+        pdfDto.setRut(String.valueOf(rut));
+        pdfDto.setFono("123456789");
+        pdfDto.setDiasTomados("5");
+        pdfDto.setPaterno(persona.getApellidopaterno());
+        pdfDto.setMaterno(persona.getApellidomaterno());
+        pdfDto.setNombres(persona.getNombres());
+
+        pdfDto.setEscalafon(escalafon);
+        pdfDto.setGrado(String.valueOf(grado));
+        pdfDto.setDepto(departamento);
+
+        // Aquí puedes continuar con la lógica de generación de PDF usando estos valores
+
+        return jsonService.generateReport(pdfDto); // Llamar al servicio de generación de PDF
     }
 }
