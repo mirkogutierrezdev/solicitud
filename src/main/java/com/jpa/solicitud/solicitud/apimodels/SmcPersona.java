@@ -10,6 +10,7 @@ public class SmcPersona {
     private String apellidopaterno;
     private String apellidomaterno;
     private Date fecha_nac;
+    private Integer telefono;
 
     public Integer getRut() {
         return rut;
@@ -57,5 +58,13 @@ public class SmcPersona {
 
     public void setFecha_nac(Date fecha_nac) {
         this.fecha_nac = fecha_nac;
+    }
+
+    public Integer getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(Integer telefono) {
+        this.telefono = telefono;
     }
 }

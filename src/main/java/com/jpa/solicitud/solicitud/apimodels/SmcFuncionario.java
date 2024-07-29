@@ -8,7 +8,7 @@ public class SmcFuncionario extends SmcPersona {
     private SmcDepartamento departamento;
     private SmcContrato contrato;
     private List<SmcAusencia> ausencias;
-    private List<SmcFeriado> feriados;
+    private List<SmcFeriados> feriados;
     private List<SmcLicencia> licencias;
     private SmcDiasAdm diasAdm;
 
@@ -48,11 +48,11 @@ public class SmcFuncionario extends SmcPersona {
         this.ausencias = ausencias;
     }
 
-    public List<SmcFeriado> getFeriados() {
+    public List<SmcFeriados> getFeriados() {
         return feriados;
     }
 
-    public void setFeriados(List<SmcFeriado> feriados) {
+    public void setFeriados(List<SmcFeriados> feriados) {
         this.feriados = feriados;
     }
 

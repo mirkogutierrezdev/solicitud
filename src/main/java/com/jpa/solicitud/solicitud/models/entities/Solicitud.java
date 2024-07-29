@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -33,8 +32,7 @@ public class Solicitud {
 
     private Date fechaFin;
 
-    @Lob
-    private String motivo;
+
 
     @ManyToOne
     @JoinColumn(name = "estado_id", nullable = false)
@@ -86,14 +84,6 @@ public class Solicitud {
 
     public void setFechaFin(Date fechaFin2) {
         this.fechaFin = fechaFin2;
-    }
-
-    public String getMotivo() {
-        return motivo;
-    }
-
-    public void setMotivo(String motivo) {
-        this.motivo = motivo;
     }
 
     public Estado getEstado() {

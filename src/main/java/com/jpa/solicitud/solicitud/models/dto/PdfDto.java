@@ -14,6 +14,8 @@ public class PdfDto {
     private String escalafon;
     private String grado;
     private String diasTomados;
+    private String vrut;
+    private String telefono;
 
     public String getDiasTomados() {
         return diasTomados;
@@ -118,5 +120,22 @@ public class PdfDto {
     public void setGrado(String grado) {
         this.grado = grado;
     }
+
+    public String getVrut() {
+        return vrut;
+    }
+
+    public void setVrut(String vrut) {
+        this.vrut = vrut;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }   
+    
 
 }

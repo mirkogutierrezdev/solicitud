@@ -113,7 +113,7 @@ public class SolicitudService {
         solicitud.setFechaInicio(solicitudDto.getFechaInicio());
         solicitud.setFechaFin(solicitudDto.getFechaFin());
         solicitud.setEstado(estado);
-        solicitud.setMotivo(solicitudDto.getMotivo());
+        
         solicitud = solicitudRespository.save(solicitud);
 
         // Crear y persistir la derivación

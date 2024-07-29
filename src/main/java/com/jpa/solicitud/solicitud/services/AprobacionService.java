@@ -127,6 +127,7 @@ public class AprobacionService {
         LocalDate fechaInicio = sqlFechaInicio.toLocalDate();
         LocalDate fechaTermino = sqlFechaTermino.toLocalDate();
 
+        
         Integer rut = solicitud.getFuncionario().getRut();
         SmcFuncionario funcionario = smcService.getFuncionarioByRut(rut);
         SmcPersona persona = smcService.getPersonaByRut(rut);
@@ -151,7 +152,8 @@ public class AprobacionService {
         pdfDto.setNroFinDia(diaFin);
         pdfDto.setMesFin(mesFin);
         pdfDto.setRut(String.valueOf(rut));
-        pdfDto.setFono("123456789");
+        pdfDto.setVrut(persona.getVrut());
+        pdfDto.setTelefono(Integer.toString(persona.getTelefono()));
         pdfDto.setDiasTomados("5");
         pdfDto.setPaterno(persona.getApellidopaterno());
         pdfDto.setMaterno(persona.getApellidomaterno());

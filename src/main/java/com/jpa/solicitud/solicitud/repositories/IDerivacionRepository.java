@@ -62,6 +62,7 @@ public interface IDerivacionRepository extends JpaRepository<Derivacion, Long> {
         List<Derivacion> findBySolicitudId(Long solicitudId);
 
   
+       @SuppressWarnings("null")
        Optional<Derivacion> findById(Long id);
 
 }

@@ -1,10 +1,18 @@
 package com.jpa.solicitud.solicitud.services;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+
 import com.jpa.solicitud.solicitud.apimodels.SmcDepartamento;
+import com.jpa.solicitud.solicitud.apimodels.SmcFeriado;
 import com.jpa.solicitud.solicitud.apimodels.SmcFuncionario;
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 
@@ -42,5 +50,25 @@ public class SmcService {
         String url = "http://localhost:8080/api/smc/funcionario/esjefe/" + rut;
         ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
         return response.getBody() != null && Boolean.TRUE.equals(response.getBody()); // Retornar true si es jefe
+    }
+
+     public List<SmcFeriado> getFeriados(Date fechaInicio, Date fechaTermino) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String strFechaInicio = dateFormat.format(fechaInicio);
+        String strFechaTermino = dateFormat.format(fechaTermino);
+
+        System.out.println(strFechaInicio);
+        System.out.println(strFechaTermino);
+
+        String url = "http://localhost:8080/api/smc/feriados/calcular?fechaInicio=" + strFechaInicio + "&fechaTermino=" + strFechaTermino;
+
+        ResponseEntity<List<SmcFeriado>> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<SmcFeriado>>() {}
+        );
+
+        return response.getBody();
     }
 }

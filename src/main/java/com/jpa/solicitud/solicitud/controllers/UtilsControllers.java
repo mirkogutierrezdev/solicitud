@@ -21,16 +21,21 @@ public class UtilsControllers {
     @Autowired
     private UtilsService utilsService;
 
+ 
+
     @GetMapping("/calcular")
     public ResponseEntity<Long> getWorkDays(@RequestParam("fechaInicio") Date fechaInicio,
-            @RequestParam("fechaFin") Date fechaFin) {
+            @RequestParam("fechaTermino") Date fechaTermino) {
         try {
-            long diasHabiles = utilsService.getWorkDays(fechaInicio, fechaFin);
+            long diasHabiles = utilsService.getWorkDays(fechaInicio, fechaTermino);
             return new ResponseEntity<>(diasHabiles, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
 
     
     
