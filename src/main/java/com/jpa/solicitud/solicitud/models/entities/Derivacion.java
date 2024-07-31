@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -33,15 +32,9 @@ public class Derivacion {
 
     private Date fechaDerivacion;
 
- 
-    @Lob
-    private String comentarios;
-
     private Boolean leida;
 
-    private Boolean derivada;
-
-    
+        
     public Long getId() {
         return id;
     }
@@ -82,16 +75,6 @@ public class Derivacion {
         this.fechaDerivacion = fechaDerivacion;
     }
 
-  
-
-    public String getComentarios() {
-        return comentarios;
-    }
-
-    public void setComentarios(String comentarios) {
-        this.comentarios = comentarios;
-    }
-
     public Boolean getLeida() {
         return leida;
     }
@@ -100,13 +83,7 @@ public class Derivacion {
         this.leida = leida;
     }
 
-    public Boolean getDerivada() {
-        return derivada;
-    }
 
-    public void setDerivada(Boolean derivada) {
-        this.derivada = derivada;
-    }
 
    
 }

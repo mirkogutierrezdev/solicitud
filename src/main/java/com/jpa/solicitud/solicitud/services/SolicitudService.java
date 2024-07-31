@@ -77,10 +77,11 @@ public class SolicitudService {
     @Autowired
     private IAprobacionRepository aprobacionRepository;
 
-    /*
-     * @Autowired
-     * private SmcService smcService;
-     */
+    @Autowired
+    private DerivacionService derivacionService;
+
+    @Autowired
+    private SalidaService salidaService;
 
     // *RestTemplate para la api a smc */
     public SolicitudService(RestTemplate restTemplate) {
@@ -174,13 +175,12 @@ public class SolicitudService {
     
         // Guardar el departamento antes de asociarlo a la derivación
         departamentoSolicitud = departamentoRepository.save(departamentoSolicitud);
+
+        
     
-        Derivacion derivacion = new Derivacion();
-        derivacion.setFechaDerivacion(solicitudDto.getFechaDer());
-        derivacion.setLeida(false);
-        derivacion.setDepartamento(departamentoSolicitud);
-        derivacion.setSolicitud(solicitud);
-        derivacion.setFuncionario(funcionario);
+        Derivacion derivacion = derivacionService.saveDerivacion(departamentoSolicitud, solicitud, funcionario);
+
+        salidaService.saveSalida(derivacion, funcionario);
     
         return derivacion;
     }

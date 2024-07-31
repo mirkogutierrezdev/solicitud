@@ -127,7 +127,6 @@ public class AprobacionService {
         LocalDate fechaInicio = sqlFechaInicio.toLocalDate();
         LocalDate fechaTermino = sqlFechaTermino.toLocalDate();
 
-        
         Integer rut = solicitud.getFuncionario().getRut();
         SmcFuncionario funcionario = smcService.getFuncionarioByRut(rut);
         SmcPersona persona = smcService.getPersonaByRut(rut);

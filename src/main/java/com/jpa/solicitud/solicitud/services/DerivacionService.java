@@ -1,6 +1,7 @@
 package com.jpa.solicitud.solicitud.services;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,15 +15,15 @@ import com.jpa.solicitud.solicitud.models.entities.Departamentos;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
-import com.jpa.solicitud.solicitud.models.entities.Salida;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
+import com.jpa.solicitud.solicitud.models.entities.VDerivacion;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentoRepository;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentosRepository;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
-import com.jpa.solicitud.solicitud.repositories.ISalidaRepository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
+import com.jpa.solicitud.solicitud.repositories.IVDerivacionRepository;
 import com.jpa.solicitud.solicitud.utils.DepartamentoUtils;
 import com.jpa.solicitud.solicitud.utils.StringUtils;
 
@@ -48,13 +49,16 @@ public class DerivacionService {
     private IEstadoRepository estadoRepository;
 
     @Autowired
-    private ISalidaRepository salidaRepository;
+    private SalidaService salidaService;
 
     @Autowired
     private IFuncionarioRespository funcionarioRespository;
 
     @Autowired
     private IDepartamentosRepository departamentosRepository;
+
+    @Autowired
+    private IVDerivacionRepository vDerivacionRepository;
 
     public List<Derivacion> findBySolicitudId(Long id) {
         return derivacionRepository.findBySolicitudId(id);
@@ -118,7 +122,7 @@ public class DerivacionService {
         derivacion.setSolicitud(solicitud);
         derivacion.setDepartamento(deptoDestino);
         derivacion.setFechaDerivacion(fechaDerivacion);
-        derivacion.setComentarios("Prueba de derivacion");
+        
         derivacion.setLeida(false);
         derivacion.setFuncionario(funcionario);
 
@@ -126,13 +130,24 @@ public class DerivacionService {
         derivacion = derivacionRepository.save(derivacion);
 
         // Crear y configurar la entidad Salida
-        Salida salida = new Salida();
-        salida.setDerivacion(derivacion);
-        salida.setFuncionario(funcionario);
-        salida.setFechaSalida(derivacionDto.getFechaDerivacion());
-        salida = salidaRepository.save(salida);
+
+        salidaService.saveSalida(derivacion, funcionario);
 
         return derivacion;
+    }
+
+    @Transactional
+    public Derivacion saveDerivacion(Departamento departamento, Solicitud solicitud, Funcionario funcionario) {
+
+        Date fechaDerivacion = Date.valueOf(LocalDate.now());
+        Derivacion derivacion = new Derivacion();
+        derivacion.setDepartamento(departamento);
+        derivacion.setSolicitud(solicitud);
+        derivacion.setFuncionario(funcionario);
+        derivacion.setFechaDerivacion(fechaDerivacion);
+
+        derivacion.setLeida(false);
+        return derivacionRepository.save(derivacion);
     }
 
     public Optional<Derivacion> findDerivacionById(Long id) {
@@ -140,6 +155,9 @@ public class DerivacionService {
         return Optional.ofNullable(derivacion.orElseThrow(() -> new RuntimeException("Derivacion not found")));
     }
 
-
+    public List<VDerivacion> getDerivacionesBySolicitudId(Long solicitudId) {
+        System.out.println("solicitudId: " + solicitudId);
+        return vDerivacionRepository.findBySolicitudIdNative(solicitudId);
+    }
 
 }
