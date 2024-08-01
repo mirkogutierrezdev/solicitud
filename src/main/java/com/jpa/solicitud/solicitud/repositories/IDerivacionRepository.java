@@ -4,65 +4,35 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-/* import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param; */
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.jpa.solicitud.solicitud.models.dto.VDerivacionDto;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
-
 
 @Repository
 public interface IDerivacionRepository extends JpaRepository<Derivacion, Long> {
 
-       /*  @Query("SELECT d FROM Derivacion d " +
-                        "JOIN FETCH d.solicitud s " +
-                        "JOIN FETCH s.funcionario f " +
-                        "JOIN FETCH d.departamento de " +
-                        "WHERE d.departamento.depto = :depto")
-        List<Derivacion> findByDepartamentoDepto(@Param("depto") Long depto); */
+    List<Derivacion> findByDepartamentoId(Long departamentoId);
 
-    /*     @Query("SELECT d FROM Derivacion d " +
-                        "JOIN FETCH d.solicitud s " +
-                        "JOIN FETCH s.funcionario f " +
-                        "WHERE f.rut = :rut")
-        List<Derivacion> findByFuncionarioRut(@Param("rut") Integer rut);
- */
-      /*   @Query("SELECT d FROM Derivacion d " +
-                        "JOIN FETCH d.solicitud s " +
-                        "JOIN FETCH s.funcionario f " +
-                        "JOIN FETCH d.departamento de " +
-                        "WHERE s.id = :id")
-        List<Derivacion> findBySolicitudId(@Param("id") Long id); */
+    List<Derivacion> findByDepartamentoDepto(Long depto);
 
-/*         @Query("SELECT d FROM Derivacion d " +
-                        "JOIN FETCH d.solicitud s " +
-                        "JOIN FETCH s.funcionario f " +
-                        "JOIN FETCH d.departamento de " +
-                        "WHERE d.departamento.depto = :depto AND d.leida = false")
-        List<Derivacion> findNoLeidas(@Param("depto") Long depto); */
+    List<Derivacion> findBySolicitudId(Long solicitudId);
 
-     /*    @Transactional
-        @Modifying
-        @Query("UPDATE Derivacion d SET d.leida = :estado WHERE d.id = :derivacionId AND d.solicitud.id = :solicitudId")
-        void marcarComoNoLeida(@Param("derivacionId") Long idDerivacion, @Param("solicitudId") Long idSolicitud,
+    Optional<Derivacion> findById(Long id);
 
-                        @Param("estado") Boolean estado);
+    @Query("SELECT new com.jpa.solicitud.solicitud.models.dto.VDerivacionDto(d.id, d.fechaDerivacion, " +
+    "funOri.nombre, deptoOri.nombre, e.fechaEntrada, funEnt.nombre, s.fechaSalida, funSal.nombre) " +
+    "FROM Derivacion d " +
+    "LEFT JOIN Salida s ON s.derivacion.id = d.id " +
+    "LEFT JOIN Entrada e ON e.derivacion.id = d.id " +
+    "LEFT JOIN Funcionario funOri ON funOri.id = d.funcionario.id " +
+    "LEFT JOIN Funcionario funEnt ON funEnt.id = e.funcionario.id " +
+    "LEFT JOIN Funcionario funSal ON funSal.id = s.funcionario.id " +
+    "LEFT JOIN Departamento deptoOri ON deptoOri.id = d.departamento.id " +
+    "WHERE d.solicitud.id = :solicitudId")
+List<VDerivacionDto> findDerivacionesBySolicitud(@Param("solicitudId") Long solicitudId);
 
- */     /*    @Query("SELECT d FROM Derivacion d " +
-                        "JOIN FETCH d.solicitud s " +
-                        "JOIN FETCH s.funcionario f " +
-                        "JOIN FETCH d.departamento de " +
-                        "WHERE d.id = :idDerivacion")
-        Derivacion findDerivacionByIdAndFuncionario(@Param("idDerivacion") Long idDerivacion,@Param("funcionarioId") Long funcionarioId); */
-
-        List<Derivacion> findByDepartamentoId(Long departamentoId);
-
-        List<Derivacion> findByDepartamentoDepto(Long depto);
-
-        List<Derivacion> findBySolicitudId(Long solicitudId);
-
-  
-       @SuppressWarnings("null")
-       Optional<Derivacion> findById(Long id);
 
 }

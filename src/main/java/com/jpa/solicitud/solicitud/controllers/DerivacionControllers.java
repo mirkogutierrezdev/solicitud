@@ -1,5 +1,6 @@
 package com.jpa.solicitud.solicitud.controllers;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jpa.solicitud.solicitud.models.dto.DerivacionDto;
-import com.jpa.solicitud.solicitud.models.entities.VDerivacion;
+import com.jpa.solicitud.solicitud.models.dto.VDerivacionDto;
 import com.jpa.solicitud.solicitud.services.DerivacionService;
 
 @RestController
@@ -43,9 +44,16 @@ public class DerivacionControllers {
         }
     }
 
-
-    @GetMapping("/solicitudes/{solicitudId}")
-    public List<VDerivacion> getDerivaciones(@PathVariable Long solicitudId) {
-        return derivacionService.getDerivacionesBySolicitudId(solicitudId);
+    @GetMapping("/solicitud/{id}")
+    public ResponseEntity<?> getDerivacionesBySolicitud(@PathVariable Long id) {
+        try {
+            List<VDerivacionDto> derivaciones = derivacionService.findDerivacionesBySolicitud(id);
+            return ResponseEntity.status(HttpStatus.OK).body(derivaciones);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Error al obtener las derivaciones: " + e.getMessage() + "\"}");
+        }
     }
+
+ 
 }
