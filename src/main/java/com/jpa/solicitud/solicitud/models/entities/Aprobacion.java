@@ -34,7 +34,7 @@ public class Aprobacion {
 
 	private Date fechaAprobacion;
 
-	private String comentario;
+	
 
 	// Getters y setters
 
@@ -70,13 +70,6 @@ public class Aprobacion {
 		this.fechaAprobacion = fechaAprobacion;
 	}
 
-	public String getComentario() {
-		return comentario;
-	}
-
-	public void setComentario(String comentario) {
-		this.comentario = comentario;
-	}
 
 	public byte[] getPdf() {
 		return pdf;

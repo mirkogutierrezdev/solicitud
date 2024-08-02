@@ -230,4 +230,9 @@ public class SolicitudService {
 
         return solicitudRespository.findByFuncionarioRut(rut);
     }
+
+    public List<Solicitud> servGetSolicitudesPendientesPorFuncionario(Integer rut) {
+
+        return solicitudRespository.findPendingAndNotRejectedByFuncionarioRut(rut);
+    }
 }

@@ -63,6 +63,16 @@ public class SolicitudControllers {
                     .body("{\"error\": \"Error al obtener las solicitudes: " + e.getMessage() + "\"}");
         }
     }
+
+    @GetMapping("/entramite/{rut}")
+    public ResponseEntity<?> getPendingAndNotRejectedByFuncionarioRut(@PathVariable Integer rut) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(solicitudService.servGetSolicitudesPendientesPorFuncionario(rut));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Error al obtener las solicitudes pendientes: " + e.getMessage() + "\"}");
+        }
+    }
    
     
 }
