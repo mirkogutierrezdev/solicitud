@@ -1,6 +1,5 @@
 package com.jpa.solicitud.solicitud.services;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Comparator;
@@ -120,12 +119,11 @@ public class AprobacionService {
     }
 
     public byte[] preparePdf(Solicitud solicitud) throws Exception {
-        Date sqlFechaInicio = solicitud.getFechaInicio();
-        Date sqlFechaTermino = solicitud.getFechaFin();
+       
 
         // Convertir java.sql.Date a java.time.LocalDate
-        LocalDate fechaInicio = sqlFechaInicio.toLocalDate();
-        LocalDate fechaTermino = sqlFechaTermino.toLocalDate();
+        LocalDate fechaInicio = solicitud.getFechaInicio();
+        LocalDate fechaTermino = solicitud.getFechaFin();
 
         Integer rut = solicitud.getFuncionario().getRut();
         SmcFuncionario funcionario = smcService.getFuncionarioByRut(rut);

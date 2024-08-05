@@ -1,5 +1,6 @@
 package com.jpa.solicitud.solicitud.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,6 +90,10 @@ public class SolicitudService {
 
     @Transactional
     public Solicitud saveSolicitud(SolicitudDto solicitudDto) {
+
+        LocalDate fechaActual = LocalDate.now();
+        LocalDate fechaInicio = solicitudDto.getFechaInicio();
+        LocalDate fechaFin = solicitudDto.getFechaFin();
         // Validar los campos necesarios en solicitudDto
         validarSolicitudDto(solicitudDto);
 
@@ -110,9 +115,9 @@ public class SolicitudService {
         Solicitud solicitud = new Solicitud();
         solicitud.setFuncionario(funcionario);
         solicitud.setTipoSolicitud(tipoSol);
-        solicitud.setFechaSolicitud(solicitudDto.getFechaSol());
-        solicitud.setFechaInicio(solicitudDto.getFechaInicio());
-        solicitud.setFechaFin(solicitudDto.getFechaFin());
+        solicitud.setFechaSolicitud(fechaActual);
+        solicitud.setFechaInicio(fechaInicio);
+        solicitud.setFechaFin(fechaFin);
         solicitud.setEstado(estado);
         
         solicitud = solicitudRespository.save(solicitud);

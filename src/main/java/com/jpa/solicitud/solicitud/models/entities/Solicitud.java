@@ -1,6 +1,6 @@
 package com.jpa.solicitud.solicitud.models.entities;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,11 +26,11 @@ public class Solicitud {
     @JoinColumn(name = "tipo_solicitud_id", nullable = false)
     private TipoSolicitud tipoSolicitud;
 
-    private Date fechaSolicitud;
+    private LocalDate fechaSolicitud;
 
-    private Date fechaInicio;
+    private LocalDate fechaInicio;
 
-    private Date fechaFin;
+    private LocalDate fechaFin;
 
 
 
@@ -62,27 +62,27 @@ public class Solicitud {
         this.tipoSolicitud = tipoSolicitud;
     }
 
-    public Date getFechaSolicitud() {
+    public LocalDate getFechaSolicitud() {
         return fechaSolicitud;
     }
 
-    public void setFechaSolicitud(Date fechaSol) {
+    public void setFechaSolicitud(LocalDate fechaSol) {
         this.fechaSolicitud = fechaSol;
     }
 
-    public Date getFechaInicio() {
+    public LocalDate getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(Date fechaInicio2) {
+    public void setFechaInicio(LocalDate fechaInicio2) {
         this.fechaInicio = fechaInicio2;
     }
 
-    public Date getFechaFin() {
+    public LocalDate getFechaFin() {
         return fechaFin;
     }
 
-    public void setFechaFin(Date fechaFin2) {
+    public void setFechaFin(LocalDate fechaFin2) {
         this.fechaFin = fechaFin2;
     }
 

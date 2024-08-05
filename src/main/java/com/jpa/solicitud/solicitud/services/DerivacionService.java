@@ -65,7 +65,7 @@ public class DerivacionService {
         Long depto = derivacionDto.getDepto();
         Long idSolicitud = derivacionDto.getIdSolicitud();
         String estado = derivacionDto.getEstado();
-        Date fechaDerivacion = derivacionDto.getFechaDerivacion();
+        Date fechaDerivacion = Date.valueOf(LocalDate.now());
 
         // Crear y configurar la entidad Derivacion
         Derivacion derivacion = new Derivacion();

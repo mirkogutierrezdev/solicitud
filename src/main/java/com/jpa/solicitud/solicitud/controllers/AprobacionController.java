@@ -44,7 +44,7 @@ public class AprobacionController {
     public ResponseEntity<?> getPdf(@PathVariable Long id) {
         try {
             Aprobacion aprobacion = aprobacionService.servGetAprobacionBySolicitud(id);
-            if (aprobacion == null || aprobacion.getPdf() == null) {
+            if (aprobacion == null ) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("No se encontró la aprobación o el PDF con el ID proporcionado");
             }

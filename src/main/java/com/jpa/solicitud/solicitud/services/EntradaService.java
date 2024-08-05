@@ -1,5 +1,7 @@
 package com.jpa.solicitud.solicitud.services;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +37,12 @@ public class EntradaService {
     private SmcService smcService;
 
     public Entrada saveEntrada(EntradaDto entradaDto) {
+
+        Date getFechaEntrada = Date.valueOf(LocalDate.now());
+
+
+        
+        
         // Encuentra todas las derivaciones asociadas a la solicitud
         List<Derivacion> derivaciones = derivacionRepository.findBySolicitudId(entradaDto.getSolicitudId());
 
@@ -71,7 +79,7 @@ public class EntradaService {
         // Crea Y persiste Entrada
         Entrada entrada = new Entrada();
         
-        entrada.setFechaEntrada(entradaDto.getFechaEntrada());
+        entrada.setFechaEntrada(getFechaEntrada);
         entrada.setDerivacion(ultimaDerivacion);
         entrada.setFuncionario(funcionario);
 

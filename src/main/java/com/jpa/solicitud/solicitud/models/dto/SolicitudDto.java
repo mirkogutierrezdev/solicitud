@@ -1,13 +1,14 @@
 package com.jpa.solicitud.solicitud.models.dto;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class SolicitudDto {
 
     private String tipoSolicitud;
-    private Date fechaInicio;
-    private Date fechaFin;
-    private Date fechaSol;
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
+    
     private Integer rut;
     private Long depto;
     private String estado;
@@ -26,29 +27,22 @@ public class SolicitudDto {
         this.tipoSolicitud = tipoSolicitud;
     }
 
-    public Date getFechaInicio() {
+    public LocalDate getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(Date fechaInicio) {
+    public void setFechaInicio(LocalDate fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
-    public Date getFechaFin() {
+    public LocalDate getFechaFin() {
         return fechaFin;
     }
 
-    public void setFechaFin(Date fechaFin) {
+    public void setFechaFin(LocalDate fechaFin) {
         this.fechaFin = fechaFin;
     }
 
-    public Date getFechaSol() {
-        return fechaSol;
-    }
-
-    public Date setFechaSol(Date fechaSol) {
-        return this.fechaSol = fechaSol;
-    }
 
     public Integer getRut() {
         return rut;
