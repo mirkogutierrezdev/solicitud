@@ -30,7 +30,7 @@ public class DerivacionControllers {
 
 
    @PostMapping("/create")
-    public ResponseEntity<?> createSolicitud(@RequestBody DerivacionDto DerivacionDto) {
+    public ResponseEntity<?> createDerivacion(@RequestBody DerivacionDto DerivacionDto) {
 
         try {
             derivacionService.saveDerivacion(DerivacionDto);
@@ -54,6 +54,23 @@ public class DerivacionControllers {
                     .body("{\"error\": \"Error al obtener las derivaciones: " + e.getMessage() + "\"}");
         }
     }
+
+
+    @PostMapping("/createDerivaciones")
+    public ResponseEntity<?> saveDerivaciones(@RequestBody List<DerivacionDto> derivacionesDto) {
+        try {
+            derivacionService.saveDerivaciones(derivacionesDto);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("{\"message\": \"Derivaciones creadas exitosamente\"}");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"error\": \"Datos inválidos: " + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Error al crear las derivaciones: " + e.getMessage() + "\"}");
+        }
+    }
+
 
  
 }

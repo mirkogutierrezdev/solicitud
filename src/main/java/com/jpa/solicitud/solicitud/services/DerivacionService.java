@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -155,6 +156,10 @@ public class DerivacionService {
         return derivacionRepository.findDerivacionesBySolicitud(solicitudId);
     }
 
- 
+    public List<Derivacion> saveDerivaciones(List <DerivacionDto> derivacionesDto) {
+        return derivacionesDto.stream().map(this::saveDerivacion).collect(Collectors.toList());
+    }
+
+  
 
 }

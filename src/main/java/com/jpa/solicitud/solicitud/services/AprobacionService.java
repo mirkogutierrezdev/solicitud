@@ -164,4 +164,17 @@ public class AprobacionService {
 
         return jsonService.generateReport(pdfDto); // Llamar al servicio de generación de PDF
     }
+
+    public List<Aprobacion> saveAprobaciones(List<AprobacionDto> aprobaciones) {
+        return aprobaciones.stream()
+                .map(aprobacionDto -> {
+                    try {
+                        return saveAprobacion(aprobacionDto);
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException("Error al guardar la aprobación: " + e.getMessage());
+                    }
+                })
+                .toList();
+    }
+
 }

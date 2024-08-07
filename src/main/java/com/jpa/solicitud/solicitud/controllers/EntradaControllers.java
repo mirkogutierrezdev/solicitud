@@ -1,5 +1,7 @@
 package com.jpa.solicitud.solicitud.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,21 @@ public class EntradaControllers {
 
         
 
+    }
+
+    @PostMapping("/createEntradas")
+    public ResponseEntity<?> saveEntradas(@RequestBody List<EntradaDto> entradasDto) {
+        try {
+            entradaService.saveEntradas(entradasDto);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("{\"message\": \"Entradas creadas exitosamente\"}");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"error\": \"Datos inválidos: " + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Error al crear las entradas: " + e.getMessage() + "\"}");
+        }
     }
 
 }

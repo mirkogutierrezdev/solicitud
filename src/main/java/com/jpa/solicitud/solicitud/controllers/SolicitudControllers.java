@@ -73,6 +73,8 @@ public class SolicitudControllers {
                     .body("{\"error\": \"Error al obtener las solicitudes pendientes: " + e.getMessage() + "\"}");
         }
     }
+
+
    
     
 }

@@ -3,6 +3,9 @@ package com.jpa.solicitud.solicitud.controllers;
 import com.jpa.solicitud.solicitud.models.dto.AprobacionDto;
 import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
 import com.jpa.solicitud.solicitud.services.AprobacionService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -58,6 +61,21 @@ public class AprobacionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al obtener el PDF: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/createAprobaciones")
+    public ResponseEntity<?> saveAprobaciones(@RequestBody List<AprobacionDto> aprobacionDto) {
+        try {
+            aprobacionService.saveAprobaciones(aprobacionDto);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("{\"message\": \"Aprobaciones creadas exitosamente\"}");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"error\": \"Datos inválidos: " + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Error al crear las aprobaciones: " + e.getMessage() + "\"}");
         }
     }
 }
