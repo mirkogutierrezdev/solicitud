@@ -5,7 +5,7 @@ import java.sql.Date;
 public class DerivacionDto {
 
     private Long depto;
-    private Long idSolicitud;
+    private Long solicitudId;
     private  String estado;
     private  Date fechaDerivacion ;
     private Integer rut;
@@ -19,11 +19,11 @@ public class DerivacionDto {
     public void setDepto(Long depto) {
         this.depto = depto;
     }
-    public Long getIdSolicitud() {
-        return idSolicitud;
+    public Long getSolicitudId() {
+        return solicitudId;
     }
-    public void setIdSolicitud(Long idSolicitud) {
-        this.idSolicitud = idSolicitud;
+    public void setSolicitudId(Long idSolicitud) {
+        this.solicitudId = idSolicitud;
     }
     public String getEstado() {
         return estado;

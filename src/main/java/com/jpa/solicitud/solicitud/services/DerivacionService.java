@@ -64,7 +64,7 @@ public class DerivacionService {
     @Transactional
     public Derivacion saveDerivacion(DerivacionDto derivacionDto) {
         Long depto = derivacionDto.getDepto();
-        Long idSolicitud = derivacionDto.getIdSolicitud();
+        Long idSolicitud = derivacionDto.getSolicitudId();
         String estado = derivacionDto.getEstado();
         Date fechaDerivacion = Date.valueOf(LocalDate.now());
 
