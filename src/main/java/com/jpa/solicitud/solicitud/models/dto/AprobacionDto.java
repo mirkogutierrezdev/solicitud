@@ -1,44 +1,36 @@
 package com.jpa.solicitud.solicitud.models.dto;
 
-import java.sql.Date;
 
 public class AprobacionDto {
-	private Long idSolicitud;
-	private Integer rutFuncionario;
-	private Date fechaAprobacion;
+	private Long solicitudId;
+	private Integer rut;
+
 	private String estado;
 
 	// Constructor
-	public AprobacionDto(Long idSolicitud, Integer rutFuncionario, Date fechaAprobacion) {
-		this.idSolicitud = idSolicitud;
-		this.rutFuncionario = rutFuncionario;
-		this.fechaAprobacion = fechaAprobacion;
+	public AprobacionDto(Long idSolicitud, Integer rutFuncionario ) {
+		this.solicitudId = idSolicitud;
+		this.rut = rutFuncionario;
 	}
 
 	// Getters and Setters
-	public Long getIdSolicitud() {
-		return idSolicitud;
+	public Long getSolicitudId() {
+		return solicitudId;
 	}
 
-	public void setIdSolicitud(Long idSolicitud) {
-		this.idSolicitud = idSolicitud;
+	public void setSolicitudId(Long idSolicitud) {
+		this.solicitudId = idSolicitud;
 	}
 
-	public Integer getRutFuncionario() {
-		return rutFuncionario;
+	public Integer getRut() {
+		return rut;
 	}
 
-	public void setRutFuncionario(Integer rutFuncionario) {
-		this.rutFuncionario = rutFuncionario;
+	public void setRut(Integer rutFuncionario) {
+		this.rut = rutFuncionario;
 	}
 
-	public Date getFechaAprobacion() {
-		return fechaAprobacion;
-	}
 
-	public void setFechaAprobacion(Date fechaAprobacion) {
-		this.fechaAprobacion = fechaAprobacion;
-	}
 
 	public String getEstado() {
 		return estado;

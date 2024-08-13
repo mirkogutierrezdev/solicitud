@@ -1,5 +1,6 @@
 package com.jpa.solicitud.solicitud.services;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Comparator;
@@ -52,11 +53,13 @@ public class AprobacionService {
 
     @Transactional
     public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) throws Exception {
+
+        Date fechaAprobacion =  Date.valueOf(LocalDate.now());
         if (aprobacionDto == null) {
             throw new IllegalArgumentException("El objeto AprobacionDto no puede ser null");
         }
 
-        Integer rut = aprobacionDto.getRutFuncionario();
+        Integer rut = aprobacionDto.getRut();
         SmcPersona persona = smcService.getPersonaByRut(rut);
         if (persona == null) {
             throw new IllegalArgumentException("No se encontró un funcionario con el RUT proporcionado");
@@ -69,7 +72,7 @@ public class AprobacionService {
                         persona.getApellidomaterno()));
         funcionario = funcionarioRepository.save(funcionario); // Guardar el funcionario antes de asignarlo
 
-        Solicitud solicitud = solicitudRepository.findById(aprobacionDto.getIdSolicitud()).orElse(null);
+        Solicitud solicitud = solicitudRepository.findById(aprobacionDto.getSolicitudId()).orElse(null);
         if (solicitud == null) {
             throw new IllegalArgumentException("No se encontró una solicitud con el ID proporcionado");
         }
@@ -100,7 +103,7 @@ public class AprobacionService {
         Aprobacion aprobacion = new Aprobacion();
         aprobacion.setFuncionario(funcionario); // Asignar el funcionario guardado
         aprobacion.setSolicitud(solicitud);
-        aprobacion.setFechaAprobacion(aprobacionDto.getFechaAprobacion());
+        aprobacion.setFechaAprobacion(fechaAprobacion);
 
         // Generar el PDF y guardar en la base de datos
         byte[] pdfBytes = preparePdf(solicitud);
@@ -119,7 +122,6 @@ public class AprobacionService {
     }
 
     public byte[] preparePdf(Solicitud solicitud) throws Exception {
-       
 
         // Convertir java.sql.Date a java.time.LocalDate
         LocalDate fechaInicio = solicitud.getFechaInicio();
