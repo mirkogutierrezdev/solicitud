@@ -2,6 +2,7 @@ package com.jpa.solicitud.solicitud.services;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Comparator;
 import java.util.List;
@@ -54,7 +55,7 @@ public class AprobacionService {
     @Transactional
     public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) throws Exception {
 
-        Date fechaAprobacion =  Date.valueOf(LocalDate.now());
+        Date fechaAprobacion = Date.valueOf(LocalDate.now());
         if (aprobacionDto == null) {
             throw new IllegalArgumentException("El objeto AprobacionDto no puede ser null");
         }
@@ -124,8 +125,8 @@ public class AprobacionService {
     public byte[] preparePdf(Solicitud solicitud) throws Exception {
 
         // Convertir java.sql.Date a java.time.LocalDate
-        LocalDate fechaInicio = solicitud.getFechaInicio();
-        LocalDate fechaTermino = solicitud.getFechaFin();
+        LocalDateTime fechaInicio = solicitud.getFechaInicio();
+        LocalDateTime fechaTermino = solicitud.getFechaFin();
 
         Integer rut = solicitud.getFuncionario().getRut();
         SmcFuncionario funcionario = smcService.getFuncionarioByRut(rut);

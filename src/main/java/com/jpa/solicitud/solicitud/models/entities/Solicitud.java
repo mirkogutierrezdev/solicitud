@@ -1,6 +1,7 @@
 package com.jpa.solicitud.solicitud.models.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,11 +29,13 @@ public class Solicitud {
 
     private LocalDate fechaSolicitud;
 
-    private LocalDate fechaInicio;
+    private LocalDateTime fechaInicio;
 
-    private LocalDate fechaFin;
+    private LocalDateTime fechaFin;
 
+    private Double duracion;
 
+    
 
     @ManyToOne
     @JoinColumn(name = "estado_id", nullable = false)
@@ -70,20 +73,20 @@ public class Solicitud {
         this.fechaSolicitud = fechaSol;
     }
 
-    public LocalDate getFechaInicio() {
+    public LocalDateTime getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(LocalDate fechaInicio2) {
-        this.fechaInicio = fechaInicio2;
+    public void setFechaInicio(LocalDateTime fechaInicio) {
+        this.fechaInicio = fechaInicio;
     }
 
-    public LocalDate getFechaFin() {
+    public LocalDateTime getFechaFin() {
         return fechaFin;
     }
 
-    public void setFechaFin(LocalDate fechaFin2) {
-        this.fechaFin = fechaFin2;
+    public void setFechaFin(LocalDateTime fechaFin) {
+        this.fechaFin = fechaFin;
     }
 
     public Estado getEstado() {
@@ -92,6 +95,14 @@ public class Solicitud {
 
     public void setEstado(Estado estado) {
         this.estado = estado;
+    }
+
+    public Double getDuracion() {
+        return duracion;
+    }
+
+    public void setDuracion(Double duracion) {
+        this.duracion = duracion;
     }
 
 }

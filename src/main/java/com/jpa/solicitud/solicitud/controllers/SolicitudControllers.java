@@ -29,19 +29,24 @@ public class SolicitudControllers {
 
     @PostMapping("/create")
     public ResponseEntity<?> createSolicitud(@RequestBody SolicitudDto solicitudDto) {
-
+    
         try {
             solicitudService.saveSolicitud(solicitudDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body("{\"message\": \"Solicitud creada exitosamente\"}");
+            return ResponseEntity.status(HttpStatus.CREATED)
+                                 .body("{\"message\": \"Solicitud creada exitosamente\"}");
         } catch (IllegalArgumentException e) {
+            // Detalles del error
+            String errorDetails = String.format("Datos inválidos: %s - %s", e.getMessage(), e.getStackTrace()[0]);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("{\"error\": \"Datos inválidos: " + e.getMessage() + "\"}");
+                                 .body("{\"error\": \"" + errorDetails + "\"}");
         } catch (Exception e) {
+            // Detalles del error
+            String errorDetails = String.format("Error al crear la solicitud: %s - %s", e.getMessage(), e.getStackTrace()[0]);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"error\": \"Error al crear la solicitud: " + e.getMessage() + "\"}");
+                                 .body("{\"error\": \"" + errorDetails + "\"}");
         }
     }
-
+    
     @GetMapping("/list")
     public List<Solicitud> getSolicitud() {
         return solicitudService.findAll();
