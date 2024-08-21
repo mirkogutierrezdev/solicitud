@@ -95,6 +95,7 @@ public class SolicitudService {
         LocalDate fechaActual = LocalDate.now();
         LocalDateTime fechaInicio = solicitudDto.getFechaInicio();
         LocalDateTime fechaFin = solicitudDto.getFechaFin();
+        Double duracion = solicitudDto.getDuracion();
         // Validar los campos necesarios en solicitudDto
         validarSolicitudDto(solicitudDto);
 
@@ -120,6 +121,7 @@ public class SolicitudService {
         solicitud.setFechaInicio(fechaInicio);
         solicitud.setFechaFin(fechaFin);
         solicitud.setEstado(estado);
+        solicitud.setDuracion(duracion);
         
         solicitud = solicitudRespository.save(solicitud);
 

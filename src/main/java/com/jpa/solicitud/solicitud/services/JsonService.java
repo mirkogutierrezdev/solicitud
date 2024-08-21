@@ -15,8 +15,10 @@ import java.nio.charset.StandardCharsets;
 public class JsonService {
 
     public byte[] generateReport(PdfDto jsonSol) throws Exception {
-        // Cargar la plantilla del documento
-        Document doc = new Document("src/main/java/com/jpa/solicitud/solicitud/templates/template.docx");
+
+        String template = defineTemplate(jsonSol.getTipoSolicitud());
+
+        Document doc = new Document(template);
 
         // Convertir el objeto a una cadena JSON
         ObjectMapper objectMapper = new ObjectMapper();
@@ -37,5 +39,14 @@ public class JsonService {
         doc.save(pdfOutputStream, com.aspose.words.SaveFormat.PDF);
 
         return pdfOutputStream.toByteArray();
+    }
+
+    public String defineTemplate(String tipoSol){
+        if(tipoSol.equalsIgnoreCase("ADMINISTRATIVO")){
+            return "src/main/java/com/jpa/solicitud/solicitud/templates/templatePA.docx";
+        }else{
+            return "src/main/java/com/jpa/solicitud/solicitud/templates/templateFL.docx";
+        }
+
     }
 }

@@ -35,6 +35,7 @@ public class Solicitud {
 
     private Double duracion;
 
+
     
 
     @ManyToOne
@@ -104,5 +105,7 @@ public class Solicitud {
     public void setDuracion(Double duracion) {
         this.duracion = duracion;
     }
+
+ 
 
 }

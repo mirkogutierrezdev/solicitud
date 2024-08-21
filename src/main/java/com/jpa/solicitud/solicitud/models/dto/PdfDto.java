@@ -16,6 +16,8 @@ public class PdfDto {
     private String diasTomados;
     private String vrut;
     private String telefono;
+    private String tipoSolicitud;
+
 
     public String getDiasTomados() {
         return diasTomados;
@@ -135,6 +137,14 @@ public class PdfDto {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getTipoSolicitud() {
+        return tipoSolicitud;
+    }
+
+    public void setTipoSolicitud(String tipoSolicitud) {
+        this.tipoSolicitud = tipoSolicitud;
     }   
     
 

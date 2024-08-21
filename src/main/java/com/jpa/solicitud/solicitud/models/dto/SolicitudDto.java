@@ -14,6 +14,9 @@ public class SolicitudDto {
     private String estado;
     private Date fechaDer;
     private String nombre_departamento;
+    private Double duracion;
+
+    
     
 
     public SolicitudDto() {
@@ -82,6 +85,14 @@ public class SolicitudDto {
 
     public void setNombre_departamento(String nombre_departamento) {
         this.nombre_departamento = nombre_departamento;
+    }
+
+    public Double getDuracion() {
+        return duracion;
+    }
+
+    public void setDuracion(Double duracion) {
+        this.duracion = duracion;
     }
 
   

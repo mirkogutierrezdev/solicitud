@@ -162,6 +162,7 @@ public class AprobacionService {
         pdfDto.setEscalafon(escalafon);
         pdfDto.setGrado(String.valueOf(grado));
         pdfDto.setDepto(departamento);
+        pdfDto.setTipoSolicitud(solicitud.getTipoSolicitud().getNombre());
 
         // Aquí puedes continuar con la lógica de generación de PDF usando estos valores
 
