@@ -18,7 +18,6 @@ public class DepartamentosService {
     public List<Departamentos> saveAllDepartamentos(List<Departamentos> departamentos) {
 
         return departamentosRepository.saveAll(departamentos);
-
     }
 
     public boolean existsByDeptoIntAndRutJefe(Long depto, Integer rut) {
@@ -41,15 +40,8 @@ public class DepartamentosService {
         Long deptos = departamentos.getDeptoInt();
         String deptoInt = deptos.toString();
 
-    System.out.println(deptoInt);
-
         boolean esSub = DepartamentoUtils.esSubdir(deptoInt);
 
-    
-
         return esSub;
-   
-   
     }
-
 }

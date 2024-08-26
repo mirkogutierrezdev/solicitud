@@ -34,6 +34,4 @@ public class UtilsService {
     public List<SmcFeriado> getFeriados(Date fechaInicio, Date fechaTermino) {
         return feriadoUtils.getFeriados(fechaInicio, fechaTermino);
     }
-
-
 }

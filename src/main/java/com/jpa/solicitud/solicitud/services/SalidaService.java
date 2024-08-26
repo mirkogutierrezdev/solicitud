@@ -13,8 +13,6 @@ import com.jpa.solicitud.solicitud.repositories.ISalidaRepository;
 
 import jakarta.transaction.Transactional;
 
-
-
 @Service
 public class SalidaService {
 
@@ -32,7 +30,5 @@ public class SalidaService {
         salida.setFechaSalida(fechaSalida);
 
         return salidaRepository.save(salida);
-
     }
-
 }

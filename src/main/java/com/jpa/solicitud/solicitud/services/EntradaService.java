@@ -40,9 +40,6 @@ public class EntradaService {
     public Entrada saveEntrada(EntradaDto entradaDto) {
 
         Date getFechaEntrada = Date.valueOf(LocalDate.now());
-
-
-        
         
         // Encuentra todas las derivaciones asociadas a la solicitud
         List<Derivacion> derivaciones = derivacionRepository.findBySolicitudId(entradaDto.getSolicitudId());
@@ -92,7 +89,6 @@ public class EntradaService {
     public List<Entrada> findAll() {
 
         return entradaRepository.findAll();
-
     }
 
     public Entrada findById(Long id) {
@@ -103,7 +99,4 @@ public class EntradaService {
     public List<Entrada> saveEntradas(List<EntradaDto> entradasDto) {
    return entradasDto.stream().map(this::saveEntrada).collect(Collectors.toList());
     }
-
-
-
 }

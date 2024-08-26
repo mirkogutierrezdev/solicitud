@@ -159,7 +159,4 @@ public class DerivacionService {
     public List<Derivacion> saveDerivaciones(List <DerivacionDto> derivacionesDto) {
         return derivacionesDto.stream().map(this::saveDerivacion).collect(Collectors.toList());
     }
-
-  
-
 }

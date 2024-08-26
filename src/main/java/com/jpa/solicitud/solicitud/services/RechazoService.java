@@ -79,9 +79,8 @@ public class RechazoService {
 
     }
 
-    public Rechazo servGetRechazoBySolicitud(Long solicitudId){
+    public Rechazo servGetRechazoBySolicitud(Long solicitudId) {
 
         return rechazoRepository.findBySolicitudId(solicitudId);
     }
-
 }
