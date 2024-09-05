@@ -1,6 +1,5 @@
 package com.jpa.solicitud.solicitud.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
@@ -18,20 +17,27 @@ import com.jpa.solicitud.solicitud.utils.StringUtils;
 @Service
 public class RechazoService {
 
-    @Autowired
-    private SmcService smcService;
+    private final  SmcService smcService;
 
-    @Autowired
-    private IFuncionarioRespository funcionarioRepository;
+    private final IFuncionarioRespository funcionarioRepository;
 
-    @Autowired
-    private ISolicitudRespository solicitudRepository;
+    private final ISolicitudRespository solicitudRepository;
 
-    @Autowired
-    private IEstadoRepository estadoRepository;
+    private final IEstadoRepository estadoRepository;
 
-    @Autowired
-    private IRechazoRepository rechazoRepository;
+    private final IRechazoRepository rechazoRepository;
+
+    
+
+    public RechazoService(SmcService smcService, IFuncionarioRespository funcionarioRepository,
+            ISolicitudRespository solicitudRepository, IEstadoRepository estadoRepository,
+            IRechazoRepository rechazoRepository) {
+        this.smcService = smcService;
+        this.funcionarioRepository = funcionarioRepository;
+        this.solicitudRepository = solicitudRepository;
+        this.estadoRepository = estadoRepository;
+        this.rechazoRepository = rechazoRepository;
+    }
 
     public Rechazo saveRechazo(RechazoDto rechazoDto) {
 

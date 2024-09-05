@@ -1,6 +1,5 @@
 package com.jpa.solicitud.solicitud.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,8 +17,11 @@ import com.jpa.solicitud.solicitud.services.SmcService;
 @RequestMapping("/api/smc")
 public class FuncionarioControllers {
 
-    @Autowired
-    private SmcService smcService;
+    private final SmcService smcService;
+
+    public FuncionarioControllers(SmcService smcService) {
+        this.smcService = smcService;
+    }
 
     @GetMapping("/byRut/{rut}")
     public ResponseEntity<SmcFuncionario> getFuncionarioByRut(@PathVariable Integer rut) {

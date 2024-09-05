@@ -2,7 +2,6 @@ package com.jpa.solicitud.solicitud.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,29 +23,33 @@ import com.jpa.solicitud.solicitud.services.SolicitudService;
 @RequestMapping("/api/solicitud")
 public class SolicitudControllers {
 
-    @Autowired
-    private SolicitudService solicitudService;
+    private final SolicitudService solicitudService;
+
+    public SolicitudControllers(SolicitudService solicitudService) {
+        this.solicitudService = solicitudService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createSolicitud(@RequestBody SolicitudDto solicitudDto) {
-    
+
         try {
             solicitudService.saveSolicitud(solicitudDto);
             return ResponseEntity.status(HttpStatus.CREATED)
-                                 .body("{\"message\": \"Solicitud creada exitosamente\"}");
+                    .body("{\"message\": \"Solicitud creada exitosamente\"}");
         } catch (IllegalArgumentException e) {
             // Detalles del error
             String errorDetails = String.format("Datos inválidos: %s - %s", e.getMessage(), e.getStackTrace()[0]);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                 .body("{\"error\": \"" + errorDetails + "\"}");
+                    .body("{\"error\": \"" + errorDetails + "\"}");
         } catch (Exception e) {
             // Detalles del error
-            String errorDetails = String.format("Error al crear la solicitud: %s - %s", e.getMessage(), e.getStackTrace()[0]);
+            String errorDetails = String.format("Error al crear la solicitud: %s - %s", e.getMessage(),
+                    e.getStackTrace()[0]);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("{\"error\": \"" + errorDetails + "\"}");
+                    .body("{\"error\": \"" + errorDetails + "\"}");
         }
     }
-    
+
     @GetMapping("/list")
     public List<Solicitud> getSolicitud() {
         return solicitudService.findAll();
@@ -57,7 +60,6 @@ public class SolicitudControllers {
             @PathVariable Long departamentoId) {
         return solicitudService.getSolicitudesWithDerivacionesByDepartamento(departamentoId);
     }
-
 
     @GetMapping("/byRut/{rut}")
     public ResponseEntity<?> getSolicitudesByFuncionario(@PathVariable Integer rut) {
@@ -72,14 +74,12 @@ public class SolicitudControllers {
     @GetMapping("/entramite/{rut}")
     public ResponseEntity<?> getPendingAndNotRejectedByFuncionarioRut(@PathVariable Integer rut) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(solicitudService.servGetSolicitudesPendientesPorFuncionario(rut));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(solicitudService.servGetSolicitudesPendientesPorFuncionario(rut));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("{\"error\": \"Error al obtener las solicitudes pendientes: " + e.getMessage() + "\"}");
         }
     }
 
-
-   
-    
 }

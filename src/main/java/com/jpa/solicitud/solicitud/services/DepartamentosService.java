@@ -2,7 +2,6 @@ package com.jpa.solicitud.solicitud.services;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.models.entities.Departamentos;
@@ -12,8 +11,13 @@ import com.jpa.solicitud.solicitud.utils.DepartamentoUtils;
 @Service
 public class DepartamentosService {
 
-    @Autowired
-    private IDepartamentosRepository departamentosRepository;
+    private final IDepartamentosRepository departamentosRepository;
+
+    
+
+    public DepartamentosService(IDepartamentosRepository departamentosRepository) {
+        this.departamentosRepository = departamentosRepository;
+    }
 
     public List<Departamentos> saveAllDepartamentos(List<Departamentos> departamentos) {
 
@@ -40,8 +44,6 @@ public class DepartamentosService {
         Long deptos = departamentos.getDeptoInt();
         String deptoInt = deptos.toString();
 
-        boolean esSub = DepartamentoUtils.esSubdir(deptoInt);
-
-        return esSub;
+        return DepartamentoUtils.esSubdir(deptoInt);
     }
 }

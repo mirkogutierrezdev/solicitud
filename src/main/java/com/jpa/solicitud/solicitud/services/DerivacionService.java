@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
@@ -33,29 +32,37 @@ import jakarta.transaction.Transactional;
 @Service
 public class DerivacionService {
 
-    @Autowired
-    private IDerivacionRepository derivacionRepository;
+    private final IDerivacionRepository derivacionRepository;
 
-    @Autowired
-    private ISolicitudRespository solicitudRespository;
+    private final ISolicitudRespository solicitudRespository;
 
-    @Autowired
-    private SmcService smcService;
+    private final SmcService smcService;
 
-    @Autowired
-    private IDepartamentoRepository departamentoRepository;
+    private final IDepartamentoRepository departamentoRepository;
 
-    @Autowired
-    private IEstadoRepository estadoRepository;
+    private final IEstadoRepository estadoRepository;
 
-    @Autowired
-    private SalidaService salidaService;
+    private final SalidaService salidaService;
 
-    @Autowired
-    private IFuncionarioRespository funcionarioRespository;
+    private final IFuncionarioRespository funcionarioRespository;
 
-    @Autowired
-    private IDepartamentosRepository departamentosRepository;
+    private final IDepartamentosRepository departamentosRepository;
+
+    
+
+    public DerivacionService(IDerivacionRepository derivacionRepository, ISolicitudRespository solicitudRespository,
+            SmcService smcService, IDepartamentoRepository departamentoRepository, IEstadoRepository estadoRepository,
+            SalidaService salidaService, IFuncionarioRespository funcionarioRespository,
+            IDepartamentosRepository departamentosRepository) {
+        this.derivacionRepository = derivacionRepository;
+        this.solicitudRespository = solicitudRespository;
+        this.smcService = smcService;
+        this.departamentoRepository = departamentoRepository;
+        this.estadoRepository = estadoRepository;
+        this.salidaService = salidaService;
+        this.funcionarioRespository = funcionarioRespository;
+        this.departamentosRepository = departamentosRepository;
+    }
 
     public List<Derivacion> findBySolicitudId(Long id) {
         return derivacionRepository.findBySolicitudId(id);

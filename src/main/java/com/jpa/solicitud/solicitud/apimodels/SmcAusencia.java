@@ -6,10 +6,10 @@ public class SmcAusencia {
 
     private Integer ident;
     private String descripcion;
-    private Date fecha_inicio;
-    private Date fecha_termino;
-    private Long dias_ausencia;
-    private Integer dias_feriados;
+    private Date fechaInicio;
+    private Date fechaTermino;
+    private Long diasAusencia;
+    private Integer diasFeriados;
 
     public Integer getIdent() {
         return ident;
@@ -27,35 +27,35 @@ public class SmcAusencia {
         this.descripcion = descripcion;
     }
 
-    public Date getFecha_inicio() {
-        return fecha_inicio;
+    public Date getFechaInicio() {
+        return fechaInicio;
     }
 
-    public void setFecha_inicio(Date fecha_inicio) {
-        this.fecha_inicio = fecha_inicio;
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
     }
 
-    public Date getFecha_termino() {
-        return fecha_termino;
+    public Date getFechaTermino() {
+        return fechaTermino;
     }
 
-    public void setFecha_termino(Date fecha_termino) {
-        this.fecha_termino = fecha_termino;
+    public void setFechaTermino(Date fechaTermino) {
+        this.fechaTermino = fechaTermino;
     }
 
-    public Long getDias_ausencia() {
-        return dias_ausencia;
+    public Long getDiasAusencia() {
+        return diasAusencia;
     }
 
-    public void setDias_ausencia(Long dias_ausencia) {
-        this.dias_ausencia = dias_ausencia;
+    public void setDiasAusencia(Long diasAusencia) {
+        this.diasAusencia = diasAusencia;
     }
 
-    public Integer getDias_feriados() {
-        return dias_feriados;
+    public Integer getDiasFeriados() {
+        return diasFeriados;
     }
 
-    public void setDias_feriados(Integer dias_feriados) {
-        this.dias_feriados = dias_feriados;
+    public void setDiasFeriados(Integer diasFeriados) {
+        this.diasFeriados = diasFeriados;
     }
 }

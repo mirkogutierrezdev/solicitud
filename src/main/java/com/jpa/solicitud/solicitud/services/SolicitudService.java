@@ -5,10 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDto;
@@ -43,50 +41,55 @@ public class SolicitudService {
 
     // *inyección de dependencias de las interfaces repository */
 
-    @Autowired
-    private IFuncionarioRespository funcionarioRespository;
+    private final IFuncionarioRespository funcionarioRespository;
 
-    @Autowired
-    private ITipoSolicitudRepository tipoSolicitudRepository;
+    private final ITipoSolicitudRepository tipoSolicitudRepository;
 
-    @Autowired
-    private IEstadoRepository estadoRepository;
+    private final IEstadoRepository estadoRepository;
 
-    @Autowired
-    private ISolicitudRespository solicitudRespository;
+    private final ISolicitudRespository solicitudRespository;
 
-    @Autowired
-    private IDerivacionRepository derivacionRepository;
+    private final IDerivacionRepository derivacionRepository;
 
-    @Autowired
-    private IDepartamentoRepository departamentoRepository;
+    private final IDepartamentoRepository departamentoRepository;
 
-    @Autowired
-    private IEntradaRepository entradaRepository;
+    private final IEntradaRepository entradaRepository;
 
-    @Autowired
-    private ISalidaRepository salidaRepository;
+    private final ISalidaRepository salidaRepository;
 
-    @Autowired
-    SmcService smcService;
+    private final SmcService smcService;
 
-    @Autowired
-    private IDepartamentosRepository departamentosRepository;
+    private final IDepartamentosRepository departamentosRepository;
 
-    @Autowired
-    private IRechazoRepository rechazoRepository;
+    private final IRechazoRepository rechazoRepository;
 
-    @Autowired
-    private IAprobacionRepository aprobacionRepository;
+    private final IAprobacionRepository aprobacionRepository;
 
-    @Autowired
-    private DerivacionService derivacionService;
+    private final DerivacionService derivacionService;
 
-    @Autowired
-    private SalidaService salidaService;
+    private final SalidaService salidaService;
 
-    // *RestTemplate para la api a smc */
-    public SolicitudService(RestTemplate restTemplate) {
+    public SolicitudService(IFuncionarioRespository funcionarioRespository,
+            ITipoSolicitudRepository tipoSolicitudRepository, IEstadoRepository estadoRepository,
+            ISolicitudRespository solicitudRespository, IDerivacionRepository derivacionRepository,
+            IDepartamentoRepository departamentoRepository, IEntradaRepository entradaRepository,
+            ISalidaRepository salidaRepository, SmcService smcService, IDepartamentosRepository departamentosRepository,
+            IRechazoRepository rechazoRepository, IAprobacionRepository aprobacionRepository,
+            DerivacionService derivacionService, SalidaService salidaService) {
+        this.funcionarioRespository = funcionarioRespository;
+        this.tipoSolicitudRepository = tipoSolicitudRepository;
+        this.estadoRepository = estadoRepository;
+        this.solicitudRespository = solicitudRespository;
+        this.derivacionRepository = derivacionRepository;
+        this.departamentoRepository = departamentoRepository;
+        this.entradaRepository = entradaRepository;
+        this.salidaRepository = salidaRepository;
+        this.smcService = smcService;
+        this.departamentosRepository = departamentosRepository;
+        this.rechazoRepository = rechazoRepository;
+        this.aprobacionRepository = aprobacionRepository;
+        this.derivacionService = derivacionService;
+        this.salidaService = salidaService;
     }
 
     @Transactional
@@ -122,7 +125,7 @@ public class SolicitudService {
         solicitud.setFechaFin(fechaFin);
         solicitud.setEstado(estado);
         solicitud.setDuracion(duracion);
-        
+
         solicitud = solicitudRespository.save(solicitud);
 
         // Crear y persistir la derivación
@@ -160,18 +163,19 @@ public class SolicitudService {
     private Derivacion crearDerivacion(SolicitudDto solicitudDto, Funcionario funcionario, Solicitud solicitud) {
         Departamento departamentoSolicitud = new Departamento();
         Departamentos departamentoRequest = departamentosRepository.findByDepto(solicitudDto.getDepto());
-    
+
         boolean esJefe = departamentosRepository.existsByDeptoIntAndRutJefe(departamentoRequest.getDeptoInt(),
                 solicitudDto.getRut());
         if (esJefe) {
             Long codigoDepartamentoDestino = Long
                     .parseLong(DepartamentoUtils.determinaDerivacion(departamentoRequest.getDeptoInt()));
-    
+
             Departamentos departmentSupervisor = departamentosRepository.findByDeptoInt(codigoDepartamentoDestino);
             if (departmentSupervisor == null) {
-                throw new IllegalArgumentException("No se encontró el departamento supervisor para el código: " + codigoDepartamentoDestino);
+                throw new IllegalArgumentException(
+                        "No se encontró el departamento supervisor para el código: " + codigoDepartamentoDestino);
             }
-    
+
             departamentoSolicitud.setDepto(departmentSupervisor.getDeptoInt());
             departamentoSolicitud.setDeptoSmc(departmentSupervisor.getDepto());
             departamentoSolicitud.setNombre(departmentSupervisor.getNombre_departamento());
@@ -180,16 +184,14 @@ public class SolicitudService {
             departamentoSolicitud.setDeptoSmc(departamentoRequest.getDepto());
             departamentoSolicitud.setNombre(departamentoRequest.getNombre_departamento());
         }
-    
+
         // Guardar el departamento antes de asociarlo a la derivación
         departamentoSolicitud = departamentoRepository.save(departamentoSolicitud);
 
-        
-    
         Derivacion derivacion = derivacionService.saveDerivacion(departamentoSolicitud, solicitud, funcionario);
 
         salidaService.saveSalida(derivacion, funcionario);
-    
+
         return derivacion;
     }
 

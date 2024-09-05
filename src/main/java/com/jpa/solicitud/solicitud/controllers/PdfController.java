@@ -2,7 +2,6 @@ package com.jpa.solicitud.solicitud.controllers;
 
 import com.jpa.solicitud.solicitud.models.dto.PdfDto;
 import com.jpa.solicitud.solicitud.services.JsonService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,8 +14,11 @@ import java.io.ByteArrayInputStream;
 @RequestMapping("/api/pdf")
 public class PdfController {
 
-    @Autowired
-    private JsonService jsonService;
+    private final JsonService jsonService;
+
+    public PdfController(JsonService jsonService) {
+        this.jsonService = jsonService;
+    }
 
     @PostMapping("/generate")
     public ResponseEntity<InputStreamResource> generatePdf(@RequestBody PdfDto pdfDto) throws Exception {

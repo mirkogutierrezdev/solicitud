@@ -3,9 +3,9 @@ package com.jpa.solicitud.solicitud.apimodels;
 public class SmcDepartamento {
 
     private String depto;
-    private String nombre_departamento;
-    private String jefe_departamento;
-    private String cargo_jefe;
+    private String nombreDepartamento;
+    private String jefeDepartamento;
+    private String cargoJefe;
 
     public String getDepto() {
         return depto;
@@ -15,27 +15,27 @@ public class SmcDepartamento {
         this.depto = depto;
     }
 
-    public String getNombre_departamento() {
-        return nombre_departamento;
+    public String getNombreDepartamento() {
+        return nombreDepartamento;
     }
 
-    public void setNombre_departamento(String nombre_departamento) {
-        this.nombre_departamento = nombre_departamento;
+    public void setNombreDepartamento(String nombreDepartamento) {
+        this.nombreDepartamento = nombreDepartamento;
     }
 
-    public String getJefe_departamento() {
-        return jefe_departamento;
+    public String getJefeDepartamento() {
+        return jefeDepartamento;
     }
 
-    public void setJefe_departamento(String jefe_departamento) {
-        this.jefe_departamento = jefe_departamento;
+    public void setJefeDepartamento(String jefeDepartamento) {
+        this.jefeDepartamento = jefeDepartamento;
     }
 
-    public String getCargo_jefe() {
-        return cargo_jefe;
+    public String getCargoJefe() {
+        return cargoJefe;
     }
 
-    public void setCargo_jefe(String cargo_jefe) {
-        this.cargo_jefe = cargo_jefe;
+    public void setCargoJefe(String cargoJefe) {
+        this.cargoJefe = cargoJefe;
     }
 }

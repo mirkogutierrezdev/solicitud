@@ -2,7 +2,6 @@ package com.jpa.solicitud.solicitud.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,25 +18,26 @@ import com.jpa.solicitud.solicitud.services.EntradaService;
 @RequestMapping("/api/entrada")
 public class EntradaControllers {
 
-    @Autowired
-    private EntradaService entradaService;
+    private final EntradaService entradaService;
+
+    public EntradaControllers(EntradaService entradaService) {
+        this.entradaService = entradaService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createEntrada(@RequestBody EntradaDto entradaDto) {
 
         try {
-             entradaService.saveEntrada(entradaDto);
-             return ResponseEntity.status(HttpStatus.CREATED)
-                     .body("{\"message\": \"Entrada creada exitosamente\"}");
+            entradaService.saveEntrada(entradaDto);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("{\"message\": \"Entrada creada exitosamente\"}");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body("{\"error\": \"Datos inválidos: " + e.getMessage() + "\"}");
+                    .body("{\"error\": \"Datos inválidos: " + e.getMessage() + "\"}");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("{\"error\": \"Error al crear la entrada: " + e.getMessage() + "\"}");
+                    .body("{\"error\": \"Error al crear la entrada: " + e.getMessage() + "\"}");
         }
-
-        
 
     }
 

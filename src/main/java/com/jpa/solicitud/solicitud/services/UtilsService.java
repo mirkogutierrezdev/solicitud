@@ -3,7 +3,6 @@ package com.jpa.solicitud.solicitud.services;
 import java.sql.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.apimodels.SmcFeriado;
@@ -14,19 +13,22 @@ import com.jpa.solicitud.solicitud.utils.StringUtils;
 @Service
 public class UtilsService {
 
-    @Autowired
-    private FeriadoUtils feriadoUtils;
+    private final FeriadoUtils feriadoUtils;
+
+    public UtilsService(FeriadoUtils feriadoUtils) {
+        this.feriadoUtils = feriadoUtils;
+    }
 
     public long getWorkDays(Date sqlStartDate, Date sqlEndDate) {
 
         return feriadoUtils.calcularDiasHabiles(sqlStartDate, sqlEndDate);
     }
 
-    public String determinaDerivacion(Long depto){
+    public String determinaDerivacion(Long depto) {
         return DepartamentoUtils.determinaDerivacion(depto);
     }
 
-    public String buildName(String nombre, String apellidoPaterno, String apellidoMaterno){
+    public String buildName(String nombre, String apellidoPaterno, String apellidoMaterno) {
 
         return StringUtils.buildName(nombre, apellidoPaterno, apellidoMaterno);
     }

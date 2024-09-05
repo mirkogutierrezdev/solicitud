@@ -1,6 +1,5 @@
 package com.jpa.solicitud.solicitud.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,10 +19,13 @@ import com.jpa.solicitud.solicitud.services.RechazoService;
 @CrossOrigin(origins = "http://localhost:5173")
 public class RechazoController {
 
-    @Autowired
-    private RechazoService rechazoService;
+	private final RechazoService rechazoService;
 
-    @PostMapping("/create")
+	public RechazoController(RechazoService rechazoService) {
+		this.rechazoService = rechazoService;
+	}
+
+	@PostMapping("/create")
 	public ResponseEntity<?> createRechazo(@RequestBody RechazoDto rechazoDto) {
 		try {
 			Rechazo nuevoRechazo = rechazoService.saveRechazo(rechazoDto);
@@ -35,16 +37,15 @@ public class RechazoController {
 	}
 
 	@GetMapping("/bySolicitud/{solicitudId}")
-	public ResponseEntity <?> ctrlgetSolicitudById(@PathVariable Long solicitudId){
+	public ResponseEntity<?> ctrlgetSolicitudById(@PathVariable Long solicitudId) {
 
-		try{
+		try {
 			Rechazo rechazo = rechazoService.servGetRechazoBySolicitud(solicitudId);
 			return ResponseEntity.ok(rechazo);
-		}catch(Exception e){
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-			.body("Error al traer el rechazo" + e.getMessage());
+					.body("Error al traer el rechazo" + e.getMessage());
 		}
 	}
-
 
 }

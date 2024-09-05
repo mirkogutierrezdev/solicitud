@@ -13,7 +13,7 @@ public class SolicitudDto {
     private Long depto;
     private String estado;
     private Date fechaDer;
-    private String nombre_departamento;
+    private String nombreDepartamento;
     private Double duracion;
 
     
@@ -79,12 +79,12 @@ public class SolicitudDto {
         this.fechaDer = fechaDer;
     }
 
-    public String getNombre_departamento() {
-        return nombre_departamento;
+    public String getNombreDepartamento() {
+        return nombreDepartamento;
     }
 
-    public void setNombre_departamento(String nombre_departamento) {
-        this.nombre_departamento = nombre_departamento;
+    public void setNombreDepartamento(String nombreDepartamento) {
+        this.nombreDepartamento = nombreDepartamento;
     }
 
     public Double getDuracion() {

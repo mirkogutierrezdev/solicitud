@@ -6,7 +6,6 @@ import com.jpa.solicitud.solicitud.services.AprobacionService;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,8 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:5173")
 public class AprobacionController {
 
-    @Autowired
-    private AprobacionService aprobacionService;
+    private final AprobacionService aprobacionService;
+
+    public AprobacionController(AprobacionService aprobacionService){
+        this.aprobacionService=aprobacionService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createAprobacion(@RequestBody AprobacionDto aprobacionDto) {

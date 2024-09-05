@@ -2,7 +2,6 @@ package com.jpa.solicitud.solicitud.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,8 +20,11 @@ import com.jpa.solicitud.solicitud.services.DepartamentosService;
 @RequestMapping("/api/departamentos")
 public class DepartamentosController {
 
-    @Autowired
-    private DepartamentosService departamentosService;
+    private final DepartamentosService departamentosService;
+
+    public DepartamentosController(DepartamentosService departamentosService) {
+        this.departamentosService = departamentosService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> saveAllDepartamentos(@RequestBody List<Departamentos> departamentos) {

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
@@ -25,22 +24,26 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class EntradaService {
 
-    @Autowired
-    private IEntradaRepository entradaRepository;
+    private final IEntradaRepository entradaRepository;
 
-    @Autowired
-    private IDerivacionRepository derivacionRepository;
+    private final IDerivacionRepository derivacionRepository;
 
-    @Autowired
-    private IFuncionarioRespository funcionarioRespository;
+    private final IFuncionarioRespository funcionarioRespository;
 
-    @Autowired
-    private SmcService smcService;
+    private final SmcService smcService;
+
+    public EntradaService(IEntradaRepository entradaRepository, IDerivacionRepository derivacionRepository,
+            IFuncionarioRespository funcionarioRespository, SmcService smcService) {
+        this.entradaRepository = entradaRepository;
+        this.derivacionRepository = derivacionRepository;
+        this.funcionarioRespository = funcionarioRespository;
+        this.smcService = smcService;
+    }
 
     public Entrada saveEntrada(EntradaDto entradaDto) {
 
         Date getFechaEntrada = Date.valueOf(LocalDate.now());
-        
+
         // Encuentra todas las derivaciones asociadas a la solicitud
         List<Derivacion> derivaciones = derivacionRepository.findBySolicitudId(entradaDto.getSolicitudId());
 
@@ -54,9 +57,9 @@ public class EntradaService {
                 .orElseThrow(() -> new IllegalArgumentException("No se pudo encontrar la última derivación."));
 
         // Obtiene nombre de la base de datos Personas de Smc
-    
+
         SmcPersona persona = smcService.getPersonaByRut(entradaDto.getRut());
-       
+
         // Crea y persiste Objeto Funcionario con los datos traidos de Smc
         Funcionario funcionario = new Funcionario();
         funcionario.setRut(persona.getRut());
@@ -70,13 +73,13 @@ public class EntradaService {
         funcionario = funcionarioRespository.save(funcionario);
 
         Optional<Entrada> entradaCheck = entradaRepository.findById(ultimaDerivacion.getId());
-        if(entradaCheck.isPresent()){
+        if (entradaCheck.isPresent()) {
             throw new IllegalStateException("Ya existe una entrada para esta derivación.");
         }
 
         // Crea Y persiste Entrada
         Entrada entrada = new Entrada();
-        
+
         entrada.setFechaEntrada(getFechaEntrada);
         entrada.setDerivacion(ultimaDerivacion);
         entrada.setFuncionario(funcionario);
@@ -97,6 +100,6 @@ public class EntradaService {
     }
 
     public List<Entrada> saveEntradas(List<EntradaDto> entradasDto) {
-   return entradasDto.stream().map(this::saveEntrada).collect(Collectors.toList());
+        return entradasDto.stream().map(this::saveEntrada).collect(Collectors.toList());
     }
 }

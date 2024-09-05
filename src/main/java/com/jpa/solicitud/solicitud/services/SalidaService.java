@@ -3,7 +3,6 @@ package com.jpa.solicitud.solicitud.services;
 import java.sql.Date;
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
@@ -16,8 +15,11 @@ import jakarta.transaction.Transactional;
 @Service
 public class SalidaService {
 
-    @Autowired
-    protected ISalidaRepository salidaRepository;
+    protected final ISalidaRepository salidaRepository;
+
+    public SalidaService(ISalidaRepository salidaRepository) {
+        this.salidaRepository = salidaRepository;
+    }
 
     @Transactional
     public Salida saveSalida(Derivacion derivacion, Funcionario funcionario) {

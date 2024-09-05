@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.apimodels.SmcFeriado;
@@ -15,15 +14,15 @@ import com.jpa.solicitud.solicitud.services.SmcService;
 @Service
 public class FeriadoUtils {
 
-    @Autowired
-    private SmcService smcService;
+    private final SmcService smcService;
+
+    public FeriadoUtils(SmcService smcService) {
+        this.smcService = smcService;
+    }
 
     public long calcularDiasHabiles(Date sqlStartDate, Date sqlEndDate) {
         LocalDate startDate = sqlStartDate.toLocalDate();
         LocalDate endDate = sqlEndDate.toLocalDate();
-
-        System.out.println("startDate: utils " + startDate);
-        System.out.println("endDate: utils " + endDate);
 
         if (startDate.isAfter(endDate)) {
             return 0;
@@ -33,7 +32,6 @@ public class FeriadoUtils {
         List<SmcFeriado> feriados = getFeriados(sqlStartDate, sqlEndDate);
 
         // Imprimir los feriados obtenidos
-        System.out.println("Feriados: " + feriados);
 
         // Convertir la lista de feriados a una lista de LocalDate
         List<LocalDate> feriadoDates = feriados.stream()
@@ -44,8 +42,8 @@ public class FeriadoUtils {
         LocalDate date = startDate;
         while (!date.isAfter(endDate)) {
             if (date.getDayOfWeek() != DayOfWeek.SATURDAY &&
-                date.getDayOfWeek() != DayOfWeek.SUNDAY &&
-                !feriadoDates.contains(date)) {
+                    date.getDayOfWeek() != DayOfWeek.SUNDAY &&
+                    !feriadoDates.contains(date)) {
                 workingDays++;
             }
             date = date.plusDays(1);

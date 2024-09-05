@@ -1,9 +1,7 @@
 package com.jpa.solicitud.solicitud.controllers;
 
-
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,13 +21,13 @@ import com.jpa.solicitud.solicitud.services.DerivacionService;
 @RequestMapping("/api/derivacion")
 public class DerivacionControllers {
 
-    @Autowired
-    private DerivacionService derivacionService;
+    private final DerivacionService derivacionService;
 
+    public DerivacionControllers(DerivacionService derivacionService) {
+        this.derivacionService = derivacionService;
+    }
 
-
-
-   @PostMapping("/create")
+    @PostMapping("/create")
     public ResponseEntity<?> createDerivacion(@RequestBody DerivacionDto DerivacionDto) {
 
         try {
@@ -55,7 +53,6 @@ public class DerivacionControllers {
         }
     }
 
-
     @PostMapping("/createDerivaciones")
     public ResponseEntity<?> saveDerivaciones(@RequestBody List<DerivacionDto> derivacionesDto) {
         try {
@@ -71,6 +68,4 @@ public class DerivacionControllers {
         }
     }
 
-
- 
 }

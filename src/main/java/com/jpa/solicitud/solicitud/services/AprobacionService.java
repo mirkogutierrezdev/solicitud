@@ -8,7 +8,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,26 +30,33 @@ import com.jpa.solicitud.solicitud.utils.StringUtils;
 @Service
 public class AprobacionService {
 
-    @Autowired
-    private IAprobacionRepository aprobacionRepository;
+    private final IAprobacionRepository aprobacionRepository;
 
-    @Autowired
-    private IFuncionarioRespository funcionarioRepository;
+    private final IFuncionarioRespository funcionarioRepository;
 
-    @Autowired
-    private SmcService smcService;
+    private final SmcService smcService;
 
-    @Autowired
-    private ISolicitudRespository solicitudRepository;
+    private final ISolicitudRespository solicitudRepository;
 
-    @Autowired
-    private IEstadoRepository estadoRepository;
+    private final IEstadoRepository estadoRepository;
 
-    @Autowired
     private IDerivacionRepository derivacionRepository;
 
-    @Autowired
-    private JsonService jsonService;
+    private final JsonService jsonService;
+
+    
+
+    public AprobacionService(IAprobacionRepository aprobacionRepository, IFuncionarioRespository funcionarioRepository,
+            SmcService smcService, ISolicitudRespository solicitudRepository, IEstadoRepository estadoRepository,
+            IDerivacionRepository derivacionRepository, JsonService jsonService) {
+        this.aprobacionRepository = aprobacionRepository;
+        this.funcionarioRepository = funcionarioRepository;
+        this.smcService = smcService;
+        this.solicitudRepository = solicitudRepository;
+        this.estadoRepository = estadoRepository;
+        this.derivacionRepository = derivacionRepository;
+        this.jsonService = jsonService;
+    }
 
     @Transactional
     public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) throws Exception {
@@ -132,7 +138,7 @@ public class AprobacionService {
         SmcFuncionario funcionario = smcService.getFuncionarioByRut(rut);
         SmcPersona persona = smcService.getPersonaByRut(rut);
 
-        String departamento = funcionario.getDepartamento().getNombre_departamento();
+        String departamento = funcionario.getDepartamento().getNombreDepartamento();
         String escalafon = funcionario.getContrato().getEscalafon();
         Integer grado = funcionario.getContrato().getGrado();
 

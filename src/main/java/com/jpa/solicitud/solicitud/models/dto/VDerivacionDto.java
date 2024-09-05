@@ -12,10 +12,11 @@ public class VDerivacionDto {
     private Date fechaSalida;
     private String nombreFuncionarioSalida;
 
-    public VDerivacionDto(Long derivacionId, Date fechaDerivacion, 
-                          String nombreFuncionarioOrigen, String nombreDepartamentoOrigen,
-                          Date fechaEntrada, String nombreFuncionarioEntrada, 
-                          Date fechaSalida, String nombreFuncionarioSalida) {
+    
+
+    public VDerivacionDto(Long derivacionId, Date fechaDerivacion, String nombreFuncionarioOrigen,
+            String nombreDepartamentoOrigen, Date fechaEntrada, String nombreFuncionarioEntrada, Date fechaSalida,
+            String nombreFuncionarioSalida) {
         this.derivacionId = derivacionId;
         this.fechaDerivacion = fechaDerivacion;
         this.nombreFuncionarioOrigen = nombreFuncionarioOrigen;

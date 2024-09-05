@@ -2,6 +2,12 @@ package com.jpa.solicitud.solicitud.utils;
 
 public class DepartamentoUtils {
 
+    private DepartamentoUtils() {
+        throw new IllegalStateException("Utility class");
+      }
+    
+    
+
 
 
     public static String obtenerDireccion(String codigo) {

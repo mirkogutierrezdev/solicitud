@@ -3,7 +3,6 @@ package com.jpa.solicitud.solicitud.controllers;
 import java.sql.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,12 +19,11 @@ import com.jpa.solicitud.solicitud.services.UtilsService;
 @RequestMapping("/api/utils")
 public class UtilsControllers {
 
-    @Autowired
-    private UtilsService utilsService;
+    private final UtilsService utilsService;
 
-    
-
- 
+    public UtilsControllers(UtilsService utilsService) {
+        this.utilsService = utilsService;
+    }
 
     @GetMapping("/calcular")
     public ResponseEntity<Long> getWorkDays(@RequestParam Date fechaInicio,
@@ -49,9 +47,4 @@ public class UtilsControllers {
         }
     }
 
-
-
-
-    
-    
 }
