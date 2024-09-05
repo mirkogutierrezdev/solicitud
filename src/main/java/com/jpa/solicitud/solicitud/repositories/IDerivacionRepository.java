@@ -24,16 +24,15 @@ public interface IDerivacionRepository extends JpaRepository<Derivacion, Long> {
     Optional<Derivacion> findById(Long id);
 
     @Query("SELECT new com.jpa.solicitud.solicitud.models.dto.VDerivacionDto(d.id, d.fechaDerivacion, " +
-    "funOri.nombre, deptoOri.nombre, e.fechaEntrada, funEnt.nombre, s.fechaSalida, funSal.nombre) " +
-    "FROM Derivacion d " +
-    "LEFT JOIN Salida s ON s.derivacion.id = d.id " +
-    "LEFT JOIN Entrada e ON e.derivacion.id = d.id " +
-    "LEFT JOIN Funcionario funOri ON funOri.id = d.funcionario.id " +
-    "LEFT JOIN Funcionario funEnt ON funEnt.id = e.funcionario.id " +
-    "LEFT JOIN Funcionario funSal ON funSal.id = s.funcionario.id " +
-    "LEFT JOIN Departamento deptoOri ON deptoOri.id = d.departamento.id " +
-    "WHERE d.solicitud.id = :solicitudId")
-List<VDerivacionDto> findDerivacionesBySolicitud(@Param("solicitudId") Long solicitudId);
-
+            "funOri.nombre, deptoOri.nombre, e.fechaEntrada, funEnt.nombre, s.fechaSalida, funSal.nombre) " +
+            "FROM Derivacion d " +
+            "LEFT JOIN Salida s ON s.derivacion.id = d.id " +
+            "LEFT JOIN Entrada e ON e.derivacion.id = d.id " +
+            "LEFT JOIN Funcionario funOri ON funOri.id = d.funcionario.id " +
+            "LEFT JOIN Funcionario funEnt ON funEnt.id = e.funcionario.id " +
+            "LEFT JOIN Funcionario funSal ON funSal.id = s.funcionario.id " +
+            "LEFT JOIN Departamento deptoOri ON deptoOri.id = d.departamento.id " +
+            "WHERE d.solicitud.id = :solicitudId")
+    List<VDerivacionDto> findDerivacionesBySolicitud(@Param("solicitudId") Long solicitudId);
 
 }
