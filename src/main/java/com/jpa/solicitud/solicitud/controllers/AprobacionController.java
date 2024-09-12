@@ -19,8 +19,8 @@ public class AprobacionController {
 
     private final AprobacionService aprobacionService;
 
-    public AprobacionController(AprobacionService aprobacionService){
-        this.aprobacionService=aprobacionService;
+    public AprobacionController(AprobacionService aprobacionService) {
+        this.aprobacionService = aprobacionService;
     }
 
     @PostMapping("/create")
@@ -49,7 +49,7 @@ public class AprobacionController {
     public ResponseEntity<?> getPdf(@PathVariable Long id) {
         try {
             Aprobacion aprobacion = aprobacionService.servGetAprobacionBySolicitud(id);
-            if (aprobacion == null ) {
+            if (aprobacion == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("No se encontró la aprobación o el PDF con el ID proporcionado");
             }
@@ -80,4 +80,21 @@ public class AprobacionController {
                     .body("{\"error\": \"Error al crear las aprobaciones: " + e.getMessage() + "\"}");
         }
     }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<?> getAll() {
+        try {
+            List<Aprobacion> aprobacion = aprobacionService.findAll();
+            if (aprobacion == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No se encontró la aprobación o el PDF con el ID proporcionado");
+            }
+
+            return new ResponseEntity<>(aprobacion, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al obtener el PDF: " + e.getMessage());
+        }
+    }
+
 }

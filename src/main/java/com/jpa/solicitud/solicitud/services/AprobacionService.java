@@ -44,8 +44,6 @@ public class AprobacionService {
 
     private final JsonService jsonService;
 
-    
-
     public AprobacionService(IAprobacionRepository aprobacionRepository, IFuncionarioRespository funcionarioRepository,
             SmcService smcService, ISolicitudRespository solicitudRepository, IEstadoRepository estadoRepository,
             IDerivacionRepository derivacionRepository, JsonService jsonService) {
@@ -185,5 +183,10 @@ public class AprobacionService {
                     }
                 })
                 .toList();
+    }
+
+    public List<Aprobacion> findAll() {
+
+        return aprobacionRepository.findAll();
     }
 }

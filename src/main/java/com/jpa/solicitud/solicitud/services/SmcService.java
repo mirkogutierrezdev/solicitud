@@ -57,8 +57,7 @@ public class SmcService {
         String strFechaInicio = dateFormat.format(fechaInicio);
         String strFechaTermino = dateFormat.format(fechaTermino);
 
-        System.out.println(strFechaInicio);
-        System.out.println(strFechaTermino);
+     
 
         String url = "http://localhost:8080/api/smc/feriados/calcular?fechaInicio=" + strFechaInicio + "&fechaTermino=" + strFechaTermino;
 
