@@ -22,6 +22,7 @@ public class DepartamentosController {
 
     private final DepartamentosService departamentosService;
 
+
     public DepartamentosController(DepartamentosService departamentosService) {
         this.departamentosService = departamentosService;
     }
@@ -58,4 +59,5 @@ public class DepartamentosController {
         return departamentosService.esSub(depto);
 
     }
+
 }

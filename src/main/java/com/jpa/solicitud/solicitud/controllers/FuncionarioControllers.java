@@ -1,6 +1,8 @@
 package com.jpa.solicitud.solicitud.controllers;
 
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jpa.solicitud.solicitud.apimodels.SmcDepartamento;
 import com.jpa.solicitud.solicitud.apimodels.SmcFuncionario;
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.services.SmcService;
@@ -42,4 +45,18 @@ public class FuncionarioControllers {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/departamentos/list")
+    public ResponseEntity<List<SmcDepartamento>> getDepartamentos() {
+        List<SmcDepartamento> funcionario = smcService.getDepartamentos();
+        if (funcionario != null) {
+            return ResponseEntity.ok(funcionario);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    
+
+
 }
