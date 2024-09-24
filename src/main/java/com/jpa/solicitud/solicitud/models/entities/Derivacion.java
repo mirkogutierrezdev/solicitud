@@ -2,6 +2,8 @@ package com.jpa.solicitud.solicitud.models.entities;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,6 +22,7 @@ public class Derivacion {
 
     @ManyToOne
     @JoinColumn(name = "solicitud_id", nullable = false)
+    @JsonBackReference // Para evitar recursión con Solicitud
     private Solicitud solicitud;
 
     @ManyToOne
@@ -27,11 +30,10 @@ public class Derivacion {
     private Departamento departamento;
 
     @ManyToOne
-    @JoinColumn(name = "funcionario_id", nullable = false) // Agregado para identificar al funcionario que hizo la derivación
+    @JoinColumn(name = "funcionario_id", nullable = false)
     private Funcionario funcionario;
 
     private Date fechaDerivacion;
-
     private Boolean leida;
 
         

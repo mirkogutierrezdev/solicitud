@@ -21,6 +21,7 @@ public class Funcionario {
     @Column(name = "nombre")
     private String nombre;
 
+
     public Long getId() {
         return id;
     }

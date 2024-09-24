@@ -12,4 +12,7 @@ public interface IAprobacionRepository extends JpaRepository<Aprobacion, Long> {
 	Aprobacion findBySolicitudId(Long idSolicitud);
 
 	List<Aprobacion> findAll();
+
+	
+
 }

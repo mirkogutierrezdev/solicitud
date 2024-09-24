@@ -2,6 +2,8 @@ package com.jpa.solicitud.solicitud.models.entities;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,23 +11,25 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "aprobaciones")
 public class Aprobacion {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "solicitud_id", nullable = false)
-	private Solicitud solicitud;
+    @OneToOne
+    @JoinColumn(name = "solicitud_id", nullable = false)
+    @JsonBackReference // Relación uno a uno con Solicitud
+    private Solicitud solicitud;
 
-	@ManyToOne
-	@JoinColumn(name = "funcionario_id", nullable = false)
-	private Funcionario funcionario;
+    @ManyToOne
+    @JoinColumn(name = "funcionario_id", nullable = false)
+    private Funcionario funcionario;
 
 	@Lob
     private byte[] pdf;
