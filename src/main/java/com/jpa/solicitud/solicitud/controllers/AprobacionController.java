@@ -6,9 +6,8 @@ import com.jpa.solicitud.solicitud.services.AprobacionService;
 
 import java.util.List;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,27 +44,6 @@ public class AprobacionController {
         }
     }
 
-    @GetMapping("/pdf/{id}")
-    public ResponseEntity<?> getPdf(@PathVariable Long id) {
-        try {
-            Aprobacion aprobacion = aprobacionService.servGetAprobacionBySolicitud(id);
-            if (aprobacion == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("No se encontró la aprobación o el PDF con el ID proporcionado");
-            }
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDispositionFormData("inline", "document.pdf");
-            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-
-            return new ResponseEntity<>(aprobacion.getPdf(), headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al obtener el PDF: " + e.getMessage());
-        }
-    }
-
     @PostMapping("/createAprobaciones")
     public ResponseEntity<?> saveAprobaciones(@RequestBody List<AprobacionDto> aprobacionDto) {
         try {
@@ -81,7 +59,7 @@ public class AprobacionController {
         }
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/getall")
     public ResponseEntity<?> getAll() {
         try {
             List<Aprobacion> aprobacion = aprobacionService.findAll();

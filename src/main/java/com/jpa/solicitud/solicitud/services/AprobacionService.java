@@ -20,11 +20,13 @@ import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
+import com.jpa.solicitud.solicitud.models.entities.Visacion;
 import com.jpa.solicitud.solicitud.repositories.IAprobacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
+import com.jpa.solicitud.solicitud.repositories.IVisacionRepository;
 import com.jpa.solicitud.solicitud.utils.StringUtils;
 
 @Service
@@ -42,18 +44,23 @@ public class AprobacionService {
 
     private IDerivacionRepository derivacionRepository;
 
-    private final JsonService jsonService;
+    //private final JsonService jsonService;
+
+    private final IVisacionRepository visacionRepository;
 
     public AprobacionService(IAprobacionRepository aprobacionRepository, IFuncionarioRespository funcionarioRepository,
             SmcService smcService, ISolicitudRespository solicitudRepository, IEstadoRepository estadoRepository,
-            IDerivacionRepository derivacionRepository, JsonService jsonService) {
+            IDerivacionRepository derivacionRepository, 
+            //JsonService jsonService,
+            IVisacionRepository visacionRepository) {
         this.aprobacionRepository = aprobacionRepository;
         this.funcionarioRepository = funcionarioRepository;
         this.smcService = smcService;
         this.solicitudRepository = solicitudRepository;
         this.estadoRepository = estadoRepository;
         this.derivacionRepository = derivacionRepository;
-        this.jsonService = jsonService;
+     //   this.jsonService = jsonService;
+        this.visacionRepository = visacionRepository;
     }
 
     @Transactional
@@ -111,8 +118,7 @@ public class AprobacionService {
         aprobacion.setFechaAprobacion(fechaAprobacion);
 
         // Generar el PDF y guardar en la base de datos
-        byte[] pdfBytes = preparePdf(solicitud);
-        aprobacion.setPdf(pdfBytes);
+          // aprobacion.setPdf(pdfBytes);
 
         // Guardar el objeto Aprobacion en el repositorio
         return aprobacionRepository.save(aprobacion);
@@ -126,7 +132,7 @@ public class AprobacionService {
         return solicitudRepository.findById(solicitudId).orElse(null);
     }
 
-    public byte[] preparePdf(Solicitud solicitud) throws Exception {
+    public PdfDto preparePdf(Solicitud solicitud) throws Exception {
 
         // Convertir java.sql.Date a java.time.LocalDate
         LocalDateTime fechaInicio = solicitud.getFechaInicio();
@@ -150,6 +156,18 @@ public class AprobacionService {
         String mesFin = fechaTermino.getMonth().getDisplayName(TextStyle.FULL,
                 new Locale.Builder().setLanguage("es").setRegion("ES").build());
 
+        // Obtener rut visador
+        Visacion visacion = visacionRepository.findBySolicitudId(solicitud.getId());
+
+        String rutJefe = visacion.getFuncionario().getRut().toString();
+        String nombreJefe = visacion.getFuncionario().getNombre();
+
+        Aprobacion aprobacion = aprobacionRepository.findBySolicitudId(visacion.getSolicitud().getId());
+
+        String rutDirector = aprobacion.getFuncionario().getRut().toString();
+        String nombreDirector = aprobacion.getFuncionario().getNombre();
+
+
         PdfDto pdfDto = new PdfDto();
         pdfDto.setNroIniDia(diaInicio);
         pdfDto.setMesIni(mesInicio);
@@ -167,10 +185,15 @@ public class AprobacionService {
         pdfDto.setGrado(String.valueOf(grado));
         pdfDto.setDepto(departamento);
         pdfDto.setTipoSolicitud(solicitud.getTipoSolicitud().getNombre());
+        pdfDto.setRutJefe(rutJefe);
+        pdfDto.setNombreJefe(nombreJefe);
+        pdfDto.setRutDirector(rutDirector);
+        pdfDto.setNombreDirector(nombreDirector);
+
 
         // Aquí puedes continuar con la lógica de generación de PDF usando estos valores
 
-        return jsonService.generateReport(pdfDto); // Llamar al servicio de generación de PDF
+        return pdfDto;
     }
 
     public List<Aprobacion> saveAprobaciones(List<AprobacionDto> aprobaciones) {

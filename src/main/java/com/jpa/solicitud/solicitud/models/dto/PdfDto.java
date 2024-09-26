@@ -17,7 +17,42 @@ public class PdfDto {
     private String vrut;
     private String telefono;
     private String tipoSolicitud;
+    private String rutJefe;
+    private String nombreJefe;
+    private String rutDirector;
+    private String nombreDirector;
 
+    public String getRutJefe() {
+        return rutJefe;
+    }
+
+    public void setRutJefe(String rutJefe) {
+        this.rutJefe = rutJefe;
+    }
+
+    public String getNombreJefe() {
+        return nombreJefe;
+    }
+
+    public void setNombreJefe(String nombreJefe) {
+        this.nombreJefe = nombreJefe;
+    }
+
+    public String getRutDirector() {
+        return rutDirector;
+    }
+
+    public void setRutDirector(String rutDirector) {
+        this.rutDirector = rutDirector;
+    }
+
+    public String getNombreDirector() {
+        return nombreDirector;
+    }
+
+    public void setNombreDirector(String nombreDirector) {
+        this.nombreDirector = nombreDirector;
+    }
 
     public String getDiasTomados() {
         return diasTomados;
@@ -145,7 +180,5 @@ public class PdfDto {
 
     public void setTipoSolicitud(String tipoSolicitud) {
         this.tipoSolicitud = tipoSolicitud;
-    }   
-    
-
+    }
 }

@@ -2,6 +2,7 @@ package com.jpa.solicitud.solicitud.services;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,12 +18,14 @@ import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 import com.jpa.solicitud.solicitud.models.entities.Estado;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
+import com.jpa.solicitud.solicitud.models.entities.Visacion;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentoRepository;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentosRepository;
 import com.jpa.solicitud.solicitud.repositories.IDerivacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IEstadoRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
+import com.jpa.solicitud.solicitud.repositories.IVisacionRepository;
 import com.jpa.solicitud.solicitud.utils.DepartamentoUtils;
 import com.jpa.solicitud.solicitud.utils.StringUtils;
 
@@ -48,12 +51,15 @@ public class DerivacionService {
 
     private final IDepartamentosRepository departamentosRepository;
 
+    private final IVisacionRepository visacionRepository;
+
     
 
     public DerivacionService(IDerivacionRepository derivacionRepository, ISolicitudRespository solicitudRespository,
             SmcService smcService, IDepartamentoRepository departamentoRepository, IEstadoRepository estadoRepository,
             SalidaService salidaService, IFuncionarioRespository funcionarioRespository,
-            IDepartamentosRepository departamentosRepository) {
+            IDepartamentosRepository departamentosRepository,
+            IVisacionRepository visacionRepository) {
         this.derivacionRepository = derivacionRepository;
         this.solicitudRespository = solicitudRespository;
         this.smcService = smcService;
@@ -62,6 +68,7 @@ public class DerivacionService {
         this.salidaService = salidaService;
         this.funcionarioRespository = funcionarioRespository;
         this.departamentosRepository = departamentosRepository;
+        this.visacionRepository = visacionRepository;
     }
 
     public List<Derivacion> findBySolicitudId(Long id) {
@@ -122,6 +129,21 @@ public class DerivacionService {
                         persona.getApellidomaterno()));
         funcionario = funcionarioRespository.save(funcionario);
 
+        Visacion visacion = new Visacion();
+       
+       
+
+        visacion.setSolicitud(solicitud);
+        visacion.setFuncionario(funcionario);
+        visacion.setFechaVisacion(LocalDate.now());
+        visacion.setTransaccion(LocalDateTime.now());
+
+        visacionRepository.save(visacion);
+
+
+       
+
+
         // Configurar la entidad Derivacion con las entidades relacionadas
         derivacion.setSolicitud(solicitud);
         derivacion.setDepartamento(deptoDestino);
@@ -129,6 +151,7 @@ public class DerivacionService {
         
         derivacion.setLeida(false);
         derivacion.setFuncionario(funcionario);
+
 
         // Guardar la derivacion
         derivacion = derivacionRepository.save(derivacion);

@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -31,8 +30,7 @@ public class Aprobacion {
     @JoinColumn(name = "funcionario_id", nullable = false)
     private Funcionario funcionario;
 
-	@Lob
-    private byte[] pdf;
+
 
 
 
@@ -73,13 +71,7 @@ public class Aprobacion {
 	public void setFechaAprobacion(Date fechaAprobacion) {
 		this.fechaAprobacion = fechaAprobacion;
 	}
-
-
-	public byte[] getPdf() {
-		return pdf;
-	}
-
-	public void setPdf(byte[] pdf) {
-		this.pdf = pdf;
-	}
 }
+
+
+	
