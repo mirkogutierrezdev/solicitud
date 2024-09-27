@@ -6,7 +6,6 @@ public class PdfDto {
     private String nroFinDia;
     private String mesFin;
     private String rut;
-    private String fono;
     private String paterno;
     private String materno;
     private String nombres;
@@ -102,13 +101,6 @@ public class PdfDto {
         this.rut = rut;
     }
 
-    public String getFono() {
-        return fono;
-    }
-
-    public void setFono(String fono) {
-        this.fono = fono;
-    }
 
     public String getPaterno() {
         return paterno;

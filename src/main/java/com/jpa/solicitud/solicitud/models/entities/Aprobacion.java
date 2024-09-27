@@ -36,6 +36,10 @@ public class Aprobacion {
 
 	private Date fechaAprobacion;
 
+	private String urlPdf;
+
+	
+
 	
 
 	// Getters y setters
@@ -70,6 +74,14 @@ public class Aprobacion {
 
 	public void setFechaAprobacion(Date fechaAprobacion) {
 		this.fechaAprobacion = fechaAprobacion;
+	}
+
+	public String getUrlPdf() {
+		return urlPdf;
+	}
+
+	public void setUrlPdf(String urlPdf) {
+		this.urlPdf = urlPdf;
 	}
 }
 
