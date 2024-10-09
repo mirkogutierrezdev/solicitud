@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
@@ -46,8 +47,9 @@ public class Solicitud {
     private Estado estado;
 
     @OneToOne(mappedBy = "solicitud")
-    @JsonManagedReference // Cambiamos la lista de aprobaciones por una relación OneToOne
+    @JsonBackReference
     private Aprobacion aprobacion;
+
     public Long getId() {
         return id;
     }

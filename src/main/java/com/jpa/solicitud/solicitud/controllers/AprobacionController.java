@@ -62,16 +62,33 @@ public class AprobacionController {
     @GetMapping("/getall")
     public ResponseEntity<?> getAll() {
         try {
-            List<Aprobacion> aprobacion = aprobacionService.findAll();
+            List<Aprobacion> aprobacion = aprobacionService.getAllWithoutDecreto();
             if (aprobacion == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("No se encontró la aprobación o el PDF con el ID proporcionado");
+                        .body("No se encontraron aprobaciones");
             }
 
             return new ResponseEntity<>(aprobacion, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al obtener el PDF: " + e.getMessage());
+                    .body("Error al obtener  el listado de aprobaciones: " + e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/getaprobaciones")
+    public ResponseEntity<?> getAprobaciones() {
+        try {
+            List<Aprobacion> aprobacion = aprobacionService.getAllWithoutDecreto();
+            if (aprobacion == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No se encontraron aprobaciones");
+            }
+
+            return new ResponseEntity<>(aprobacion, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al obtener la lista de aprobaciones: " + e.getMessage());
         }
     }
 

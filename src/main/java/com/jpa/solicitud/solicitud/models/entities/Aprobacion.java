@@ -3,6 +3,7 @@ package com.jpa.solicitud.solicitud.models.entities;
 import java.sql.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,30 +18,26 @@ import jakarta.persistence.Table;
 @Table(name = "aprobaciones")
 public class Aprobacion {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "solicitud_id", nullable = false)
-    @JsonBackReference // Relación uno a uno con Solicitud
-    private Solicitud solicitud;
+	@OneToOne
+	@JoinColumn(name = "solicitud_id", nullable = false)
+	@JsonManagedReference
+	private Solicitud solicitud;
 
-    @ManyToOne
-    @JoinColumn(name = "funcionario_id", nullable = false)
-    private Funcionario funcionario;
-
-
-
-
-
+	@ManyToOne
+	@JoinColumn(name = "funcionario_id", nullable = false)
+	private Funcionario funcionario;
+	
+	@ManyToOne
+	@JoinColumn(name = "decreto_id", nullable = true)
+	@JsonBackReference // Evita la serialización de la referencia al decreto, rompe la circularidad
+	private Decretos decreto;
 	private Date fechaAprobacion;
 
 	private String urlPdf;
-
-	
-
-	
 
 	// Getters y setters
 
@@ -83,7 +80,13 @@ public class Aprobacion {
 	public void setUrlPdf(String urlPdf) {
 		this.urlPdf = urlPdf;
 	}
+
+	public Decretos getDecreto() {
+		return decreto;
+	}
+
+	public void setDecreto(Decretos decreto) {
+		this.decreto = decreto;
+	}
+
 }
-
-
-	

@@ -19,19 +19,19 @@ import com.jpa.solicitud.solicitud.services.DerivacionService;
 @RestController
 @CrossOrigin(origins = "http://localhost")
 @RequestMapping("/api/derivacion")
-public class DerivacionControllers {
+public class DerivacionController {
 
     private final DerivacionService derivacionService;
 
-    public DerivacionControllers(DerivacionService derivacionService) {
+    public DerivacionController(DerivacionService derivacionService) {
         this.derivacionService = derivacionService;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createDerivacion(@RequestBody DerivacionDto DerivacionDto) {
+    public ResponseEntity<?> createDerivacion(@RequestBody DerivacionDto derivacionDto) {
 
         try {
-            derivacionService.saveDerivacion(DerivacionDto);
+            derivacionService.saveDerivacion(derivacionDto);
             return ResponseEntity.status(HttpStatus.CREATED).body("{\"message\": \"Solicitud creada exitosamente\"}");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

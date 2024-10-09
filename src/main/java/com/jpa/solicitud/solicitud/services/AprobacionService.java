@@ -211,10 +211,9 @@ public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
 
                 String responseString = response.getBody();
 
-                String urlPdf = url+responseString;
 
                 
-                return urlPdf;
+                return  url+responseString;
             } else {
                 throw new RuntimeException("Error al generar el documento PDF: " + response.getStatusCode());
             }
@@ -239,5 +238,13 @@ public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
     public List<Aprobacion> findAll() {
 
         return aprobacionRepository.findAll();
+    }
+
+    public List<Aprobacion> findAprobacionWithSolicitud(){
+        return aprobacionRepository.findAllWithSolicitud();
+    }
+
+    public List<Aprobacion> getAllWithoutDecreto(){
+        return aprobacionRepository.findAllWithoutDecreto();
     }
 }

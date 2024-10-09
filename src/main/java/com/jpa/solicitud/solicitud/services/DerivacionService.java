@@ -53,8 +53,6 @@ public class DerivacionService {
 
     private final IVisacionRepository visacionRepository;
 
-    
-
     public DerivacionService(IDerivacionRepository derivacionRepository, ISolicitudRespository solicitudRespository,
             SmcService smcService, IDepartamentoRepository departamentoRepository, IEstadoRepository estadoRepository,
             SalidaService salidaService, IFuncionarioRespository funcionarioRespository,
@@ -77,6 +75,7 @@ public class DerivacionService {
 
     @Transactional
     public Derivacion saveDerivacion(DerivacionDto derivacionDto) {
+
         Long depto = derivacionDto.getDepto();
         Long idSolicitud = derivacionDto.getSolicitudId();
         String estado = derivacionDto.getEstado();
@@ -129,29 +128,33 @@ public class DerivacionService {
                         persona.getApellidomaterno()));
         funcionario = funcionarioRespository.save(funcionario);
 
+        String rutJefe = deptoActualSmc.getRut_jefe();
+
+        SmcPersona personaJefe = smcService.getPersonaByRut(Integer.parseInt(rutJefe));
+
+        Funcionario jefeDepto = new Funcionario();
+        jefeDepto.setRut(personaJefe.getRut());
+        jefeDepto.setNombre(StringUtils.buildName(personaJefe.getNombres(), personaJefe.getApellidopaterno(), personaJefe.getApellidomaterno()));
+
+        jefeDepto = funcionarioRespository.save(jefeDepto);
+
+
         Visacion visacion = new Visacion();
-       
-       
 
         visacion.setSolicitud(solicitud);
-        visacion.setFuncionario(funcionario);
+        visacion.setFuncionario(jefeDepto);
         visacion.setFechaVisacion(LocalDate.now());
         visacion.setTransaccion(LocalDateTime.now());
 
         visacionRepository.save(visacion);
 
-
-       
-
-
         // Configurar la entidad Derivacion con las entidades relacionadas
         derivacion.setSolicitud(solicitud);
         derivacion.setDepartamento(deptoDestino);
         derivacion.setFechaDerivacion(fechaDerivacion);
-        
+
         derivacion.setLeida(false);
         derivacion.setFuncionario(funcionario);
-
 
         // Guardar la derivacion
         derivacion = derivacionRepository.save(derivacion);
@@ -186,7 +189,7 @@ public class DerivacionService {
         return derivacionRepository.findDerivacionesBySolicitud(solicitudId);
     }
 
-    public List<Derivacion> saveDerivaciones(List <DerivacionDto> derivacionesDto) {
+    public List<Derivacion> saveDerivaciones(List<DerivacionDto> derivacionesDto) {
         return derivacionesDto.stream().map(this::saveDerivacion).collect(Collectors.toList());
     }
 }
