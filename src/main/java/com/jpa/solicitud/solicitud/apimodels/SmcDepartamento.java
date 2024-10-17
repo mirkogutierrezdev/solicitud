@@ -6,6 +6,7 @@ public class SmcDepartamento {
     private String nombreDepartamento;
     private String jefeDepartamento;
     private String cargoJefe;
+    private String rutJefe;
 
     public String getDepto() {
         return depto;
@@ -37,5 +38,13 @@ public class SmcDepartamento {
 
     public void setCargoJefe(String cargoJefe) {
         this.cargoJefe = cargoJefe;
+    }
+
+    public String getRutJefe(){
+        return rutJefe;
+    }
+
+    public void setRutJefe(String rutJefe){
+        this.rutJefe = rutJefe;
     }
 }

@@ -28,7 +28,7 @@ public class DepartamentosController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> saveAllDepartamentos(@RequestBody List<Departamentos> departamentos) {
+    public ResponseEntity<Object> saveAllDepartamentos(@RequestBody List<Departamentos> departamentos) {
         try {
             departamentosService.saveAllDepartamentos(departamentos);
             return ResponseEntity.status(HttpStatus.CREATED)

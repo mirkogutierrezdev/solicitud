@@ -10,9 +10,9 @@ import com.jpa.solicitud.solicitud.models.entities.Departamentos;
 @Repository
 public interface IDepartamentosRepository extends JpaRepository<Departamentos, Long> {
 
-    Departamentos findByDepto(Long Depto);
+    Departamentos findByDepto(Long depto);
 
-    Departamentos findByDeptoInt(Long Depto);
+    Departamentos findByDeptoInt(Long depto);
 
     @Query("SELECT CASE WHEN COUNT(d) > 0 THEN TRUE ELSE FALSE END FROM Departamentos d WHERE d.deptoInt = :depto and d.rut_jefe= :rut")
     boolean existsByDeptoIntAndRutJefe(@Param("depto") Long deptoInt, @Param("rut") Integer rut);

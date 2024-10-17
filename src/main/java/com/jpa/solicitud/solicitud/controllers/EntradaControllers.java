@@ -25,7 +25,7 @@ public class EntradaControllers {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createEntrada(@RequestBody EntradaDto entradaDto) {
+    public ResponseEntity<Object> createEntrada(@RequestBody EntradaDto entradaDto) {
 
         try {
             entradaService.saveEntrada(entradaDto);
@@ -42,7 +42,7 @@ public class EntradaControllers {
     }
 
     @PostMapping("/createEntradas")
-    public ResponseEntity<?> saveEntradas(@RequestBody List<EntradaDto> entradasDto) {
+    public ResponseEntity<Object> saveEntradas(@RequestBody List<EntradaDto> entradasDto) {
         try {
             entradaService.saveEntradas(entradasDto);
             return ResponseEntity.status(HttpStatus.CREATED)

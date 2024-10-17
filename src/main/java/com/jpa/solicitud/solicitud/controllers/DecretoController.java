@@ -26,7 +26,7 @@ public class DecretoController {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<?> crearDecreto(@RequestBody DecretosDto decretoDTO) {
+    public ResponseEntity<Object> crearDecreto(@RequestBody DecretosDto decretoDTO) {
         try {
             Decretos nuevoDecreto = decretosService.crearDecreto(decretoDTO);
             return ResponseEntity.ok(nuevoDecreto);
@@ -38,7 +38,7 @@ public class DecretoController {
     }
 
     @GetMapping("/{id}/find")
-    public ResponseEntity<?> getDecretos(@PathVariable Long id){
+    public ResponseEntity<Object> getDecretos(@PathVariable Long id){
         try{
             Decretos decreto = decretosService.getDecretos(id);
             return ResponseEntity.ok(decreto);

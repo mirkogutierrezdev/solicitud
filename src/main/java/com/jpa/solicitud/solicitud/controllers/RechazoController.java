@@ -26,7 +26,7 @@ public class RechazoController {
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<?> createRechazo(@RequestBody RechazoDto rechazoDto) {
+	public ResponseEntity<Object> createRechazo(@RequestBody RechazoDto rechazoDto) {
 		try {
 			Rechazo nuevoRechazo = rechazoService.saveRechazo(rechazoDto);
 			return ResponseEntity.ok(nuevoRechazo);
@@ -37,7 +37,7 @@ public class RechazoController {
 	}
 
 	@GetMapping("/bySolicitud/{solicitudId}")
-	public ResponseEntity<?> ctrlgetSolicitudById(@PathVariable Long solicitudId) {
+	public ResponseEntity<Object> ctrlgetSolicitudById(@PathVariable Long solicitudId) {
 
 		try {
 			Rechazo rechazo = rechazoService.servGetRechazoBySolicitud(solicitudId);

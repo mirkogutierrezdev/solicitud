@@ -23,7 +23,7 @@ public class AprobacionController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createAprobacion(@RequestBody AprobacionDto aprobacionDto) {
+    public ResponseEntity<Object> createAprobacion(@RequestBody AprobacionDto aprobacionDto) {
         try {
             Aprobacion nuevaAprobacion = aprobacionService.saveAprobacion(aprobacionDto);
             return ResponseEntity.ok(nuevaAprobacion);
@@ -34,7 +34,7 @@ public class AprobacionController {
     }
 
     @GetMapping("/bySolicitud/{solicitudId}")
-    public ResponseEntity<?> getAprobacionBySolicitud(@PathVariable Long solicitudId) {
+    public ResponseEntity<Object> getAprobacionBySolicitud(@PathVariable Long solicitudId) {
         try {
             Aprobacion aprobacion = aprobacionService.servGetAprobacionBySolicitud(solicitudId);
             return ResponseEntity.ok(aprobacion);
@@ -45,7 +45,7 @@ public class AprobacionController {
     }
 
     @PostMapping("/createAprobaciones")
-    public ResponseEntity<?> saveAprobaciones(@RequestBody List<AprobacionDto> aprobacionDto) {
+    public ResponseEntity<Object> saveAprobaciones(@RequestBody List<AprobacionDto> aprobacionDto) {
         try {
             aprobacionService.saveAprobaciones(aprobacionDto);
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -60,7 +60,7 @@ public class AprobacionController {
     }
 
     @GetMapping("/getall")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<Object> getAll() {
         try {
             List<Aprobacion> aprobacion = aprobacionService.getAllWithoutDecreto();
             if (aprobacion == null) {
@@ -77,7 +77,7 @@ public class AprobacionController {
 
 
     @GetMapping("/getaprobaciones")
-    public ResponseEntity<?> getAprobaciones() {
+    public ResponseEntity<Object> getAprobaciones() {
         try {
             List<Aprobacion> aprobacion = aprobacionService.getAllWithoutDecreto();
             if (aprobacion == null) {

@@ -28,7 +28,7 @@ public class DerivacionController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createDerivacion(@RequestBody DerivacionDto derivacionDto) {
+    public ResponseEntity<Object> createDerivacion(@RequestBody DerivacionDto derivacionDto) {
 
         try {
             derivacionService.saveDerivacion(derivacionDto);
@@ -43,7 +43,7 @@ public class DerivacionController {
     }
 
     @GetMapping("/solicitud/{id}")
-    public ResponseEntity<?> getDerivacionesBySolicitud(@PathVariable Long id) {
+    public ResponseEntity<Object> getDerivacionesBySolicitud(@PathVariable Long id) {
         try {
             List<VDerivacionDto> derivaciones = derivacionService.findDerivacionesBySolicitud(id);
             return ResponseEntity.status(HttpStatus.OK).body(derivaciones);
@@ -54,7 +54,7 @@ public class DerivacionController {
     }
 
     @PostMapping("/createDerivaciones")
-    public ResponseEntity<?> saveDerivaciones(@RequestBody List<DerivacionDto> derivacionesDto) {
+    public ResponseEntity<Object> saveDerivaciones(@RequestBody List<DerivacionDto> derivacionesDto) {
         try {
             derivacionService.saveDerivaciones(derivacionesDto);
             return ResponseEntity.status(HttpStatus.CREATED)

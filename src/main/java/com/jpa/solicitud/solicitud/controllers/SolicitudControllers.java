@@ -30,7 +30,7 @@ public class SolicitudControllers {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createSolicitud(@RequestBody SolicitudDto solicitudDto) {
+    public ResponseEntity<Object> createSolicitud(@RequestBody SolicitudDto solicitudDto) {
 
         try {
             solicitudService.saveSolicitud(solicitudDto);
@@ -62,7 +62,7 @@ public class SolicitudControllers {
     }
 
     @GetMapping("/byRut/{rut}")
-    public ResponseEntity<?> getSolicitudesByFuncionario(@PathVariable Integer rut) {
+    public ResponseEntity<Object> getSolicitudesByFuncionario(@PathVariable Integer rut) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(solicitudService.servGetSolicitudesPorFuncionario(rut));
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class SolicitudControllers {
     }
 
     @GetMapping("/entramite/{rut}")
-    public ResponseEntity<?> getPendingAndNotRejectedByFuncionarioRut(@PathVariable Integer rut) {
+    public ResponseEntity<Object> getPendingAndNotRejectedByFuncionarioRut(@PathVariable Integer rut) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(solicitudService.servGetSolicitudesPendientesPorFuncionario(rut));
