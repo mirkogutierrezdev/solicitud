@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jpa.solicitud.solicitud.apimodels.SmcDepartamento;
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudDto;
 import com.jpa.solicitud.solicitud.models.dto.SolicitudWithDerivacionesDTO;
@@ -162,13 +163,17 @@ public class SolicitudService {
 
     private Derivacion crearDerivacion(SolicitudDto solicitudDto, Funcionario funcionario, Solicitud solicitud) {
         Departamento departamentoSolicitud = new Departamento();
-        Departamentos departamentoRequest = departamentosRepository.findByDepto(solicitudDto.getDepto());
+        SmcDepartamento smcDepartamento = smcService.getDepartamento(solicitudDto.getDepto().toString());
 
-        boolean esJefe = departamentosRepository.existsByDeptoIntAndRutJefe(departamentoRequest.getDeptoInt(),
-                solicitudDto.getRut());
+        Departamentos departamentoRequest = departamentosRepository
+                .findByDepto(Long.parseLong(smcDepartamento.getDepto()));
+        
+
+        boolean esJefe = smcService.isJefe((funcionario.getRut()));
         if (esJefe) {
             Long codigoDepartamentoDestino = Long
                     .parseLong(DepartamentoUtils.determinaDerivacion(departamentoRequest.getDeptoInt()));
+                    System.out.println("destino " + departamentoRequest.getDeptoInt());
 
             Departamentos departmentSupervisor = departamentosRepository.findByDeptoInt(codigoDepartamentoDestino);
             if (departmentSupervisor == null) {
@@ -178,11 +183,11 @@ public class SolicitudService {
 
             departamentoSolicitud.setDepto(departmentSupervisor.getDeptoInt());
             departamentoSolicitud.setDeptoSmc(departmentSupervisor.getDepto());
-            departamentoSolicitud.setNombre(departmentSupervisor.getNombre_departamento());
+            departamentoSolicitud.setNombre(departmentSupervisor.getNombreDepartamento());
         } else {
             departamentoSolicitud.setDepto(departamentoRequest.getDeptoInt());
             departamentoSolicitud.setDeptoSmc(departamentoRequest.getDepto());
-            departamentoSolicitud.setNombre(departamentoRequest.getNombre_departamento());
+            departamentoSolicitud.setNombre(departamentoRequest.getNombreDepartamento());
         }
 
         // Guardar el departamento antes de asociarlo a la derivación

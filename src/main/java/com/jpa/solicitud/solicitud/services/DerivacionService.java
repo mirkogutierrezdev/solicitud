@@ -108,7 +108,7 @@ public class DerivacionService {
 
         deptoDestino.setDepto(deptoDestinoSmc.getDeptoInt());
         deptoDestino.setDeptoSmc(deptoDestinoSmc.getDepto());
-        deptoDestino.setNombre(deptoDestinoSmc.getNombre_departamento());
+        deptoDestino.setNombre(deptoDestinoSmc.getNombreDepartamento());
 
         // Guardar el departamento
         deptoDestino = departamentoRepository.save(deptoDestino);
@@ -128,7 +128,7 @@ public class DerivacionService {
                         persona.getApellidomaterno()));
         funcionario = funcionarioRespository.save(funcionario);
 
-        String rutJefe = deptoActualSmc.getRut_jefe();
+        String rutJefe = deptoActualSmc.getRutJefe();
 
         SmcPersona personaJefe = smcService.getPersonaByRut(Integer.parseInt(rutJefe));
 
