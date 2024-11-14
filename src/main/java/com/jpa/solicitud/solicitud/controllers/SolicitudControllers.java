@@ -19,7 +19,7 @@ import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.services.SolicitudService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost")
+@CrossOrigin(origins = "https://appd.laflorida.cl")
 @RequestMapping("/api/solicitud")
 public class SolicitudControllers {
 

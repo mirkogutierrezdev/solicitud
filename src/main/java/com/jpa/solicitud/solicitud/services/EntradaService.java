@@ -43,51 +43,51 @@ public class EntradaService {
     public Entrada saveEntrada(EntradaDto entradaDto) {
 
         Date getFechaEntrada = Date.valueOf(LocalDate.now());
-
+    
         // Encuentra todas las derivaciones asociadas a la solicitud
         List<Derivacion> derivaciones = derivacionRepository.findBySolicitudId(entradaDto.getSolicitudId());
-
+    
         if (derivaciones.isEmpty()) {
             throw new IllegalArgumentException("No hay derivaciones asociadas a la solicitud proporcionada.");
         }
-
+    
         // Encuentra la última derivación basada en el id
         Derivacion ultimaDerivacion = derivaciones.stream()
                 .max(Comparator.comparing(Derivacion::getId))
                 .orElseThrow(() -> new IllegalArgumentException("No se pudo encontrar la última derivación."));
-
+    
+        // Verifica si ya existe una entrada para esta derivación
+        List<Entrada> entradaCheck = entradaRepository.findByDerivacionId(ultimaDerivacion.getId());
+        if (!entradaCheck.isEmpty()) {
+            throw new IllegalStateException("Ya existe una entrada para esta derivación.");
+        }
+    
         // Obtiene nombre de la base de datos Personas de Smc
-
         SmcPersona persona = smcService.getPersonaByRut(entradaDto.getRut());
-
+    
         // Crea y persiste Objeto Funcionario con los datos traidos de Smc
         Funcionario funcionario = new Funcionario();
         funcionario.setRut(persona.getRut());
-
+    
         // Utiliza metodo estatico Buildname para concatenar el nombre
         funcionario.setNombre(
                 StringUtils.buildName(persona.getNombres(),
                         persona.getApellidopaterno(),
                         persona.getApellidomaterno()));
-
+    
         funcionario = funcionarioRespository.save(funcionario);
-
-        Optional<Entrada> entradaCheck = entradaRepository.findById(ultimaDerivacion.getId());
-        if (entradaCheck.isPresent()) {
-            throw new IllegalStateException("Ya existe una entrada para esta derivación.");
-        }
-
-        // Crea Y persiste Entrada
+    
+        // Crea y persiste Entrada
         Entrada entrada = new Entrada();
-
         entrada.setFechaEntrada(getFechaEntrada);
         entrada.setDerivacion(ultimaDerivacion);
         entrada.setFuncionario(funcionario);
-
+    
         ultimaDerivacion.setLeida(true);
-
+    
         return entradaRepository.save(entrada);
     }
+    
 
     public List<Entrada> findAll() {
 

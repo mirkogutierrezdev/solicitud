@@ -164,41 +164,57 @@ public class SolicitudService {
     private Derivacion crearDerivacion(SolicitudDto solicitudDto, Funcionario funcionario, Solicitud solicitud) {
         Departamento departamentoSolicitud = new Departamento();
         SmcDepartamento smcDepartamento = smcService.getDepartamento(solicitudDto.getDepto().toString());
-
+    
         Departamentos departamentoRequest = departamentosRepository
                 .findByDepto(Long.parseLong(smcDepartamento.getDepto()));
-        
-
-        boolean esJefe = smcService.isJefe((funcionario.getRut()));
-        if (esJefe) {
+    
+        boolean esJefe = smcService.isJefe(funcionario.getRut());
+    
+        if (departamentoRequest.getRutJefe() == null || departamentoRequest.getRutJefe().trim().isEmpty()) {
+            // Si RutJefe es null, derivar al departamento superior
             Long codigoDepartamentoDestino = Long
                     .parseLong(DepartamentoUtils.determinaDerivacion(departamentoRequest.getDeptoInt()));
-                    System.out.println("destino " + departamentoRequest.getDeptoInt());
-
+    
             Departamentos departmentSupervisor = departamentosRepository.findByDeptoInt(codigoDepartamentoDestino);
             if (departmentSupervisor == null) {
                 throw new IllegalArgumentException(
                         "No se encontró el departamento supervisor para el código: " + codigoDepartamentoDestino);
             }
-
+    
+            departamentoSolicitud.setDepto(departmentSupervisor.getDeptoInt());
+            departamentoSolicitud.setDeptoSmc(departmentSupervisor.getDepto());
+            departamentoSolicitud.setNombre(departmentSupervisor.getNombreDepartamento());
+        } else if (esJefe) {
+            // Si es jefe y RutJefe no es null, derivar al departamento supervisor directo
+            Long codigoDepartamentoDestino = Long
+                    .parseLong(DepartamentoUtils.determinaDerivacion(departamentoRequest.getDeptoInt()));
+    
+            Departamentos departmentSupervisor = departamentosRepository.findByDeptoInt(codigoDepartamentoDestino);
+            if (departmentSupervisor == null) {
+                throw new IllegalArgumentException(
+                        "No se encontró el departamento supervisor para el código: " + codigoDepartamentoDestino);
+            }
+    
             departamentoSolicitud.setDepto(departmentSupervisor.getDeptoInt());
             departamentoSolicitud.setDeptoSmc(departmentSupervisor.getDepto());
             departamentoSolicitud.setNombre(departmentSupervisor.getNombreDepartamento());
         } else {
+            // Si no es jefe o no es necesario derivar al superior, mantener en el departamento actual
             departamentoSolicitud.setDepto(departamentoRequest.getDeptoInt());
             departamentoSolicitud.setDeptoSmc(departamentoRequest.getDepto());
             departamentoSolicitud.setNombre(departamentoRequest.getNombreDepartamento());
         }
-
+    
         // Guardar el departamento antes de asociarlo a la derivación
         departamentoSolicitud = departamentoRepository.save(departamentoSolicitud);
-
+    
         Derivacion derivacion = derivacionService.saveDerivacion(departamentoSolicitud, solicitud, funcionario);
-
+    
         salidaService.saveSalida(derivacion, funcionario);
-
+    
         return derivacion;
     }
+    
 
     public List<Solicitud> findAll() {
         return solicitudRespository.findAll();

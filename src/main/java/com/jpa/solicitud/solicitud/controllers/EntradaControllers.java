@@ -14,7 +14,7 @@ import com.jpa.solicitud.solicitud.models.dto.EntradaDto;
 import com.jpa.solicitud.solicitud.services.EntradaService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost")
+@CrossOrigin(origins = "https://appd.laflorida.cl")
 @RequestMapping("/api/entrada")
 public class EntradaControllers {
 

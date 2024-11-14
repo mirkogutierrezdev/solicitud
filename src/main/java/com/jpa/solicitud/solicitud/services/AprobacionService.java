@@ -36,8 +36,6 @@ public class AprobacionService {
 
     private final RestTemplate restTemplate;
 
-
-
     private final IAprobacionRepository aprobacionRepository;
 
     private final IFuncionarioRespository funcionarioRepository;
@@ -50,14 +48,13 @@ public class AprobacionService {
 
     private IDerivacionRepository derivacionRepository;
 
-
     private final IVisacionRepository visacionRepository;
 
     public AprobacionService(IAprobacionRepository aprobacionRepository, IFuncionarioRespository funcionarioRepository,
             SmcService smcService, ISolicitudRespository solicitudRepository, IEstadoRepository estadoRepository,
-            IDerivacionRepository derivacionRepository, 
-            //JsonService jsonService,
-            IVisacionRepository visacionRepository, RestTemplate restTemplate)  {
+            IDerivacionRepository derivacionRepository,
+            // JsonService jsonService,
+            IVisacionRepository visacionRepository, RestTemplate restTemplate) {
         this.aprobacionRepository = aprobacionRepository;
         this.funcionarioRepository = funcionarioRepository;
         this.smcService = smcService;
@@ -69,72 +66,73 @@ public class AprobacionService {
     }
 
     @Transactional
-public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
+    public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
 
-    Date fechaAprobacion = Date.valueOf(LocalDate.now());
-    if (aprobacionDto == null) {
-        throw new IllegalArgumentException("El objeto AprobacionDto no puede ser null");
+        Date fechaAprobacion = Date.valueOf(LocalDate.now());
+        if (aprobacionDto == null) {
+            throw new IllegalArgumentException("El objeto AprobacionDto no puede ser null");
+        }
+
+        Integer rut = aprobacionDto.getRut();
+        SmcPersona persona = smcService.getPersonaByRut(rut);
+        if (persona == null) {
+            throw new IllegalArgumentException("No se encontró un funcionario con el RUT proporcionado");
+        }
+
+        Funcionario funcionario = new Funcionario();
+        funcionario.setRut(persona.getRut());
+        funcionario.setNombre(
+                StringUtils.buildName(persona.getNombres(), persona.getApellidopaterno(),
+                        persona.getApellidomaterno()));
+        funcionario = funcionarioRepository.save(funcionario); // Guardar el funcionario antes de asignarlo
+
+        Solicitud solicitud = solicitudRepository.findById(aprobacionDto.getSolicitudId()).orElse(null);
+        if (solicitud == null) {
+            throw new IllegalArgumentException("No se encontró una solicitud con el ID proporcionado");
+        }
+
+        List<Derivacion> derivaciones = derivacionRepository.findBySolicitudId(solicitud.getId());
+
+        if (derivaciones.isEmpty()) {
+            throw new IllegalArgumentException("No hay derivaciones asociadas a la solicitud proporcionada.");
+        }
+
+        Derivacion ultimaDerivacion = derivaciones.stream()
+                .max(Comparator.comparing(Derivacion::getId))
+                .orElseThrow(() -> new IllegalArgumentException("No se pudo encontrar la última derivación."));
+
+        ultimaDerivacion.setLeida(true);
+
+        String estadoDto = aprobacionDto.getEstado();
+
+        Long codEstado = estadoRepository.findIdByNombre(estadoDto);
+
+        Estado estado = estadoRepository.findById(codEstado).orElseGet(() -> {
+            Estado nuevoEstado = new Estado();
+            nuevoEstado.setId(codEstado);
+            nuevoEstado.setNombre(estadoDto);
+            return estadoRepository.save(nuevoEstado);
+        });
+        solicitud.setEstado(estado);
+
+        Aprobacion aprobacion = new Aprobacion();
+        aprobacion.setFuncionario(funcionario); // Asignar el funcionario guardado
+        aprobacion.setSolicitud(solicitud);
+        aprobacion.setFechaAprobacion(fechaAprobacion);
+
+        // Guardar la aprobación sin la URL del PDF
+        Aprobacion savedAprobacion = aprobacionRepository.save(aprobacion);
+
+        // Llamar al método para generar el PDF y obtener la URL después de guardar la
+        // aprobación
+        String url = preparePdf(solicitud);
+
+        // Asignar la URL generada a la aprobación ya guardada
+        savedAprobacion.setUrlPdf(url);
+
+        // Actualizar la aprobación con la URL del PDF
+        return aprobacionRepository.save(savedAprobacion); // Se guarda nuevamente con la URL
     }
-
-    Integer rut = aprobacionDto.getRut();
-    SmcPersona persona = smcService.getPersonaByRut(rut);
-    if (persona == null) {
-        throw new IllegalArgumentException("No se encontró un funcionario con el RUT proporcionado");
-    }
-
-    Funcionario funcionario = new Funcionario();
-    funcionario.setRut(persona.getRut());
-    funcionario.setNombre(
-            StringUtils.buildName(persona.getNombres(), persona.getApellidopaterno(),
-                    persona.getApellidomaterno()));
-    funcionario = funcionarioRepository.save(funcionario); // Guardar el funcionario antes de asignarlo
-
-    Solicitud solicitud = solicitudRepository.findById(aprobacionDto.getSolicitudId()).orElse(null);
-    if (solicitud == null) {
-        throw new IllegalArgumentException("No se encontró una solicitud con el ID proporcionado");
-    }
-
-    List<Derivacion> derivaciones = derivacionRepository.findBySolicitudId(solicitud.getId());
-
-    if (derivaciones.isEmpty()) {
-        throw new IllegalArgumentException("No hay derivaciones asociadas a la solicitud proporcionada.");
-    }
-
-    Derivacion ultimaDerivacion = derivaciones.stream()
-            .max(Comparator.comparing(Derivacion::getId))
-            .orElseThrow(() -> new IllegalArgumentException("No se pudo encontrar la última derivación."));
-
-    ultimaDerivacion.setLeida(true);
-
-    String estadoDto = aprobacionDto.getEstado();
-
-    Long codEstado = estadoRepository.findIdByNombre(estadoDto);
-
-    Estado estado = new Estado();
-    estado.setId(codEstado);
-    estado.setNombre(estadoDto);
-    estado = estadoRepository.save(estado);
-
-    solicitud.setEstado(estado);
-
-    Aprobacion aprobacion = new Aprobacion();
-    aprobacion.setFuncionario(funcionario); // Asignar el funcionario guardado
-    aprobacion.setSolicitud(solicitud);
-    aprobacion.setFechaAprobacion(fechaAprobacion);
-
-    // Guardar la aprobación sin la URL del PDF
-    Aprobacion savedAprobacion = aprobacionRepository.save(aprobacion);
-
-    // Llamar al método para generar el PDF y obtener la URL después de guardar la aprobación
-    String url = preparePdf(solicitud);
-
-    // Asignar la URL generada a la aprobación ya guardada
-    savedAprobacion.setUrlPdf(url);
-
-    // Actualizar la aprobación con la URL del PDF
-    return aprobacionRepository.save(savedAprobacion); // Se guarda nuevamente con la URL
-}
-
 
     public Aprobacion servGetAprobacionBySolicitud(Long solicitudId) {
         return aprobacionRepository.findBySolicitudId(solicitudId);
@@ -148,36 +146,37 @@ public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
         // Convertir java.sql.Date a java.time.LocalDate
         LocalDateTime fechaInicio = solicitud.getFechaInicio();
         LocalDateTime fechaTermino = solicitud.getFechaFin();
-    
+
         Integer rut = solicitud.getFuncionario().getRut();
         SmcFuncionario funcionario = smcService.getFuncionarioByRut(rut);
         SmcPersona persona = smcService.getPersonaByRut(rut);
-    
+
         String departamento = funcionario.getDepartamento().getNombreDepartamento();
         String escalafon = funcionario.getContrato().getEscalafon();
         Integer grado = funcionario.getContrato().getGrado();
-    
+
         // Obtener el día y mes inicial
         String diaInicio = String.valueOf(fechaInicio.getDayOfMonth());
         String mesInicio = fechaInicio.getMonth().getDisplayName(TextStyle.FULL,
                 new Locale.Builder().setLanguage("es").setRegion("ES").build());
-    
+
         // Obtener el día y mes final
         String diaFin = String.valueOf(fechaTermino.getDayOfMonth());
         String mesFin = fechaTermino.getMonth().getDisplayName(TextStyle.FULL,
                 new Locale.Builder().setLanguage("es").setRegion("ES").build());
-    
+
         // Obtener rut visador (jefe)
         Visacion visacion = visacionRepository.findBySolicitudId(solicitud.getId());
         String rutJefe = visacion.getFuncionario().getRut().toString();
         String nombreJefe = visacion.getFuncionario().getNombre();
 
         Aprobacion aprobacion = servGetAprobacionBySolicitud(solicitud.getId());
-    
-        // Puedes obtener los datos del director desde el `Funcionario` relacionado con la solicitud, o manejarlo manualmente
+
+        // Puedes obtener los datos del director desde el `Funcionario` relacionado con
+        // la solicitud, o manejarlo manualmente
         String rutDirector = aprobacion.getFuncionario().getRut().toString();
         String nombreDirector = aprobacion.getFuncionario().getNombre();
-    
+
         // Crear el objeto PdfDto
         PdfDto pdfDto = new PdfDto();
         pdfDto.setNroIniDia(diaInicio);
@@ -187,33 +186,43 @@ public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
         pdfDto.setRut(String.valueOf(rut));
         pdfDto.setVrut(persona.getVrut());
         pdfDto.setTelefono(Integer.toString(persona.getTelefono()));
-        pdfDto.setDiasTomados("5"); // Valor fijo, deberías cambiarlo según tu lógica
+        pdfDto.setDiasTomados(solicitud.getDuracion().toString()); 
         pdfDto.setPaterno(persona.getApellidopaterno());
         pdfDto.setMaterno(persona.getApellidomaterno());
         pdfDto.setNombres(persona.getNombres());
         pdfDto.setEscalafon(escalafon);
         pdfDto.setGrado(String.valueOf(grado));
         pdfDto.setDepto(departamento);
-        pdfDto.setTipoSolicitud(solicitud.getTipoSolicitud().getNombre());
+        pdfDto.setNombreSolicitud(solicitud.getTipoSolicitud().getNombre());
+        if (solicitud.getTipoSolicitud().getNombre().equals("ADMINISTRATIVO")) {
+            if (fechaTermino.getHour() == 12 && fechaTermino.getMinute() == 0) {
+                pdfDto.setJornada("AM");
+            } else if (fechaTermino.getHour() == 17 && fechaTermino.getMinute() == 30) {
+                pdfDto.setJornada("PM");
+            } else if (fechaTermino.getHour() == 0 && fechaTermino.getMinute() == 0) {
+                pdfDto.setJornada("N/A");
+            }
+
+        }
         pdfDto.setRutJefe(rutJefe);
         pdfDto.setNombreJefe(nombreJefe);
         pdfDto.setRutDirector(rutDirector);
         pdfDto.setNombreDirector(nombreDirector);
-    
+        pdfDto.setTipoSolicitud(solicitud.getTipoSolicitud().getId());
+      
+
         // Realizar la solicitud POST a la API externa
         String apiUrl = "https://appx.laflorida.cl/firma-docs/index2api.php";
         String url = "https://appx.laflorida.cl/firma-docs/";
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, pdfDto, String.class);
-            
+
             if (response.getStatusCode().is2xxSuccessful()) {
                 // Devuelve la ruta del documento si la respuesta es exitosa
 
                 String responseString = response.getBody();
 
-
-                
-                return  url+responseString;
+                return url + responseString;
             } else {
                 throw new RuntimeException("Error al generar el documento PDF: " + response.getStatusCode());
             }
@@ -221,7 +230,6 @@ public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
             throw new RuntimeException("Error al conectar con la API de generación de PDF", e);
         }
     }
-    
 
     public List<Aprobacion> saveAprobaciones(List<AprobacionDto> aprobaciones) {
         return aprobaciones.stream()
@@ -240,11 +248,11 @@ public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
         return aprobacionRepository.findAll();
     }
 
-    public List<Aprobacion> findAprobacionWithSolicitud(){
+    public List<Aprobacion> findAprobacionWithSolicitud() {
         return aprobacionRepository.findAllWithSolicitud();
     }
 
-    public List<Aprobacion> getAllWithoutDecreto(){
+    public List<Aprobacion> getAllWithoutDecreto() {
         return aprobacionRepository.findAllWithoutDecreto();
     }
 }

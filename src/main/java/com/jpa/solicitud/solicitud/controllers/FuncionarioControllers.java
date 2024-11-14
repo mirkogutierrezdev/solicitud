@@ -16,7 +16,7 @@ import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.services.SmcService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost")
+@CrossOrigin(origins = "https://appd.laflorida.cl")
 @RequestMapping("/api/smc")
 public class FuncionarioControllers {
 

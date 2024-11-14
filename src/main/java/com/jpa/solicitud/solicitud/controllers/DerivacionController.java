@@ -17,7 +17,7 @@ import com.jpa.solicitud.solicitud.models.dto.VDerivacionDto;
 import com.jpa.solicitud.solicitud.services.DerivacionService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost")
+@CrossOrigin(origins = "https://appd.laflorida.cl")
 @RequestMapping("/api/derivacion")
 public class DerivacionController {
 

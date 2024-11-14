@@ -16,7 +16,7 @@ public class JsonService {
 
     public byte[] generateReport(PdfDto jsonSol) throws Exception {
 
-        String template = defineTemplate(jsonSol.getTipoSolicitud());
+        String template = defineTemplate(jsonSol.getNombreSolicitud());
 
         Document doc = new Document(template);
 

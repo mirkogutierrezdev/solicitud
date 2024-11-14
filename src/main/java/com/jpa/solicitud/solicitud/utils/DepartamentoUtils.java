@@ -4,11 +4,7 @@ public class DepartamentoUtils {
 
     private DepartamentoUtils() {
         throw new IllegalStateException("Utility class");
-      }
-    
-    
-
-
+    }
 
     public static String obtenerDireccion(String codigo) {
         return codigo.substring(0, 2) + "000000";
@@ -45,6 +41,11 @@ public class DepartamentoUtils {
     public static String determinaDerivacion(Long depto) {
 
         String codigo = depto.toString();
+
+        if (DepartamentoUtils.esDireccion(codigo)) {
+            return "1100000000";
+
+        }
 
         if (DepartamentoUtils.esSubdir(codigo)) {
             return codigo.substring(0, 2).concat("00000000");

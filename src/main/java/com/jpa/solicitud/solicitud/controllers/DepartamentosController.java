@@ -16,7 +16,7 @@ import com.jpa.solicitud.solicitud.models.entities.Departamentos;
 import com.jpa.solicitud.solicitud.services.DepartamentosService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost")
+@CrossOrigin(origins = "https://appd.laflorida.cl")
 @RequestMapping("/api/departamentos")
 public class DepartamentosController {
 
