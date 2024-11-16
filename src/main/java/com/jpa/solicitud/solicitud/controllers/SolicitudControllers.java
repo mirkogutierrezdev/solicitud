@@ -33,9 +33,9 @@ public class SolicitudControllers {
     public ResponseEntity<Object> createSolicitud(@RequestBody SolicitudDto solicitudDto) {
 
         try {
-            solicitudService.saveSolicitud(solicitudDto);
+            Solicitud solicitud =  solicitudService.saveSolicitud(solicitudDto);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("{\"message\": \"Solicitud creada exitosamente\"}");
+                    .body(solicitud);
         } catch (IllegalArgumentException e) {
             // Detalles del error
             String errorDetails = String.format("Datos inválidos: %s - %s", e.getMessage(), e.getStackTrace()[0]);

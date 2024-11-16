@@ -12,6 +12,7 @@ public interface IFuncionarioRespository extends JpaRepository<Funcionario, Long
 
      @SuppressWarnings("null")
      Optional<Funcionario> findById(Long id);
+     
 
 
 
