@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ISubroganciaRepository extends JpaRepository<Subrogancia, Long> {
     List<Subrogancia> findBySubroganteRut(Integer rutSubrogante);
+
+   
 }

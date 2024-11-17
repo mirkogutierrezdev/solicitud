@@ -3,11 +3,13 @@ package com.jpa.solicitud.solicitud.services;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.SubroganciaDto;
+import com.jpa.solicitud.solicitud.models.dto.ViewSubroganciaDto;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.models.entities.Subrogancia;
@@ -80,5 +82,41 @@ public class SubroganciaService {
     public List<Subrogancia> getSubroganciasByRutSubrogante(Integer rutSubrogante) {
         return subroganciaRepository.findBySubroganteRut(rutSubrogante);
     }
+
+    public List<ViewSubroganciaDto> getSubroganciasByRut(Integer rut) {
+    List<Subrogancia> subrogancias = subroganciaRepository.findBySubroganteRut(rut);
+
+    return subrogancias.stream()
+        .map(sub -> {
+            // Validaciones para evitar excepciones por datos nulos
+            String jefeNombre = sub.getJefe() != null ? sub.getJefe().getNombre() : "Sin Jefe";
+            String subroganteNombre = sub.getSubrogante() != null ? sub.getSubrogante().getNombre() : "Sin Subrogante";
+            String estadoSolicitud = sub.getSolicitud() != null && sub.getSolicitud().getEstado() != null
+                ? sub.getSolicitud().getEstado().getNombre()
+                : "Estado Desconocido";
+
+            // Obtener el primer departamento, si existe
+            Long depto = null;
+            String nombreDepto = "Departamento Desconocido";
+            if (sub.getSolicitud() != null && sub.getSolicitud().getDerivaciones() != null && !sub.getSolicitud().getDerivaciones().isEmpty()) {
+                depto = sub.getSolicitud().getDerivaciones().get(0).getDepartamento().getDepto();
+                nombreDepto = sub.getSolicitud().getDerivaciones().get(0).getDepartamento().getNombre();
+            }
+
+            // Crear y devolver el DTO
+            return new ViewSubroganciaDto(
+                sub.getId(),
+                jefeNombre,
+                subroganteNombre,
+                depto,
+                nombreDepto,
+                estadoSolicitud,
+                sub.getFechaInicio(),
+                sub.getFechaFin()
+            );
+        })
+        .collect(Collectors.toList());
+}
+
 
 }

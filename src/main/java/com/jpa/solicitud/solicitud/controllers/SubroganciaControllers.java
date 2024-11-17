@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jpa.solicitud.solicitud.models.dto.SubroganciaDto;
+import com.jpa.solicitud.solicitud.models.dto.ViewSubroganciaDto;
 import com.jpa.solicitud.solicitud.models.entities.Subrogancia;
 import com.jpa.solicitud.solicitud.services.SubroganciaService;
 
@@ -43,6 +44,17 @@ public class SubroganciaControllers {
     public ResponseEntity<List<Subrogancia>> getSubroganciasByRutSubrogante(@PathVariable Integer rutSubrogante) {
         List<Subrogancia> subrogancias = subroganciaService.getSubroganciasByRutSubrogante(rutSubrogante);
         return ResponseEntity.ok(subrogancias);
+    }
+
+	 @GetMapping("/view/by-rut/{rutSubrogante}")
+    public ResponseEntity<List<ViewSubroganciaDto>> getSubroganciasViewByRutSubrogante(@PathVariable Integer rutSubrogante) {
+        try {
+            List<ViewSubroganciaDto> subrogancias = subroganciaService.getSubroganciasByRut(rutSubrogante);
+            return ResponseEntity.ok(subrogancias);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
 
 }
