@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.jpa.solicitud.solicitud.apimodels.SmcDepartamento;
+import com.jpa.solicitud.solicitud.apimodels.SmcDeptos;
 import com.jpa.solicitud.solicitud.apimodels.SmcFeriado;
 import com.jpa.solicitud.solicitud.apimodels.SmcFuncionario;
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
@@ -82,4 +83,22 @@ public class SmcService {
 
         return response.getBody();
     }
+
+
+    public List<SmcDeptos> getDeptosSnmc(String depto) {
+        
+
+        String url = "http://192.168.10.43:8080/api/smc/funcionario/listDtoDepto/" + depto ;
+                
+
+        ResponseEntity<List<SmcDeptos>> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<SmcDeptos>>() {
+                });
+
+        return response.getBody();
+    }
+
 }

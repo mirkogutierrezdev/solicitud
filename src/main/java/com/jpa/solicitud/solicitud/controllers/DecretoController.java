@@ -16,7 +16,7 @@ import com.jpa.solicitud.solicitud.services.DecretosService;
 
 @RestController
 @RequestMapping("/decretos")
-@CrossOrigin(origins = "https://appd.laflorida.cl")
+@CrossOrigin(origins = "https://appx.laflorida.cl")
 public class DecretoController {
 
     private final DecretosService decretosService;

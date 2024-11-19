@@ -15,7 +15,7 @@ import com.jpa.solicitud.solicitud.apimodels.SmcFeriado;
 import com.jpa.solicitud.solicitud.services.UtilsService;
 
 @RestController
-@CrossOrigin(origins = "https://appd.laflorida.cl")
+@CrossOrigin(origins = "https://appx.laflorida.cl")
 @RequestMapping("/api/utils")
 public class UtilsControllers {
 

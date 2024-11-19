@@ -1,5 +1,6 @@
 package com.jpa.solicitud.solicitud.services;
 
+import java.lang.classfile.ClassFile.Option;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,6 +8,7 @@ import java.time.format.TextStyle;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -69,10 +71,6 @@ public class AprobacionService {
     public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
 
         Date fechaAprobacion = Date.valueOf(LocalDate.now());
-        if (aprobacionDto == null) {
-            throw new IllegalArgumentException("El objeto AprobacionDto no puede ser null");
-        }
-
         Integer rut = aprobacionDto.getRut();
         SmcPersona persona = smcService.getPersonaByRut(rut);
         if (persona == null) {
@@ -91,6 +89,19 @@ public class AprobacionService {
             throw new IllegalArgumentException("No se encontró una solicitud con el ID proporcionado");
         }
 
+        Optional<Visacion> optVisacion = visacionRepository.findBySolicitud(solicitud);
+
+        if (optVisacion.isEmpty()) { // Mejor usar isEmpty() para verificar si está vacío
+            
+             Visacion visacion = new Visacion();
+
+            visacion.setFechaVisacion(LocalDate.now());
+            visacion.setFuncionario(funcionario);
+            visacion.setSolicitud(solicitud);
+            visacion.setTransaccion(LocalDateTime.now());
+            visacionRepository.save(visacion);
+        } 
+        
         List<Derivacion> derivaciones = derivacionRepository.findBySolicitudId(solicitud.getId());
 
         if (derivaciones.isEmpty()) {
@@ -186,7 +197,7 @@ public class AprobacionService {
         pdfDto.setRut(String.valueOf(rut));
         pdfDto.setVrut(persona.getVrut());
         pdfDto.setTelefono(Integer.toString(persona.getTelefono()));
-        pdfDto.setDiasTomados(solicitud.getDuracion().toString()); 
+        pdfDto.setDiasTomados(solicitud.getDuracion().toString());
         pdfDto.setPaterno(persona.getApellidopaterno());
         pdfDto.setMaterno(persona.getApellidomaterno());
         pdfDto.setNombres(persona.getNombres());
@@ -209,7 +220,6 @@ public class AprobacionService {
         pdfDto.setRutDirector(rutDirector);
         pdfDto.setNombreDirector(nombreDirector);
         pdfDto.setTipoSolicitud(solicitud.getTipoSolicitud().getId());
-      
 
         // Realizar la solicitud POST a la API externa
         String apiUrl = "https://appx.laflorida.cl/firma-docs/index2api.php";

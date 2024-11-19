@@ -16,7 +16,7 @@ import com.jpa.solicitud.solicitud.services.RechazoService;
 
 @RestController
 @RequestMapping("/api/rechazos")
-@CrossOrigin(origins = "https://appd.laflorida.cl")
+@CrossOrigin(origins = "https://appx.laflorida.cl")
 public class RechazoController {
 
 	private final RechazoService rechazoService;

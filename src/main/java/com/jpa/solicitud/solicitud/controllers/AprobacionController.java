@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/aprobaciones")
-@CrossOrigin(origins = "https://appd.laflorida.cl")
+@CrossOrigin(origins = "https://appx.laflorida.cl")
 
 public class AprobacionController {
 

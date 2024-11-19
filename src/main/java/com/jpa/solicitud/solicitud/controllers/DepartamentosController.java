@@ -12,19 +12,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jpa.solicitud.solicitud.apimodels.SmcDeptos;
 import com.jpa.solicitud.solicitud.models.entities.Departamentos;
 import com.jpa.solicitud.solicitud.services.DepartamentosService;
+import com.jpa.solicitud.solicitud.services.SmcService;
 
 @RestController
-@CrossOrigin(origins = "https://appd.laflorida.cl")
+@CrossOrigin(origins = "https://appx.laflorida.cl")
 @RequestMapping("/api/departamentos")
 public class DepartamentosController {
 
     private final DepartamentosService departamentosService;
 
+    private final SmcService smcService;
 
-    public DepartamentosController(DepartamentosService departamentosService) {
+
+    public DepartamentosController(DepartamentosService departamentosService, SmcService smcService) {
         this.departamentosService = departamentosService;
+        this.smcService = smcService;
     }
 
     @PostMapping("/create")
@@ -57,6 +62,13 @@ public class DepartamentosController {
     @GetMapping("/esSub/{depto}")
     public boolean esSubdir(@PathVariable Long depto) {
         return departamentosService.esSub(depto);
+
+    }
+
+    
+    @GetMapping("/listDtoDepto/{depto}")
+    public List<SmcDeptos> getDeptosSmc(@PathVariable Long depto) {
+        return smcService.getDeptosSnmc(depto.toString());
 
     }
 

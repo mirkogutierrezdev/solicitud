@@ -10,10 +10,9 @@ import java.util.Optional;
 @Repository
 public interface IFuncionarioRespository extends JpaRepository<Funcionario, Long> {
 
-     @SuppressWarnings("null")
-     Optional<Funcionario> findById(Long id);
-     
+    @SuppressWarnings("null")
+    Optional<Funcionario> findById(Long id);
 
-
-
+    // Agregar método para buscar por RUT
+    Optional<Funcionario> findByRut(Integer rut);
 }

@@ -26,6 +26,10 @@ public class Subrogancia {
     private Funcionario subrogante;
 
     @OneToOne
+    @JoinColumn(name = "departamento_id", nullable = false)
+    private Departamento subDepartamento;
+
+    @OneToOne
     @JoinColumn(name = "solicitud_id", nullable = false)
     private Solicitud solicitud; // Relación con la solicitud de vacaciones u otro tipo de solicitud de ausencia.
 
@@ -82,6 +86,16 @@ public class Subrogancia {
     public void setFechaFin(LocalDate fechaFin) {
         this.fechaFin = fechaFin;
     }
+
+    public Departamento getSubDepartamento() {
+        return subDepartamento;
+    }
+
+    public void setSubDepartamento(Departamento subDepartamento) {
+        this.subDepartamento = subDepartamento;
+    }
+
+
 
 
 }
