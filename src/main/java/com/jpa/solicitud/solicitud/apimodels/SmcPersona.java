@@ -11,6 +11,7 @@ public class SmcPersona {
     private String apellidomaterno;
     private Date fechaNac;
     private Integer telefono;
+    private String email;
 
     public Integer getRut() {
         return rut;
@@ -67,4 +68,14 @@ public class SmcPersona {
     public void setTelefono(Integer telefono) {
         this.telefono = telefono;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    
 }

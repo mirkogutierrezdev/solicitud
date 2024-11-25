@@ -15,8 +15,11 @@ public class UtilsService {
 
     private final FeriadoUtils feriadoUtils;
 
+
+
     public UtilsService(FeriadoUtils feriadoUtils) {
         this.feriadoUtils = feriadoUtils;
+
     }
 
     public long getWorkDays(Date sqlStartDate, Date sqlEndDate) {
@@ -36,4 +39,6 @@ public class UtilsService {
     public List<SmcFeriado> getFeriados(Date fechaInicio, Date fechaTermino) {
         return feriadoUtils.getFeriados(fechaInicio, fechaTermino);
     }
+
+
 }
