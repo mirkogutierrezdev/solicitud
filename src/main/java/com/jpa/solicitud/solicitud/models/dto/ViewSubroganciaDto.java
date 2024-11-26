@@ -20,18 +20,7 @@ public class ViewSubroganciaDto {
         return id;
     }
 
-    public ViewSubroganciaDto(Long id, String nombreJefe, String nombreSubrogante, Long depto, String nombreDepto,
-            String estadoSolicitud, LocalDate fechaInicio, LocalDate fechaFin, Long subDepartamento) {
-        this.id = id;
-        this.nombreJefe = nombreJefe;
-        this.nombreSubrogante = nombreSubrogante;
-        this.depto = depto;
-        this.nombreDepto = nombreDepto;
-        this.estadoSolicitud = estadoSolicitud;
-        this.fechaInicio = fechaInicio;
-        this.fechaFin = fechaFin;
-        this.subDepartamento = subDepartamento;
-    }
+  
 
     public void setId(Long id) {
         this.id = id;

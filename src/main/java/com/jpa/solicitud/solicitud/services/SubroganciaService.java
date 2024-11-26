@@ -64,22 +64,18 @@ public class SubroganciaService {
         jefeDepto.setNombre(StringUtils.buildName(personaJefe.getNombres(), personaJefe.getApellidopaterno(),
                 personaJefe.getApellidomaterno()));
 
-                jefeDepto = funcionarioRespository.save(jefeDepto);
+        jefeDepto = funcionarioRespository.save(jefeDepto);
 
-             Departamentos deptos = departamentosRepository.findByRutJefe(jefeDepto.getRut().toString());
+        Departamentos deptos = departamentosRepository.findByRutJefe(jefeDepto.getRut().toString());
 
-          Departamento deptoJefe = new Departamento();
-          deptoJefe.setDepto(deptos.getDeptoInt());
-          deptoJefe.setDeptoSmc(deptos.getDepto());
-          deptoJefe.setNombre(deptos.getNombreDepartamento());
+        Departamento deptoJefe = new Departamento();
+        deptoJefe.setDepto(deptos.getDeptoInt());
+        deptoJefe.setDeptoSmc(deptos.getDepto());
+        deptoJefe.setNombre(deptos.getNombreDepartamento());
 
-          deptoJefe = departamentoRepository.save(deptoJefe);
-
-
-        
+        deptoJefe = departamentoRepository.save(deptoJefe);
 
         Funcionario subrogante = new Funcionario();
-
 
         subrogante.setRut(personaSubrogante.getRut());
         subrogante.setNombre(StringUtils.buildName(personaSubrogante.getNombres(),
@@ -112,39 +108,35 @@ public class SubroganciaService {
 
         return subrogancias.stream()
                 .map(sub -> {
+                    // Crear instancia del DTO
+                    ViewSubroganciaDto dto = new ViewSubroganciaDto();
+
                     // Validaciones para evitar excepciones por datos nulos
-                    String jefeNombre = sub.getJefe() != null ? sub.getJefe().getNombre() : "Sin Jefe";
-                    String subroganteNombre = sub.getSubrogante() != null ? sub.getSubrogante().getNombre()
-                            : "Sin Subrogante";
-                    String estadoSolicitud = sub.getSolicitud() != null && sub.getSolicitud().getEstado() != null
+                    dto.setNombreJefe(sub.getJefe() != null ? sub.getJefe().getNombre() : "Sin Jefe");
+                    dto.setNombreSubrogante(
+                            sub.getSubrogante() != null ? sub.getSubrogante().getNombre() : "Sin Subrogante");
+                    dto.setEstadoSolicitud(sub.getSolicitud() != null && sub.getSolicitud().getEstado() != null
                             ? sub.getSolicitud().getEstado().getNombre()
-                            : "Estado Desconocido";
+                            : "Estado Desconocido");
 
                     // Obtener el primer departamento, si existe
-                    Long depto = null;
-                    String nombreDepto = "Departamento Desconocido";
-                    Long subDepartamento = sub.getSubDepartamento().getDeptoSmc();
                     if (sub.getSolicitud() != null && sub.getSolicitud().getDerivaciones() != null
                             && !sub.getSolicitud().getDerivaciones().isEmpty()) {
-                        depto = sub.getSolicitud().getDerivaciones().get(0).getDepartamento().getDepto();
-                        nombreDepto = sub.getSolicitud().getDerivaciones().get(0).getDepartamento().getNombre();
-                    
+                        dto.setDepto(sub.getSolicitud().getDerivaciones().get(0).getDepartamento().getDepto());
+                        dto.setNombreDepto(sub.getSolicitud().getDerivaciones().get(0).getDepartamento().getNombre());
+                    } else {
+                        dto.setDepto(null);
+                        dto.setNombreDepto("Departamento Desconocido");
                     }
 
-                    // Crear y devolver el DTO
-                    return new ViewSubroganciaDto(
-                            sub.getId(),
-                            jefeNombre,
-                            subroganteNombre,
-                            depto,
-                            nombreDepto,
-                            estadoSolicitud,
-                            sub.getFechaInicio(),
-                            sub.getFechaFin(),
-                            subDepartamento
-                            
+                    dto.setId(sub.getId());
+                    dto.setFechaInicio(sub.getFechaInicio());
+                    dto.setFechaFin(sub.getFechaFin());
+                    dto.setSubDepartamento(
+                            sub.getSubDepartamento() != null ? sub.getSubDepartamento().getDeptoSmc() : null);
 
-                );
+                    // Devolver el DTO
+                    return dto;
                 })
                 .collect(Collectors.toList());
     }

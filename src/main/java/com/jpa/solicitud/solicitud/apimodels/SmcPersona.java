@@ -10,8 +10,10 @@ public class SmcPersona {
     private String apellidopaterno;
     private String apellidomaterno;
     private Date fechaNac;
-    private Integer telefono;
     private String email;
+    private String telefono;
+
+    
 
     public Integer getRut() {
         return rut;
@@ -61,13 +63,6 @@ public class SmcPersona {
         this.fechaNac = fechaNac;
     }
 
-    public Integer getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(Integer telefono) {
-        this.telefono = telefono;
-    }
 
     public String getEmail() {
         return email;
@@ -75,6 +70,14 @@ public class SmcPersona {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     

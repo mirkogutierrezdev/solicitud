@@ -31,7 +31,6 @@ public class FeriadoUtils {
         // Llamar a getFeriados para obtener la lista de feriados
         List<SmcFeriado> feriados = getFeriados(sqlStartDate, sqlEndDate);
 
-        // Imprimir los feriados obtenidos
 
         // Convertir la lista de feriados a una lista de LocalDate
         List<LocalDate> feriadoDates = feriados.stream()

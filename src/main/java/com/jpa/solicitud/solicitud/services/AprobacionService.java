@@ -195,7 +195,7 @@ public class AprobacionService {
         pdfDto.setMesFin(mesFin);
         pdfDto.setRut(String.valueOf(rut));
         pdfDto.setVrut(persona.getVrut());
-        pdfDto.setTelefono(Integer.toString(persona.getTelefono()));
+        pdfDto.setTelefono(persona.getTelefono());
         pdfDto.setDiasTomados(solicitud.getDuracion().toString());
         pdfDto.setPaterno(persona.getApellidopaterno());
         pdfDto.setMaterno(persona.getApellidomaterno());
