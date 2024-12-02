@@ -24,6 +24,7 @@ public class UtilsService {
 
     public long getWorkDays(Date sqlStartDate, Date sqlEndDate) {
 
+ 
         return feriadoUtils.calcularDiasHabiles(sqlStartDate, sqlEndDate);
     }
 

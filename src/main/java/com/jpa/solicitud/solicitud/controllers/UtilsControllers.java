@@ -2,6 +2,7 @@ package com.jpa.solicitud.solicitud.controllers;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,15 +27,27 @@ public class UtilsControllers {
     }
 
     @GetMapping("/calcular")
-    public ResponseEntity<Long> getWorkDays(@RequestParam Date fechaInicio,
-            @RequestParam Date fechaTermino) {
-        try {
-            long diasHabiles = utilsService.getWorkDays(fechaInicio, fechaTermino);
-            return new ResponseEntity<>(diasHabiles, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+public ResponseEntity<?> getWorkDays(@RequestParam Date fechaInicio,
+                                     @RequestParam Date fechaTermino) {
+
+    try {
+        long diasHabiles = utilsService.getWorkDays(fechaInicio, fechaTermino);
+        return ResponseEntity.ok(diasHabiles);
+    } catch (IllegalArgumentException e) {
+        // Manejo de errores de entrada inválida
+        return ResponseEntity.badRequest().body(Map.of(
+            "error", "Parámetros inválidos",
+            "mensaje", e.getMessage()
+        ));
+    } catch (Exception e) {
+        // Manejo genérico para errores inesperados
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+            "error", "Error interno del servidor",
+            "mensaje", e.getMessage() // Puedes registrar detalles del error
+        ));
     }
+}
+
 
     @GetMapping("/feriados/obtener")
     public ResponseEntity<List<SmcFeriado>> getFeriados(@RequestParam Date fechaInicio,

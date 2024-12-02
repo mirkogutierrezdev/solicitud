@@ -30,11 +30,14 @@ public class FeriadoUtils {
 
         // Llamar a getFeriados para obtener la lista de feriados
         List<SmcFeriado> feriados = getFeriados(sqlStartDate, sqlEndDate);
-
+        if (feriados == null) {
+            throw new IllegalStateException("La llamada a getFeriados devolvió null.");
+        }
+     
 
         // Convertir la lista de feriados a una lista de LocalDate
         List<LocalDate> feriadoDates = feriados.stream()
-                .map(feriado -> feriado.getFeriado().toLocalDate())
+                .map(feriado -> feriado.getFeriado())
                 .collect(Collectors.toList());
 
         long workingDays = 0;

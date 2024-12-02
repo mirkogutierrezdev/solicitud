@@ -1,16 +1,16 @@
 package com.jpa.solicitud.solicitud.apimodels;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class SmcFeriado {
 
-    private Date feriado;
+    private LocalDate feriado;
 
-    public Date getFeriado() {
+    public LocalDate getFeriado() {
         return feriado;
     }
 
-    public void setFeriado(Date feriado) {
+    public void setFeriado(LocalDate feriado) {
         this.feriado = feriado;
     }   
     

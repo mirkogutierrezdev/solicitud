@@ -74,6 +74,7 @@ public class SmcService {
         String url = "http://localhost:8080/api/smc/feriados/calcular?fechaInicio=" + strFechaInicio + "&fechaTermino="
                 + strFechaTermino;
 
+              
         ResponseEntity<List<SmcFeriado>> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
