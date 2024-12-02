@@ -69,6 +69,8 @@ public class AprobacionService {
     @Transactional
     public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
 
+
+
         Date fechaAprobacion = Date.valueOf(LocalDate.now());
         Integer rut = aprobacionDto.getRut();
         SmcPersona persona = smcService.getPersonaByRut(rut);
@@ -143,6 +145,8 @@ public class AprobacionService {
         // Actualizar la aprobación con la URL del PDF
         return aprobacionRepository.save(savedAprobacion); // Se guarda nuevamente con la URL
     }
+
+
 
     public Aprobacion servGetAprobacionBySolicitud(Long solicitudId) {
         return aprobacionRepository.findBySolicitudId(solicitudId);

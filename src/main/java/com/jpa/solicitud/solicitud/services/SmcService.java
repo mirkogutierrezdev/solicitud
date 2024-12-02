@@ -88,7 +88,7 @@ public class SmcService {
     public List<SmcDeptos> getDeptosSnmc(String depto) {
         
 
-        String url = "http://192.168.10.43:8080/api/smc/funcionario/listDtoDepto/" + depto ;
+        String url = "http://localhost:8080/api/smc/funcionario/listDtoDepto/" + depto ;
                 
 
         ResponseEntity<List<SmcDeptos>> response = restTemplate.exchange(
