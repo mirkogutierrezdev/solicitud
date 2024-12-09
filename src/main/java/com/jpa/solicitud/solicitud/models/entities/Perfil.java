@@ -1,12 +1,14 @@
 package com.jpa.solicitud.solicitud.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "perfiles")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Evita problemas de serialización
 public class Perfil {
 
     @Id
@@ -19,13 +21,7 @@ public class Perfil {
     @Column(length = 255)
     private String descripcion;
 
-    @Column(name = "creado_en", nullable = false, updatable = false)
-    private LocalDateTime creadoEn;
-
-    @Column(name = "actualizado_en", nullable = false)
-    private LocalDateTime actualizadoEn;
-
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
         name = "perfil_permiso",
         joinColumns = @JoinColumn(name = "perfil_id"),
@@ -33,17 +29,16 @@ public class Perfil {
     )
     private Set<Permiso> permisos = new HashSet<>();
 
-    @PrePersist
-    public void prePersist() {
-        this.creadoEn = LocalDateTime.now();
-        this.actualizadoEn = LocalDateTime.now();
+    // Constructor sin argumentos
+    public Perfil() {}
+
+    // Constructor con argumentos
+    public Perfil(String nombre, String descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
     }
 
-    @PreUpdate
-    public void preUpdate() {
-        this.actualizadoEn = LocalDateTime.now();
-    }
-
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -68,22 +63,6 @@ public class Perfil {
         this.descripcion = descripcion;
     }
 
-    public LocalDateTime getCreadoEn() {
-        return creadoEn;
-    }
-
-    public void setCreadoEn(LocalDateTime creadoEn) {
-        this.creadoEn = creadoEn;
-    }
-
-    public LocalDateTime getActualizadoEn() {
-        return actualizadoEn;
-    }
-
-    public void setActualizadoEn(LocalDateTime actualizadoEn) {
-        this.actualizadoEn = actualizadoEn;
-    }
-
     public Set<Permiso> getPermisos() {
         return permisos;
     }
@@ -92,5 +71,11 @@ public class Perfil {
         this.permisos = permisos;
     }
 
-    
+    public void addPermiso(Permiso permiso) {
+        this.permisos.add(permiso);
+    }
+
+    public void removePermiso(Permiso permiso) {
+        this.permisos.remove(permiso);
+    }
 }

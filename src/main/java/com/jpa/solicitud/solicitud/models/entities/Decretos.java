@@ -22,12 +22,14 @@ public class Decretos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer nroDecreto;
 
-    private LocalDate fechaDecreto;
+    private LocalDate fechaCreacion;
+
     @OneToMany(mappedBy = "decreto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference // Maneja la serialización de la lista de aprobaciones
     private List<Aprobacion> aprobaciones;
+
+    
 
     public Long getId() {
         return id;
@@ -37,21 +39,8 @@ public class Decretos {
         this.id = id;
     }
 
-    public Integer getNroDecreto() {
-        return nroDecreto;
-    }
 
-    public void setNroDecreto(Integer nroDecreto) {
-        this.nroDecreto = nroDecreto;
-    }
-
-    public LocalDate getFechaDecreto() {
-        return fechaDecreto;
-    }
-
-    public void setFechaDecreto(LocalDate fechaDecreto) {
-        this.fechaDecreto = fechaDecreto;
-    }
+   
 
     public List<Aprobacion> getAprobaciones() {
         return aprobaciones;
@@ -59,6 +48,14 @@ public class Decretos {
 
     public void setAprobaciones(List<Aprobacion> aprobaciones) {
         this.aprobaciones = aprobaciones;
+    }
+
+    public LocalDate getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(LocalDate fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 
 }

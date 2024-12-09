@@ -33,6 +33,10 @@ public class Departamentos {
     @Column(name = "rut_jefe", nullable = true)
     private String rutJefe;
 
+    private Boolean subidireccion;
+
+    
+
     public Long getId() {
         return id;
     }
@@ -87,6 +91,14 @@ public class Departamentos {
 
     public void setRutJefe(String rutJefe) {
         this.rutJefe = rutJefe;
+    }
+
+    public Boolean getSubidireccion() {
+        return subidireccion;
+    }
+
+    public void setSubidireccion(Boolean subidireccion) {
+        this.subidireccion = subidireccion;
     }
 
 }
