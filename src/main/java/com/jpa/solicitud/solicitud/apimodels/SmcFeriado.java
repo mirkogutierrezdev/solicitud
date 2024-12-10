@@ -4,14 +4,14 @@ import java.time.LocalDate;
 
 public class SmcFeriado {
 
-    private LocalDate feriado;
+    private LocalDate fecha;
 
-    public LocalDate getFeriado() {
-        return feriado;
+    public LocalDate getFecha() {
+        return fecha;
     }
 
-    public void setFeriado(LocalDate feriado) {
-        this.feriado = feriado;
+    public void setFecha(LocalDate feriado) {
+        this.fecha = feriado;
     }   
     
 

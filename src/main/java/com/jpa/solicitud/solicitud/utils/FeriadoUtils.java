@@ -37,7 +37,7 @@ public class FeriadoUtils {
 
         // Convertir la lista de feriados a una lista de LocalDate
         List<LocalDate> feriadoDates = feriados.stream()
-                .map(feriado -> feriado.getFeriado())
+                .map(feriado -> feriado.getFecha())
                 .collect(Collectors.toList());
 
         long workingDays = 0;
