@@ -25,7 +25,6 @@ public class PerfilController {
 
     private final PerfilService perfilService;
 
-
     public PerfilController(PerfilService perfilService) {
         this.perfilService = perfilService;
     }
@@ -43,17 +42,17 @@ public class PerfilController {
     }
 
     @PutMapping("/{id}")
-public ResponseEntity<Perfil> updatePerfil(@PathVariable Long id, @RequestBody PerfilDto perfilDto) {
-    try {
-        // Actualiza el perfil con los datos del DTO
-        Perfil updatedPerfil = perfilService.updatePerfil(id, perfilDto);
-        return ResponseEntity.ok(updatedPerfil);
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    public ResponseEntity<Perfil> updatePerfil(@PathVariable Long id, @RequestBody PerfilDto perfilDto) {
+        try {
+            // Actualiza el perfil con los datos del DTO
+            Perfil updatedPerfil = perfilService.updatePerfil(id, perfilDto);
+            return ResponseEntity.ok(updatedPerfil);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-}
 
-   @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerfil(@PathVariable Long id) {
         try {
             perfilService.deleteById(id); // Llama al servicio para eliminar el perfil

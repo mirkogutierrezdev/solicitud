@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.jpa.solicitud.solicitud.apimodels.SmcContrato;
 import com.jpa.solicitud.solicitud.apimodels.SmcDepartamento;
 import com.jpa.solicitud.solicitud.apimodels.SmcDeptos;
 import com.jpa.solicitud.solicitud.apimodels.SmcFeriado;
@@ -74,7 +75,6 @@ public class SmcService {
         String url = "http://localhost:8080/api/smc/feriados/calcular?fechaInicio=" + strFechaInicio + "&fechaTermino="
                 + strFechaTermino;
 
-              
         ResponseEntity<List<SmcFeriado>> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -85,18 +85,29 @@ public class SmcService {
         return response.getBody();
     }
 
-
     public List<SmcDeptos> getDeptosSnmc(String depto) {
-        
 
-        String url = "http://localhost:8080/api/smc/funcionario/listDtoDepto/" + depto ;
-                
+        String url = "http://localhost:8080/api/smc/funcionario/listDtoDepto/" + depto;
 
         ResponseEntity<List<SmcDeptos>> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<SmcDeptos>>() {
+                });
+
+        return response.getBody();
+    }
+
+    public SmcContrato getContratoSmc(Integer rut) {
+
+        String url = "http://localhost:8080/api/contratos/" + rut;
+
+        ResponseEntity<SmcContrato> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<SmcContrato>() {
                 });
 
         return response.getBody();

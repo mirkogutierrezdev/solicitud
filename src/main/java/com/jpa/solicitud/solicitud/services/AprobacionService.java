@@ -14,9 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import com.jpa.solicitud.solicitud.apimodels.SmcContrato;
 import com.jpa.solicitud.solicitud.apimodels.SmcFuncionario;
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.AprobacionDto;
+import com.jpa.solicitud.solicitud.models.dto.AprobacionesSinDecretoDto;
 import com.jpa.solicitud.solicitud.models.dto.PdfDto;
 import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
 import com.jpa.solicitud.solicitud.models.entities.Derivacion;
@@ -69,8 +71,6 @@ public class AprobacionService {
     @Transactional
     public Aprobacion saveAprobacion(AprobacionDto aprobacionDto) {
 
-
-
         Date fechaAprobacion = Date.valueOf(LocalDate.now());
         Integer rut = aprobacionDto.getRut();
         SmcPersona persona = smcService.getPersonaByRut(rut);
@@ -93,16 +93,16 @@ public class AprobacionService {
         Optional<Visacion> optVisacion = visacionRepository.findBySolicitud(solicitud);
 
         if (optVisacion.isEmpty()) { // Mejor usar isEmpty() para verificar si está vacío
-            
-             Visacion visacion = new Visacion();
+
+            Visacion visacion = new Visacion();
 
             visacion.setFechaVisacion(LocalDate.now());
             visacion.setFuncionario(funcionario);
             visacion.setSolicitud(solicitud);
             visacion.setTransaccion(LocalDateTime.now());
             visacionRepository.save(visacion);
-        } 
-        
+        }
+
         List<Derivacion> derivaciones = derivacionRepository.findBySolicitudId(solicitud.getId());
 
         if (derivaciones.isEmpty()) {
@@ -145,8 +145,6 @@ public class AprobacionService {
         // Actualizar la aprobación con la URL del PDF
         return aprobacionRepository.save(savedAprobacion); // Se guarda nuevamente con la URL
     }
-
-
 
     public Aprobacion servGetAprobacionBySolicitud(Long solicitudId) {
         return aprobacionRepository.findBySolicitudId(solicitudId);
@@ -237,10 +235,10 @@ public class AprobacionService {
 
                 return url + responseString;
             } else {
-                throw new RuntimeException("Error al generar el documento PDF: " + response.getStatusCode());
+                throw new IllegalArgumentException("Error al generar el documento PDF: " + response.getStatusCode());
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error al conectar con la API de generación de PDF", e);
+            throw new IllegalArgumentException("Error al conectar con la API de generación de PDF", e);
         }
     }
 
@@ -265,7 +263,58 @@ public class AprobacionService {
         return aprobacionRepository.findAllWithSolicitud();
     }
 
-    public List<Aprobacion> getAllWithoutDecreto() {
-        return aprobacionRepository.findAllWithoutDecreto();
+    public List<AprobacionesSinDecretoDto> getAllWithoutDecreto() {
+
+        List<Aprobacion> aprobaciones = aprobacionRepository.findAllWithoutDecreto();
+
+        return aprobaciones.stream()
+                .map(apr -> {
+
+                    AprobacionesSinDecretoDto asd = new AprobacionesSinDecretoDto();
+
+                    asd.setId(apr.getId());
+                    asd.setRut(apr.getSolicitud().getFuncionario().getRut().toString());
+
+                    SmcPersona persona = smcService.getPersonaByRut(apr.getSolicitud().getFuncionario().getRut());
+
+                    asd.setNombres(persona.getNombres());
+                    asd.setPaterno(persona.getApellidopaterno());
+                    asd.setMaterno(persona.getApellidomaterno());
+                    asd.setFechaSolicitud(apr.getSolicitud().getFechaSolicitud());
+                    asd.setFechaInicio(apr.getSolicitud().getFechaInicio().toLocalDate());
+                    asd.setFechaTermino(apr.getSolicitud().getFechaFin().toLocalDate());
+
+                    int hour = apr.getSolicitud().getFechaInicio().getHour();
+
+                    if (hour == 12) {
+                        asd.setJornada("AM");
+                    }
+                    if (hour == 17) {
+                        asd.setJornada("PM");
+                    } else {
+                        asd.setJornada("Día");
+                    }
+
+                    asd.setTipoSolicitud(apr.getSolicitud().getTipoSolicitud().getNombre());
+                    asd.setUrl(apr.getUrlPdf());
+
+                    SmcContrato contrato = smcService.getContratoSmc(apr.getSolicitud().getFuncionario().getRut());
+
+                    asd.setTipoContrato(contrato.getNombrecontrato());
+
+                    asd.setDepto(
+                            apr.getSolicitud().getDerivaciones().stream()
+                                    .max(Comparator.comparing(der -> der.getId())) // Encontrar la derivación con el ID
+                                                                                   // más bajo
+                                    .map(der -> der.getDepartamento().getNombre()) // Obtener el nombre del departamento
+                                    .orElse(null) // Asignar null si no hay derivaciones
+                    );
+
+                    return asd;
+
+                })
+                .sorted(Comparator.comparing(AprobacionesSinDecretoDto::getPaterno))
+                .toList();
+
     }
 }

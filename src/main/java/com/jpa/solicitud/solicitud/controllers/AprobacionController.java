@@ -1,6 +1,7 @@
 package com.jpa.solicitud.solicitud.controllers;
 
 import com.jpa.solicitud.solicitud.models.dto.AprobacionDto;
+import com.jpa.solicitud.solicitud.models.dto.AprobacionesSinDecretoDto;
 import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
 import com.jpa.solicitud.solicitud.services.AprobacionService;
 
@@ -63,7 +64,7 @@ public class AprobacionController {
     @GetMapping("/getall")
     public ResponseEntity<Object> getAll() {
         try {
-            List<Aprobacion> aprobacion = aprobacionService.getAllWithoutDecreto();
+            List<AprobacionesSinDecretoDto> aprobacion = aprobacionService.getAllWithoutDecreto();
             if (aprobacion == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("No se encontraron aprobaciones");
@@ -80,7 +81,7 @@ public class AprobacionController {
     @GetMapping("/getaprobaciones")
     public ResponseEntity<Object> getAprobaciones() {
         try {
-            List<Aprobacion> aprobacion = aprobacionService.getAllWithoutDecreto();
+            List<AprobacionesSinDecretoDto> aprobacion = aprobacionService.getAllWithoutDecreto();
             if (aprobacion == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("No se encontraron aprobaciones");
