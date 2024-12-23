@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,7 @@ public class UtilsControllers {
     }
 
     @GetMapping("/calcular")
-public ResponseEntity<?> getWorkDays(@RequestParam Date fechaInicio,
+public ResponseEntity<Object> getWorkDays(@RequestParam Date fechaInicio,
                                      @RequestParam Date fechaTermino) {
 
     try {
@@ -57,6 +58,16 @@ public ResponseEntity<?> getWorkDays(@RequestParam Date fechaInicio,
             return new ResponseEntity<>(feriados, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/jefe/{depto}")
+    public ResponseEntity<Object> getNombreJefeSupervidor(@PathVariable Long depto){
+        try {
+            String nombre= utilsService.jefeDestino(depto);
+            return ResponseEntity.ok(nombre);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

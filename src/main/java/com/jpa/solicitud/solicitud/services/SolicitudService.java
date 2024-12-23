@@ -3,7 +3,6 @@ package com.jpa.solicitud.solicitud.services;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -240,17 +239,17 @@ public class SolicitudService {
         List<Solicitud> solicitudes = derivaciones.stream()
                 .map(Derivacion::getSolicitud)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
 
         // Crear el DTO para cada solicitud
         return solicitudes.stream().map(solicitud -> {
             List<Derivacion> derivacionesSolicitud = derivacionRepository.findBySolicitudId(solicitud.getId());
             List<Entrada> entradas = derivacionesSolicitud.stream()
                     .flatMap(derivacion -> entradaRepository.findByDerivacionId(derivacion.getId()).stream())
-                    .collect(Collectors.toList());
+                    .toList();
             List<Salida> salidas = derivacionesSolicitud.stream()
                     .flatMap(derivacion -> salidaRepository.findByDerivacion_Id(derivacion.getId()).stream())
-                    .collect(Collectors.toList());
+                    .toList();
 
             SolicitudWithDerivacionesDTO dto = new SolicitudWithDerivacionesDTO();
             dto.setSolicitud(solicitud);
@@ -264,7 +263,7 @@ public class SolicitudService {
             dto.setAprobacion(aprobacion);
 
             return dto;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     public List<Solicitud> servGetSolicitudesPorFuncionario(Integer rut) {
