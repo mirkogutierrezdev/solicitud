@@ -89,6 +89,14 @@ public class Derivacion {
         this.leida = leida;
     }
 
+    public Departamento getDepartamentoOrigen() {
+        return departamentoOrigen;
+    }
+
+    public void setDepartamentoOrigen(Departamento departamentoOrigen) {
+        this.departamentoOrigen = departamentoOrigen;
+    }
+
 
 
    

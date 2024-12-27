@@ -1,5 +1,6 @@
 package com.jpa.solicitud.solicitud.services;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -167,36 +168,51 @@ public class SolicitudService {
         SmcDepartamento smcDepartamento = smcService.getDepartamento(solicitudDto.getDepto().toString());
         Departamentos departamentoRequest = departamentosRepository
                 .findByDepto(Long.parseLong(smcDepartamento.getDepto()));
-
+    
         if (departamentoRequest == null) {
             throw new IllegalArgumentException(
                     "No se encontró el departamento con código: " + smcDepartamento.getDepto());
         }
-
+    
+        // Crear el departamento de origen
+        Departamento departamentoOrigen = new Departamento();
+        departamentoOrigen.setDepto(departamentoRequest.getDeptoInt());
+        departamentoOrigen.setDeptoSmc(departamentoRequest.getDepto());
+        departamentoOrigen.setNombre(departamentoRequest.getNombreDepartamento());
+    
+        // Guardar el departamento de origen (si no existe)
+        departamentoOrigen = departamentoRepository.save(departamentoOrigen);
+    
+        // Determinar el departamento destino
         Departamento departamentoDestino = determinarDepartamentoDestino(departamentoRequest, funcionario);
-
-        // Guardar el departamento destino si no existe en la base de datos (opcional)
+    
+        // Guardar el departamento destino (si no existe)
         departamentoDestino = departamentoRepository.save(departamentoDestino);
-
-        // Crear y guardar la derivación
-        Derivacion derivacion = derivacionService.saveDerivacion(departamentoDestino, solicitud, funcionario);
-
+    
+        // Crear y guardar la derivación, incluyendo el departamento de origen y destino
+        Derivacion derivacion = new Derivacion();
+        derivacion.setSolicitud(solicitud);
+        derivacion.setFuncionario(funcionario);
+        derivacion.setFechaDerivacion(Date.valueOf(LocalDate.now()));
+        derivacion.setLeida(false);
+        derivacion.setDepartamento(departamentoDestino); // Departamento de destino
+        derivacion.setDepartamentoOrigen(departamentoOrigen); // Departamento de origen
+    
+        derivacion = derivacionRepository.save(derivacion);
+    
         // Crear y guardar la salida asociada
         salidaService.saveSalida(derivacion, funcionario);
-
-        // busca mail y nombre de jefe de departamento de destino
-
+    
+        // Busca mail y nombre del jefe del departamento de destino
         String mail = getMail(departamentoDestino.getDepto());
-
         String nombreJefe = getNombreJefe(departamentoDestino.getDepto());
-
-        // Usa api para envío de correos
-
+    
+        // Enviar correo utilizando la API
         apiService.sendEmail("1", nombreJefe, solicitud.getTipoSolicitud().getNombre(), mail);
-
+    
         return derivacion;
     }
-
+    
     private Departamento determinarDepartamentoDestino(Departamentos departamentoRequest, Funcionario funcionario) {
         boolean esJefe = smcService.isJefe(funcionario.getRut());
         Departamento departamentoDestino = new Departamento();
