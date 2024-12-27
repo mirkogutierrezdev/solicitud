@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -70,7 +69,7 @@ public class DerivacionService {
         this.funcionarioRespository = funcionarioRespository;
         this.departamentosRepository = departamentosRepository;
         this.visacionRepository = visacionRepository;
-        this.apiService=apiService;
+        this.apiService = apiService;
     }
 
     public List<Derivacion> findBySolicitudId(Long id) {
@@ -138,10 +137,10 @@ public class DerivacionService {
 
         Funcionario jefeDepto = new Funcionario();
         jefeDepto.setRut(personaJefe.getRut());
-        jefeDepto.setNombre(StringUtils.buildName(personaJefe.getNombres(), personaJefe.getApellidopaterno(), personaJefe.getApellidomaterno()));
+        jefeDepto.setNombre(StringUtils.buildName(personaJefe.getNombres(), personaJefe.getApellidopaterno(),
+                personaJefe.getApellidomaterno()));
 
         jefeDepto = funcionarioRespository.save(jefeDepto);
-
 
         Visacion visacion = new Visacion();
 
@@ -171,8 +170,7 @@ public class DerivacionService {
 
         String nombreJefe = getNombreJefe(deptoDestino.getDepto());
 
-        apiService.sendEmail("1", nombreJefe,solicitud.getTipoSolicitud().getNombre(), mail);
-        
+        apiService.sendEmail("1", nombreJefe, solicitud.getTipoSolicitud().getNombre(), mail);
 
         return derivacion;
     }
@@ -201,24 +199,29 @@ public class DerivacionService {
     }
 
     public List<Derivacion> saveDerivaciones(List<DerivacionDto> derivacionesDto) {
-        return derivacionesDto.stream().map(this::saveDerivacion).collect(Collectors.toList());
+        return derivacionesDto.stream().map(this::saveDerivacion).toList();
     }
 
-    public String getMail(Long depto){
+    public String getMail(Long depto) {
         Departamentos deptos = departamentosRepository.findByDeptoInt(depto);
 
-        SmcPersona persona = smcService.getPersonaByRut(Integer.parseInt( deptos.getRutJefe()));
+        SmcPersona persona = smcService.getPersonaByRut(Integer.parseInt(deptos.getRutJefe()));
 
-        return  persona.getEmail();
+        return persona.getEmail();
 
     }
 
-    public String getNombreJefe(Long depto){
+    public String getNombreJefe(Long depto) {
         Departamentos deptos = departamentosRepository.findByDeptoInt(depto);
 
-        SmcPersona persona = smcService.getPersonaByRut(Integer.parseInt( deptos.getRutJefe()));
+        SmcPersona persona = smcService.getPersonaByRut(Integer.parseInt(deptos.getRutJefe()));
 
-        return  persona.getNombres();
+        return persona.getNombres();
 
+    }
+
+    public List<Derivacion> getDerivacionesByDepartamentoAndDates(Long departamentoId, LocalDateTime fechaInicio,
+            LocalDateTime fechaFin) {
+        return derivacionRepository.findByDepartamentoAndSolicitudDates(departamentoId, fechaInicio, fechaFin);
     }
 }

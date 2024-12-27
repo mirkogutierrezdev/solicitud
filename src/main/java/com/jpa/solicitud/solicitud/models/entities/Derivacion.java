@@ -33,6 +33,10 @@ public class Derivacion {
     @JoinColumn(name = "funcionario_id", nullable = false)
     private Funcionario funcionario;
 
+    @ManyToOne
+    @JoinColumn(name = "departamento_origen_id", nullable = false)
+    private Departamento departamentoOrigen;
+
     private Date fechaDerivacion;
     private Boolean leida;
 

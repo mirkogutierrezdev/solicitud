@@ -3,7 +3,6 @@ package com.jpa.solicitud.solicitud.services;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -99,12 +98,14 @@ public class SubroganciaService {
 
     }
 
-    public List<Subrogancia> getSubroganciasByRutSubrogante(Integer rutSubrogante) {
-        return subroganciaRepository.findBySubroganteRut(rutSubrogante);
+    public List<Subrogancia> getSubroganciasByRutSubrogante(Integer rutSubrogante, LocalDate fechaInicio,
+            LocalDate fechaFin) {
+        return subroganciaRepository.findBySubroganteRutAndDates(rutSubrogante, fechaInicio, fechaFin);
     }
 
-    public List<ViewSubroganciaDto> getSubroganciasByRut(Integer rut) {
-        List<Subrogancia> subrogancias = subroganciaRepository.findBySubroganteRut(rut);
+    public List<ViewSubroganciaDto> getSubroganciasByRut(Integer rutSubrogante, LocalDate fechaInicio, LocalDate fechaFin) {
+
+        List<Subrogancia> subrogancias = subroganciaRepository.findBySubroganteRutAndDates(rutSubrogante, fechaInicio, fechaFin);
 
         return subrogancias.stream()
                 .map(sub -> {
@@ -138,7 +139,7 @@ public class SubroganciaService {
                     // Devolver el DTO
                     return dto;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }
