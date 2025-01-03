@@ -15,4 +15,6 @@ public interface IDepartamentoRepository extends JpaRepository<Departamento, Lon
 
     Departamento findByDepto(Long depto);
 
+    Departamento findByDeptoSmc(Long depto);
+
 }

@@ -1,6 +1,5 @@
 package com.jpa.solicitud.solicitud.repositories;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,15 +35,5 @@ public interface IDerivacionRepository extends JpaRepository<Derivacion, Long> {
                         "LEFT JOIN Departamento deptoOri ON deptoOri.id = d.departamento.id " +
                         "WHERE d.solicitud.id = :solicitudId")
         List<VDerivacionDto> findDerivacionesBySolicitud(@Param("solicitudId") Long solicitudId);
-
-        @Query("SELECT d FROM Derivacion d " +
-                        "JOIN d.solicitud s " +
-                        "WHERE d.departamento.depto = :departamentoId " +
-                        "AND s.fechaInicio >= :fechaInicio " +
-                        "AND s.fechaFin <= :fechaFin")
-        List<Derivacion> findByDepartamentoAndSolicitudDates(
-                        @Param("departamentoId") Long departamentoId,
-                        @Param("fechaInicio") LocalDateTime fechaInicio,
-                        @Param("fechaFin") LocalDateTime fechaFin);
 
 }

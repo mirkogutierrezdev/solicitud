@@ -66,8 +66,6 @@ public class SolicitudService {
 
     private final IAprobacionRepository aprobacionRepository;
 
-    private final DerivacionService derivacionService;
-
     private final SalidaService salidaService;
 
     private final ApiService apiService;
@@ -78,7 +76,7 @@ public class SolicitudService {
             IDepartamentoRepository departamentoRepository, IEntradaRepository entradaRepository,
             ISalidaRepository salidaRepository, SmcService smcService, IDepartamentosRepository departamentosRepository,
             IRechazoRepository rechazoRepository, IAprobacionRepository aprobacionRepository,
-            DerivacionService derivacionService, SalidaService salidaService, ApiService apiService) {
+            SalidaService salidaService, ApiService apiService) {
         this.funcionarioRespository = funcionarioRespository;
         this.tipoSolicitudRepository = tipoSolicitudRepository;
         this.estadoRepository = estadoRepository;
@@ -91,7 +89,6 @@ public class SolicitudService {
         this.departamentosRepository = departamentosRepository;
         this.rechazoRepository = rechazoRepository;
         this.aprobacionRepository = aprobacionRepository;
-        this.derivacionService = derivacionService;
         this.salidaService = salidaService;
         this.apiService = apiService;
     }
@@ -168,27 +165,27 @@ public class SolicitudService {
         SmcDepartamento smcDepartamento = smcService.getDepartamento(solicitudDto.getDepto().toString());
         Departamentos departamentoRequest = departamentosRepository
                 .findByDepto(Long.parseLong(smcDepartamento.getDepto()));
-    
+
         if (departamentoRequest == null) {
             throw new IllegalArgumentException(
                     "No se encontró el departamento con código: " + smcDepartamento.getDepto());
         }
-    
+
         // Crear el departamento de origen
         Departamento departamentoOrigen = new Departamento();
         departamentoOrigen.setDepto(departamentoRequest.getDeptoInt());
         departamentoOrigen.setDeptoSmc(departamentoRequest.getDepto());
         departamentoOrigen.setNombre(departamentoRequest.getNombreDepartamento());
-    
+
         // Guardar el departamento de origen (si no existe)
         departamentoOrigen = departamentoRepository.save(departamentoOrigen);
-    
+
         // Determinar el departamento destino
         Departamento departamentoDestino = determinarDepartamentoDestino(departamentoRequest, funcionario);
-    
+
         // Guardar el departamento destino (si no existe)
         departamentoDestino = departamentoRepository.save(departamentoDestino);
-    
+
         // Crear y guardar la derivación, incluyendo el departamento de origen y destino
         Derivacion derivacion = new Derivacion();
         derivacion.setSolicitud(solicitud);
@@ -197,22 +194,22 @@ public class SolicitudService {
         derivacion.setLeida(false);
         derivacion.setDepartamento(departamentoDestino); // Departamento de destino
         derivacion.setDepartamentoOrigen(departamentoOrigen); // Departamento de origen
-    
+
         derivacion = derivacionRepository.save(derivacion);
-    
+
         // Crear y guardar la salida asociada
         salidaService.saveSalida(derivacion, funcionario);
-    
+
         // Busca mail y nombre del jefe del departamento de destino
         String mail = getMail(departamentoDestino.getDepto());
         String nombreJefe = getNombreJefe(departamentoDestino.getDepto());
-    
+
         // Enviar correo utilizando la API
         apiService.sendEmail("1", nombreJefe, solicitud.getTipoSolicitud().getNombre(), mail);
-    
+
         return derivacion;
     }
-    
+
     private Departamento determinarDepartamentoDestino(Departamentos departamentoRequest, Funcionario funcionario) {
         boolean esJefe = smcService.isJefe(funcionario.getRut());
         Departamento departamentoDestino = new Departamento();
@@ -308,6 +305,21 @@ public class SolicitudService {
 
         return persona.getNombres();
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<Solicitud> obtenerSolicitudesPorDepartamentoYFechas(
+            Long departamentoId, LocalDate fechaInicio, LocalDate fechaFin) {
+        if (departamentoId == null || fechaInicio == null || fechaFin == null) {
+            throw new IllegalArgumentException("El departamento y las fechas no deben ser nulos.");
+        }
+
+        if (fechaFin.isBefore(fechaInicio)) {
+            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio.");
+        }
+
+        return solicitudRespository.findSolicitudesByDepartamentoOrigenAndFechas(
+                departamentoId, fechaInicio, fechaFin);
     }
 
 }

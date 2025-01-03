@@ -12,12 +12,15 @@ public interface IDepartamentosRepository extends JpaRepository<Departamentos, L
 
     Departamentos findByDepto(Long depto);
 
-    Departamentos findByRutJefe(String rutJefe);
 
     Departamentos findByDeptoInt(Long depto);
 
     @Query("SELECT CASE WHEN COUNT(d) > 0 THEN TRUE ELSE FALSE END FROM Departamentos d WHERE d.deptoInt = :depto and d.rutJefe= :rut")
     boolean existsByDeptoIntAndRutJefe(@Param("depto") Long deptoInt, @Param("rut") Integer rut);
+
+    @Query
+    ("SELECT d FROM Departamentos d WHERE d.rutJefe = :rutJefe")
+    Departamentos findByRutJefe(@Param("rutJefe") String rutJefe);
 
     
 

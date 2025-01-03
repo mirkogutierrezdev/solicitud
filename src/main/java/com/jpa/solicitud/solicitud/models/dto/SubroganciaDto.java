@@ -9,6 +9,9 @@ public class SubroganciaDto {
     private Long idSolicitud;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
+    private String depto;
+
+    
 
     public Integer getRutJefe() {
         return rutJefe;
@@ -39,6 +42,12 @@ public class SubroganciaDto {
     }
     public void setFechaFin(LocalDate fechaFin) {
         this.fechaFin = fechaFin;
+    }
+    public String getDepto() {
+        return depto;
+    }
+    public void setDepto(String depto) {
+        this.depto = depto;
     }
 
 }

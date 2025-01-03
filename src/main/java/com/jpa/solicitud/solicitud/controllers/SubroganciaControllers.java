@@ -31,7 +31,7 @@ public class SubroganciaControllers {
 
 
     @PostMapping("/create")
-	public ResponseEntity<Object> createRechazo(@RequestBody SubroganciaDto subroganciaDto) {
+	public ResponseEntity<Object> createSubrogancia(@RequestBody SubroganciaDto subroganciaDto) {
 		try {
 			Subrogancia subrogancia = subroganciaService.saveSubrogancia(subroganciaDto);
 			return ResponseEntity.ok(subrogancia);

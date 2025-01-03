@@ -55,46 +55,41 @@ public class SubroganciaService {
         LocalDate fechaInicio = subroganciaDto.getFechaInicio();
         LocalDate fechaFin = subroganciaDto.getFechaFin();
 
+        Optional<Solicitud> optSoliciutd = solicitudRespository.findById(idSolicitud);
+
+        Solicitud solicitud = optSoliciutd
+                .orElseThrow(() -> new IllegalArgumentException("No Existe el Id de la Solicitud"));
+
         SmcPersona personaJefe = smcService.getPersonaByRut(rutJefe);
         SmcPersona personaSubrogante = smcService.getPersonaByRut(rutSubrogante);
 
         Funcionario jefeDepto = new Funcionario();
-        jefeDepto.setRut(personaJefe.getRut());
+        jefeDepto.setRut(rutJefe);
         jefeDepto.setNombre(StringUtils.buildName(personaJefe.getNombres(), personaJefe.getApellidopaterno(),
-                personaJefe.getApellidomaterno()));
+                personaJefe.getApellidopaterno()));
 
         jefeDepto = funcionarioRespository.save(jefeDepto);
 
-        Departamentos deptos = departamentosRepository.findByRutJefe(jefeDepto.getRut().toString());
+        Funcionario jefeSubrogante = new Funcionario();
+        jefeSubrogante.setRut(rutSubrogante);
+        jefeSubrogante.setNombre(StringUtils.buildName(personaSubrogante.getNombres(),
+                personaSubrogante.getApellidopaterno(), personaSubrogante.getApellidopaterno()));
 
-        Departamento deptoJefe = new Departamento();
-        deptoJefe.setDepto(deptos.getDeptoInt());
-        deptoJefe.setDeptoSmc(deptos.getDepto());
-        deptoJefe.setNombre(deptos.getNombreDepartamento());
+        jefeSubrogante = funcionarioRespository.save(jefeSubrogante);
 
-        deptoJefe = departamentoRepository.save(deptoJefe);
+        Departamentos deptos = departamentosRepository.findByDepto(Long.parseLong(subroganciaDto.getDepto()));
 
-        Funcionario subrogante = new Funcionario();
-
-        subrogante.setRut(personaSubrogante.getRut());
-        subrogante.setNombre(StringUtils.buildName(personaSubrogante.getNombres(),
-                personaSubrogante.getApellidopaterno(), personaSubrogante.getApellidomaterno()));
-
-        subrogante = funcionarioRespository.save(subrogante);
-
-        Optional<Solicitud> optSolicitud = solicitudRespository.findById(idSolicitud);
-
-        Solicitud solicitud = optSolicitud.orElseThrow(() -> new IllegalArgumentException("Valor no presente"));
+        Departamento depto = departamentoRepository.findByDeptoSmc(deptos.getDepto());
 
         Subrogancia subrogancia = new Subrogancia();
         subrogancia.setJefe(jefeDepto);
-        subrogancia.setSubrogante(subrogante);
+        subrogancia.setSubrogante(jefeSubrogante);
+        subrogancia.setSubDepartamento(depto);
         subrogancia.setSolicitud(solicitud);
         subrogancia.setFechaInicio(fechaInicio);
         subrogancia.setFechaFin(fechaFin);
-        subrogancia.setSubDepartamento(deptoJefe);
-        subroganciaRepository.save(subrogancia);
-        return subrogancia;
+
+        return subroganciaRepository.save(subrogancia);
 
     }
 
@@ -103,9 +98,11 @@ public class SubroganciaService {
         return subroganciaRepository.findBySubroganteRutAndDates(rutSubrogante, fechaInicio, fechaFin);
     }
 
-    public List<ViewSubroganciaDto> getSubroganciasByRut(Integer rutSubrogante, LocalDate fechaInicio, LocalDate fechaFin) {
+    public List<ViewSubroganciaDto> getSubroganciasByRut(Integer rutSubrogante, LocalDate fechaInicio,
+            LocalDate fechaFin) {
 
-        List<Subrogancia> subrogancias = subroganciaRepository.findBySubroganteRutAndDates(rutSubrogante, fechaInicio, fechaFin);
+        List<Subrogancia> subrogancias = subroganciaRepository.findBySubroganteRutAndDates(rutSubrogante, fechaInicio,
+                fechaFin);
 
         return subrogancias.stream()
                 .map(sub -> {

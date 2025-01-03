@@ -224,8 +224,5 @@ public class DerivacionService {
 
     }
 
-    public List<Derivacion> getDerivacionesByDepartamentoAndDates(Long departamentoId, LocalDateTime fechaInicio,
-            LocalDateTime fechaFin) {
-        return derivacionRepository.findByDepartamentoAndSolicitudDates(departamentoId, fechaInicio, fechaFin);
-    }
+   
 }
