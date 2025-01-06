@@ -9,7 +9,6 @@ import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 
 import java.time.LocalDate;
 import java.util.List;
-import com.jpa.solicitud.solicitud.models.entities.Derivacion;
 
 @Repository
 public interface ISolicitudRespository extends JpaRepository<Solicitud, Long> {
@@ -36,6 +35,5 @@ public interface ISolicitudRespository extends JpaRepository<Solicitud, Long> {
             @Param("departamentoId") Long departamentoId,
             @Param("fechaInicio") LocalDate fechaInicio,
             @Param("fechaFin") LocalDate fechaFin);
-    
 
 }

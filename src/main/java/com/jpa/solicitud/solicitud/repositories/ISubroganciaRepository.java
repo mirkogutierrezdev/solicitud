@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.jpa.solicitud.solicitud.models.entities.Funcionario;
 import com.jpa.solicitud.solicitud.models.entities.Subrogancia;
 
 import java.time.LocalDate;
@@ -18,4 +19,6 @@ public interface ISubroganciaRepository extends JpaRepository<Subrogancia, Long>
             @Param("fechaInicio") LocalDate fechaInicio,
             @Param("fechaFin") LocalDate fechaFin);
 
+
+    List<Subrogancia> findBySubrogante(Funcionario subrogante);
 }

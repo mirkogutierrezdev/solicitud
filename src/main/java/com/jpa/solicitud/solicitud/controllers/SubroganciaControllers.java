@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,10 +42,9 @@ public class SubroganciaControllers {
 		}
 	}
 
-	@GetMapping("/by-rut")
-    public ResponseEntity<List<Subrogancia>> getSubroganciasByRutSubrogante(@RequestParam Integer rutSubrogante, 
-     @RequestParam LocalDate fechaInicio,@RequestParam LocalDate fechaFin) {
-        List<Subrogancia> subrogancias = subroganciaService.getSubroganciasByRutSubrogante(rutSubrogante, fechaInicio,fechaFin);
+	@GetMapping("/by-rut/{rutSubrogante}")
+    public ResponseEntity<List<SubroganciaDto>> getSubroganciasByRutSubrogante(@PathVariable Integer rutSubrogante) {
+        List<SubroganciaDto> subrogancias = subroganciaService.getSubroganciasByRutSubrogante(rutSubrogante);
         return ResponseEntity.ok(subrogancias);
     }
 
