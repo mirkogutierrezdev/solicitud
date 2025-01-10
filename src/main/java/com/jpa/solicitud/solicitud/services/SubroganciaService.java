@@ -19,6 +19,7 @@ import com.jpa.solicitud.solicitud.repositories.IDepartamentosRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
 import com.jpa.solicitud.solicitud.repositories.ISubroganciaRepository;
+import com.jpa.solicitud.solicitud.utils.DepartamentoUtils;
 import com.jpa.solicitud.solicitud.utils.StringUtils;
 
 @Service
@@ -96,31 +97,50 @@ public class SubroganciaService {
 
         public List<SubroganciaDto> getSubroganciasByRutSubrogante(Integer rutSubrogante) {
 
-                Optional<Funcionario> optFuncionario = funcionarioRespository.findByRut(rutSubrogante);
-
-                Funcionario funcionario = optFuncionario
-                                .orElseThrow(() -> new IllegalArgumentException("No se eoncontró el funcionario"));
-
-                List<Subrogancia> subrogancias =  subroganciaRepository.findBySubrogante(funcionario);
+                List<Subrogancia> subrogancias = subroganciaRepository.findBySubroganteRut(rutSubrogante);
 
                 return subrogancias.stream()
-                .map(sub ->{
+                                .map(sub -> {
 
-                        SubroganciaDto dto = new SubroganciaDto();
-                        dto.setRutJefe(sub.getJefe().getRut());
-                        dto.setRutSubrogante(sub.getSubrogante().getRut());
-                        dto.setFechaInicio(sub.getFechaInicio());
-                        dto.setFechaFin(sub.getFechaFin());
-                        dto.setDepto(sub.getSubDepartamento().getDeptoSmc().toString());
-                        dto.setIdSolicitud(sub.getSolicitud().getId());
+                                        SubroganciaDto dto = new SubroganciaDto();
+                                        dto.setRutJefe(sub.getJefe().getRut());
+                                        dto.setRutSubrogante(sub.getSubrogante().getRut());
+                                        dto.setFechaInicio(sub.getFechaInicio());
+                                        dto.setFechaFin(sub.getFechaFin());
+                                        dto.setDepto(sub.getSubDepartamento().getDeptoSmc().toString());
+                                        dto.setIdSolicitud(sub.getSolicitud().getId());
+                                        if(DepartamentoUtils.esDireccion(sub.getSubDepartamento().getDepto().toString()) || DepartamentoUtils.esSubdir(sub.getSubDepartamento().getDepto().toString())){
+                                                dto.setEsDireccion(true);
+                                        }else{
+                                                dto.setEsDireccion(false);
+                                        }
+                                        return dto;
 
-                        return dto;
-
-                }).toList();
-
-
+                                }).toList();
 
         }
+
+        public List<SubroganciaDto> findByDeptoAndFechaInicio(Integer rutSubrogante, LocalDate fechaInicio) {
+
+                List<Subrogancia> subrogancias = subroganciaRepository.findByDeptoAndFechaInicio(rutSubrogante, fechaInicio);
+
+                return subrogancias.stream()
+                                .map(sub -> {
+
+                                        SubroganciaDto dto = new SubroganciaDto();
+                                        dto.setRutJefe(sub.getJefe().getRut());
+                                        dto.setRutSubrogante(sub.getSubrogante().getRut());
+                                        dto.setFechaInicio(sub.getFechaInicio());
+                                        dto.setFechaFin(sub.getFechaFin());
+                                        dto.setDepto(sub.getSubDepartamento().getDeptoSmc().toString());
+                                        dto.setIdSolicitud(sub.getSolicitud().getId());
+
+                                        return dto;
+
+                                }).toList();
+
+        }
+
 
         public List<ViewSubroganciaDto> getSubroganciasByRut(Integer rutSubrogante, LocalDate fechaInicio,
                         LocalDate fechaFin) {

@@ -283,6 +283,7 @@ public class AprobacionService {
                     asd.setFechaSolicitud(apr.getSolicitud().getFechaSolicitud());
                     asd.setFechaInicio(apr.getSolicitud().getFechaInicio().toLocalDate());
                     asd.setFechaTermino(apr.getSolicitud().getFechaFin().toLocalDate());
+                    asd.setDuracion(apr.getSolicitud().getDuracion());
 
                     int hour = apr.getSolicitud().getFechaInicio().getHour();
 

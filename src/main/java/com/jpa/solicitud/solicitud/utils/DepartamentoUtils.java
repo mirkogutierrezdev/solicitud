@@ -18,12 +18,18 @@ public class DepartamentoUtils {
         return codigo.substring(0, 6) + "00";
     }
 
+    public static String convertirEnDireccion(String codigo) {
+        return codigo.substring(0, 2) + "00000000";
+    }
+
     public static boolean esDireccion(String codigo) {
         return codigo.endsWith("00000000");
     }
 
     public static boolean esSubdir(String codigo) {
-        return codigo.endsWith("000000");
+
+        return (codigo.endsWith("000000") && Integer.parseInt(codigo.substring(2, 4)) > 0);
+
     }
 
     public static boolean esDepartamento(String codigo) {
@@ -64,5 +70,17 @@ public class DepartamentoUtils {
         }
 
         return codigo;
+    }
+
+    public static boolean origenSubdir(String codigo) {
+
+        return Integer.parseInt(codigo.substring(2, 4)) > 0;
+
+    }
+
+    public static boolean origenDir(String codigo) {
+
+        return Integer.parseInt(codigo.substring(2, 4)) == 0;
+
     }
 }

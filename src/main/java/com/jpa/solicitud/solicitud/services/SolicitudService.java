@@ -22,6 +22,7 @@ import com.jpa.solicitud.solicitud.models.entities.Funcionario;
 import com.jpa.solicitud.solicitud.models.entities.Rechazo;
 import com.jpa.solicitud.solicitud.models.entities.Salida;
 import com.jpa.solicitud.solicitud.models.entities.Solicitud;
+import com.jpa.solicitud.solicitud.models.entities.Subrogancia;
 import com.jpa.solicitud.solicitud.models.entities.TipoSolicitud;
 import com.jpa.solicitud.solicitud.repositories.IAprobacionRepository;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentoRepository;
@@ -33,6 +34,7 @@ import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
 import com.jpa.solicitud.solicitud.repositories.IRechazoRepository;
 import com.jpa.solicitud.solicitud.repositories.ISalidaRepository;
 import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
+import com.jpa.solicitud.solicitud.repositories.ISubroganciaRepository;
 import com.jpa.solicitud.solicitud.repositories.ITipoSolicitudRepository;
 import com.jpa.solicitud.solicitud.utils.DepartamentoUtils;
 import com.jpa.solicitud.solicitud.utils.StringUtils;
@@ -70,13 +72,16 @@ public class SolicitudService {
 
     private final ApiService apiService;
 
+    private final ISubroganciaRepository subroganciaRepository;
+
     public SolicitudService(IFuncionarioRespository funcionarioRespository,
             ITipoSolicitudRepository tipoSolicitudRepository, IEstadoRepository estadoRepository,
             ISolicitudRespository solicitudRespository, IDerivacionRepository derivacionRepository,
             IDepartamentoRepository departamentoRepository, IEntradaRepository entradaRepository,
             ISalidaRepository salidaRepository, SmcService smcService, IDepartamentosRepository departamentosRepository,
             IRechazoRepository rechazoRepository, IAprobacionRepository aprobacionRepository,
-            SalidaService salidaService, ApiService apiService) {
+            SalidaService salidaService, ApiService apiService,
+            ISubroganciaRepository subroganciaRepository) {
         this.funcionarioRespository = funcionarioRespository;
         this.tipoSolicitudRepository = tipoSolicitudRepository;
         this.estadoRepository = estadoRepository;
@@ -91,6 +96,7 @@ public class SolicitudService {
         this.aprobacionRepository = aprobacionRepository;
         this.salidaService = salidaService;
         this.apiService = apiService;
+        this.subroganciaRepository = subroganciaRepository;
     }
 
     @Transactional
@@ -183,6 +189,8 @@ public class SolicitudService {
         // Determinar el departamento destino
         Departamento departamentoDestino = determinarDepartamentoDestino(departamentoRequest, funcionario);
 
+ 
+
         // Guardar el departamento destino (si no existe)
         departamentoDestino = departamentoRepository.save(departamentoDestino);
 
@@ -201,11 +209,12 @@ public class SolicitudService {
         salidaService.saveSalida(derivacion, funcionario);
 
         // Busca mail y nombre del jefe del departamento de destino
-        String mail = getMail(departamentoDestino.getDepto());
-        String nombreJefe = getNombreJefe(departamentoDestino.getDepto());
+        // String mail = getMail(departamentoDestino.getDepto());
+        // String nombreJefe = getNombreJefe(departamentoDestino.getDepto());
 
         // Enviar correo utilizando la API
-        apiService.sendEmail("1", nombreJefe, solicitud.getTipoSolicitud().getNombre(), mail);
+        // apiService.sendEmail("1", nombreJefe,
+        // solicitud.getTipoSolicitud().getNombre(), mail);
 
         return derivacion;
     }
@@ -322,4 +331,11 @@ public class SolicitudService {
                 departamentoId, fechaInicio, fechaFin);
     }
 
+    public List<Subrogancia> buscaSubrogancias(Long depto, LocalDate fechaInicio, LocalDate fechaFin) {
+
+        String deptoInt = depto.toString();
+
+        return subroganciaRepository.findByDeptoAndDates(deptoInt, fechaInicio, fechaFin);
+
+    }
 }

@@ -21,7 +21,7 @@ import com.jpa.solicitud.solicitud.services.SubroganciaService;
 
 @RestController
 @RequestMapping("/api/sub")
-@CrossOrigin(origins = "https://appx.laflorida.cl")
+@CrossOrigin(origins = "http://appx.laflorida.cl")
 public class SubroganciaControllers {
 
     private final SubroganciaService subroganciaService;
@@ -43,9 +43,23 @@ public class SubroganciaControllers {
 	}
 
 	@GetMapping("/by-rut/{rutSubrogante}")
-    public ResponseEntity<List<SubroganciaDto>> getSubroganciasByRutSubrogante(@PathVariable Integer rutSubrogante) {
-        List<SubroganciaDto> subrogancias = subroganciaService.getSubroganciasByRutSubrogante(rutSubrogante);
-        return ResponseEntity.ok(subrogancias);
+    public ResponseEntity<Object> getSubroganciasByRutSubrogante(@PathVariable Integer rutSubrogante) {
+        try {
+            List<SubroganciaDto> subrogancias = subroganciaService.getSubroganciasByRutSubrogante(rutSubrogante);
+
+            if(subrogancias.isEmpty()){
+                return ResponseEntity.noContent().build();
+            }
+            
+
+            return ResponseEntity.ok(subrogancias);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(e.getMessage());
+        }
+        
+        
+
     }
 
 	 @GetMapping("/view/by-rut")
@@ -53,6 +67,26 @@ public class SubroganciaControllers {
     @RequestParam LocalDate fechaInicio, @RequestParam LocalDate fechaFin) {
         try {
             List<ViewSubroganciaDto> subrogancias = subroganciaService.getSubroganciasByRut(rutSubrogante, fechaInicio,fechaFin);
+            if(subrogancias.isEmpty()){
+                return ResponseEntity.noContent().build();
+
+            }
+            return ResponseEntity.ok(subrogancias);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
+    @GetMapping("/view/by-fecha")
+    public ResponseEntity<List<SubroganciaDto>> getSubroganciasByRutSubroganteAndFechaInicio(@RequestParam Integer rut,
+    @RequestParam LocalDate fechaInicio) {
+        try {
+            List<SubroganciaDto> subrogancias = subroganciaService.findByDeptoAndFechaInicio(rut, fechaInicio);
+            if(subrogancias.isEmpty()){
+                return ResponseEntity.noContent().build();
+
+            }
             return ResponseEntity.ok(subrogancias);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

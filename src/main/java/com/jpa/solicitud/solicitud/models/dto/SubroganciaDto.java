@@ -10,6 +10,9 @@ public class SubroganciaDto {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private String depto;
+    private boolean esDireccion;
+
+    
 
     
 
@@ -48,6 +51,12 @@ public class SubroganciaDto {
     }
     public void setDepto(String depto) {
         this.depto = depto;
+    }
+    public boolean isEsDireccion() {
+        return esDireccion;
+    }
+    public void setEsDireccion(boolean esDireccion) {
+        this.esDireccion = esDireccion;
     }
 
 }
