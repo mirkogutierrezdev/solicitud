@@ -81,12 +81,19 @@ public class SubroganciaService {
 
                 Departamentos deptos = departamentosRepository.findByDepto(Long.parseLong(subroganciaDto.getDepto()));
 
-                Departamento depto = departamentoRepository.findByDeptoSmc(deptos.getDepto());
+                Departamento newDepto = new Departamento();
+
+                newDepto.setDepto(deptos.getDeptoInt());
+                newDepto.setDeptoSmc(deptos.getDepto());
+                newDepto.setNombre(deptos.getNombreDepartamento());
+
+                newDepto = departamentoRepository.save(newDepto);
+
 
                 Subrogancia subrogancia = new Subrogancia();
                 subrogancia.setJefe(jefeDepto);
                 subrogancia.setSubrogante(jefeSubrogante);
-                subrogancia.setSubDepartamento(depto);
+                subrogancia.setSubDepartamento(newDepto);
                 subrogancia.setSolicitud(solicitud);
                 subrogancia.setFechaInicio(fechaInicio);
                 subrogancia.setFechaFin(fechaFin);

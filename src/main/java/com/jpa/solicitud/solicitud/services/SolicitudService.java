@@ -209,12 +209,12 @@ public class SolicitudService {
         salidaService.saveSalida(derivacion, funcionario);
 
         // Busca mail y nombre del jefe del departamento de destino
-        // String mail = getMail(departamentoDestino.getDepto());
-        // String nombreJefe = getNombreJefe(departamentoDestino.getDepto());
+         String mail = getMail(departamentoDestino.getDepto());
+         String nombreJefe = getNombreJefe(departamentoDestino.getDepto());
 
         // Enviar correo utilizando la API
-        // apiService.sendEmail("1", nombreJefe,
-        // solicitud.getTipoSolicitud().getNombre(), mail);
+         apiService.sendEmail("1", nombreJefe,
+         solicitud.getTipoSolicitud().getNombre(), mail);
 
         return derivacion;
     }
