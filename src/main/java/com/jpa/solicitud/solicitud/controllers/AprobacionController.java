@@ -45,6 +45,17 @@ public class AprobacionController {
                     .body("Error al leer la aprobación: " + e.getMessage());
         }
     }
+    
+    @PostMapping("/repair/{idSolicitud}")
+    public ResponseEntity<Object> repair(@PathVariable Long idSolicitud){
+        try {
+            
+            Object repair = aprobacionService.replaceUrl(idSolicitud);
+            return ResponseEntity.ok(repair);
+        } catch (Exception e) {
+        }
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 
     @PostMapping("/createAprobaciones")
     public ResponseEntity<Object> saveAprobaciones(@RequestBody List<AprobacionDto> aprobacionDto) {

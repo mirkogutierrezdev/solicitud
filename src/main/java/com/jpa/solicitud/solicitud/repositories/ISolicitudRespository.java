@@ -9,9 +9,12 @@ import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ISolicitudRespository extends JpaRepository<Solicitud, Long> {
+
+        Optional<Solicitud>  findById(Long id);
 
     List<Solicitud> findByFuncionarioRut(Integer rut);
 

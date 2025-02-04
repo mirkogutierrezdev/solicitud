@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -138,6 +139,9 @@ public class AprobacionService {
         // Llamar al método para generar el PDF y obtener la URL después de guardar la
         // aprobación
         String url = preparePdf(solicitud);
+        if(url.contains("ERROR")){
+            return null;
+        }
 
         // Asignar la URL generada a la aprobación ya guardada
         savedAprobacion.setUrlPdf(url);
@@ -153,6 +157,31 @@ public class AprobacionService {
     public Solicitud servGetSolicitudById(Long solicitudId) {
         return solicitudRepository.findById(solicitudId).orElse(null);
     }
+
+    public Object replaceUrl(Long idSolicitud) {
+
+        Solicitud solicitud = solicitudRepository.findById(idSolicitud)
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
+    
+        String url = preparePdf(solicitud);
+        System.out.println(url);
+    
+        Aprobacion aprobacion = aprobacionRepository.findBySolicitudId(idSolicitud);
+        if (aprobacion == null) {
+            throw new IllegalArgumentException("Aprobación no encontrada para la solicitud ID: " + idSolicitud);
+        }
+    
+        System.out.println(aprobacion.getId());
+    
+        aprobacion.setUrlPdf(url);
+        aprobacionRepository.save(aprobacion); // Asegúrate de que este `save()` se ejecuta correctamente
+    
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "Reemplazo realizado con éxito");
+        
+        return response; // Devuelve el HashMap correctamente
+    }
+    
 
     public String preparePdf(Solicitud solicitud) {
         // Convertir java.sql.Date a java.time.LocalDate
@@ -242,6 +271,7 @@ public class AprobacionService {
         }
     }
 
+    @Transactional
     public List<Aprobacion> saveAprobaciones(List<AprobacionDto> aprobaciones) {
         return aprobaciones.stream()
                 .map(aprobacionDto -> {
@@ -284,6 +314,7 @@ public class AprobacionService {
                     asd.setFechaInicio(apr.getSolicitud().getFechaInicio().toLocalDate());
                     asd.setFechaTermino(apr.getSolicitud().getFechaFin().toLocalDate());
                     asd.setDuracion(apr.getSolicitud().getDuracion());
+                    asd.setIdSolicitud(apr.getSolicitud().getId());
 
                     int hour = apr.getSolicitud().getFechaInicio().getHour();
 
@@ -305,7 +336,7 @@ public class AprobacionService {
 
                     asd.setDepto(
                             apr.getSolicitud().getDerivaciones().stream()
-                                    .max(Comparator.comparing(der -> der.getId())) // Encontrar la derivación con el ID
+                                    .max(Comparator.comparing(Derivacion::getId)) // Encontrar la derivación con el ID
                                                                                    // más bajo
                                     .map(der -> der.getDepartamento().getNombre()) // Obtener el nombre del departamento
                                     .orElse(null) // Asignar null si no hay derivaciones

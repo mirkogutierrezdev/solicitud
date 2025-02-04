@@ -18,6 +18,9 @@ public class AprobacionesSinDecretoDto {
     private String url;
     private String tipoContrato;
     private double duracion;
+    private Long idSolicitud;
+
+    
 
     
 
@@ -105,6 +108,12 @@ public class AprobacionesSinDecretoDto {
     }
     public void setDuracion(double duracion) {
         this.duracion = duracion;
+    }
+    public Long getIdSolicitud() {
+        return idSolicitud;
+    }
+    public void setIdSolicitud(Long idSolicitud) {
+        this.idSolicitud = idSolicitud;
     }
 
     
