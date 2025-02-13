@@ -99,4 +99,14 @@ public class SolicitudControllers {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getSolicitud(@PathVariable Long id){
+        try {
+            Solicitud solicitud = solicitudService.getSolicitud(id);
+            return ResponseEntity.ok(solicitud);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

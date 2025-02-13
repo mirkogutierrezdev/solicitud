@@ -49,30 +49,34 @@ public class UtilsService {
     }
 
     public String jefeDestino(Long depto) {
-
         Departamentos deptos = departamentosRepository.findByDepto(depto);
-
+    
         String deptoDestino = determinaDerivacion(depto);
-
-        if (deptos.getRutJefe().isEmpty()) {
-
+    
+        // Validar si el jefe del primer departamento está vacío o nulo
+        if (deptos.getRutJefe() == null || deptos.getRutJefe().trim().isEmpty()) {
             String deptoDestino2 = determinaDerivacion(Long.parseLong(deptoDestino));
-
             Departamentos deptos2 = departamentosRepository.findByDeptoInt(Long.parseLong(deptoDestino2));
-
-            Integer rutDepto2 = Integer.parseInt(deptos2.getRutJefe());
-
+    
+            // Validar si el jefe del segundo departamento también está vacío o nulo
+            if (deptos2.getRutJefe() == null || deptos2.getRutJefe().trim().isEmpty()) {
+                return "";
+            }
+    
+            Integer rutDepto2 = Integer.parseInt(deptos2.getRutJefe()); 
+    
             SmcPersona persona = smcService.getFuncionarioByRut(rutDepto2);
-
+    
             return StringUtils.buildName(persona.getNombres(), persona.getApellidopaterno(),
                     persona.getApellidomaterno());
         }
-
-        SmcPersona otraPersona = smcService.getPersonaByRut(Integer.parseInt(deptos.getRutJefe()));
-
+    
+        Integer rutJefe = Integer.parseInt(deptos.getRutJefe()); 
+        SmcPersona otraPersona = smcService.getPersonaByRut(rutJefe);
+    
         return StringUtils.buildName(otraPersona.getNombres(), otraPersona.getApellidopaterno(),
                 otraPersona.getApellidomaterno());
-
     }
+    
 
 }

@@ -189,8 +189,6 @@ public class SolicitudService {
         // Determinar el departamento destino
         Departamento departamentoDestino = determinarDepartamentoDestino(departamentoRequest, funcionario);
 
- 
-
         // Guardar el departamento destino (si no existe)
         departamentoDestino = departamentoRepository.save(departamentoDestino);
 
@@ -209,12 +207,12 @@ public class SolicitudService {
         salidaService.saveSalida(derivacion, funcionario);
 
         // Busca mail y nombre del jefe del departamento de destino
-         String mail = getMail(departamentoDestino.getDepto());
-         String nombreJefe = getNombreJefe(departamentoDestino.getDepto());
+        String mail = getMail(departamentoDestino.getDepto());
+        String nombreJefe = getNombreJefe(departamentoDestino.getDepto());
 
         // Enviar correo utilizando la API
-         apiService.sendEmail("1", nombreJefe,
-         solicitud.getTipoSolicitud().getNombre(), mail);
+        apiService.sendEmail("1", nombreJefe,
+                solicitud.getTipoSolicitud().getNombre(), mail);
 
         return derivacion;
     }
@@ -336,6 +334,11 @@ public class SolicitudService {
         String deptoInt = depto.toString();
 
         return subroganciaRepository.findByDeptoAndDates(deptoInt, fechaInicio, fechaFin);
+
+    }
+
+    public  Solicitud getSolicitud(Long id){
+        return solicitudRespository.findById(id).orElseThrow(()->new IllegalArgumentException("No existe la solicitud"));
 
     }
 }
