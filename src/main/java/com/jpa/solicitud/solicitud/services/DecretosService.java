@@ -1,6 +1,10 @@
 package com.jpa.solicitud.solicitud.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -32,7 +36,7 @@ public class DecretosService {
     public Decretos crearDecreto(DecretosDto decretoDTO) {
         // 1. Crear un nuevo Decreto
         Decretos decreto = new Decretos();
-        LocalDate fechaDecreto = LocalDate.now();
+        LocalDateTime fechaDecreto = LocalDateTime.now();
         decreto.setFechaCreacion(fechaDecreto);
 
         // 2. Obtener las aprobaciones por sus IDs
@@ -56,47 +60,52 @@ public class DecretosService {
     }
 
     public List<DecretosResponse> findAll(LocalDate fechaInicio, LocalDate fechaFin) {
+        ZoneId zoneId = ZoneId.of("America/Santiago"); // Define la zona horaria deseada
+        ZoneId utcZone = ZoneId.of("UTC");
+
+        // Convertir fechas de entrada a UTC para asegurar comparación correcta
+        ZonedDateTime fechaInicioUTC = fechaInicio.atStartOfDay(zoneId).withZoneSameInstant(utcZone);
+        ZonedDateTime fechaFinUTC = fechaFin.atTime(LocalTime.MAX).atZone(zoneId).withZoneSameInstant(utcZone);
+
         List<Decretos> decretos = decretoRepository.findAll();
-    
+
         return decretos.stream()
-                // Filtramos por fechaCreacion dentro del rango especificado
-                .filter(decreto -> !decreto.getFechaCreacion().isBefore(fechaInicio) &&
-                                   !decreto.getFechaCreacion().isAfter(fechaFin))
+                .filter(decreto -> {
+                    ZonedDateTime fechaCreacionUTC = decreto.getFechaCreacion().atZone(zoneId)
+                            .withZoneSameInstant(utcZone);
+                    return !fechaCreacionUTC.toLocalDate().isBefore(fechaInicioUTC.toLocalDate()) &&
+                            !fechaCreacionUTC.toLocalDate().isAfter(fechaFinUTC.toLocalDate());
+                })
                 .flatMap(decreto -> decreto.getAprobaciones().stream()
                         .map(aprob -> {
                             DecretosResponse decretoResponse = new DecretosResponse();
-    
-                            // Detalles básicos del decreto
+
                             decretoResponse.setId(decreto.getId());
-                            decretoResponse.setFechaCreacion(decreto.getFechaCreacion());
-    
-                            // Detalles de la solicitud asociada a la aprobación
+                            decretoResponse.setFechaCreacion(decreto.getFechaCreacion().atZone(zoneId)
+                                    .withZoneSameInstant(utcZone).toLocalDateTime());
+
                             Solicitud solicitud = aprob.getSolicitud();
-    
-                            // Asignamos los valores de la solicitud a la respuesta
+
                             decretoResponse.setIdSolicitud(solicitud.getId());
                             decretoResponse.setRut(solicitud.getFuncionario().getRut());
                             decretoResponse.setNombre(solicitud.getFuncionario().getNombre());
                             decretoResponse.setTipoSolicitud(solicitud.getTipoSolicitud().getNombre());
                             decretoResponse.setFechaSolicitud(solicitud.getFechaSolicitud());
-                            decretoResponse.setFechaInicio(solicitud.getFechaInicio().toLocalDate());
-                            decretoResponse.setFechaFin(solicitud.getFechaFin().toLocalDate());
+                            decretoResponse.setFechaInicio(solicitud.getFechaInicio().atZone(zoneId).toLocalDateTime());
+                            decretoResponse.setFechaFin(solicitud.getFechaFin().atZone(zoneId).toLocalDateTime());
                             decretoResponse.setDuracion(solicitud.getDuracion());
                             decretoResponse.setUrlPdf(aprob.getUrlPdf());
-    
+
                             List<Derivacion> derivacion = solicitud.getDerivaciones();
                             if (!derivacion.isEmpty()) {
                                 decretoResponse.setDepto(derivacion.get(0).getDepartamentoOrigen().getNombre());
                             }
-    
-                            // Detalles de la aprobación
+
                             decretoResponse.setAprobadoPor(aprob.getFuncionario().getNombre());
-    
+
                             return decretoResponse;
-                        })
-                )
+                        }))
                 .toList();
     }
-    
-    
+
 }

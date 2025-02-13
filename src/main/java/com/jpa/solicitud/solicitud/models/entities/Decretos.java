@@ -1,6 +1,6 @@
 package com.jpa.solicitud.solicitud.models.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -23,7 +23,7 @@ public class Decretos {
     private Long id;
 
 
-    private LocalDate fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @OneToMany(mappedBy = "decreto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference // Maneja la serialización de la lista de aprobaciones
@@ -50,11 +50,11 @@ public class Decretos {
         this.aprobaciones = aprobaciones;
     }
 
-    public LocalDate getFechaCreacion() {
+    public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(LocalDate fechaCreacion) {
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 

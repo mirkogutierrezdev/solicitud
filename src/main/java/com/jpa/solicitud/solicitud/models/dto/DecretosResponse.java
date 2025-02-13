@@ -1,18 +1,19 @@
 package com.jpa.solicitud.solicitud.models.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class DecretosResponse {
 
     private Long id;
-    private LocalDate fechaCreacion;
+    private LocalDateTime fechaCreacion;
     private Long idSolicitud;
     private Integer rut;
     private String nombre;
     private String tipoSolicitud;
     private LocalDate fechaSolicitud;
-    private LocalDate fechaInicio;
-    private LocalDate fechaFin;
+    private LocalDateTime fechaInicio;
+    private LocalDateTime fechaFin;
     private Double duracion;
     private String depto;
     private String aprobadoPor;
@@ -25,10 +26,10 @@ public class DecretosResponse {
     public void setId(Long id) {
         this.id = id;
     }
-    public LocalDate getFechaCreacion() {
+    public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
     }
-    public void setFechaCreacion(LocalDate fechaCreacion) {
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
     public Long getIdSolicitud() {
@@ -61,16 +62,16 @@ public class DecretosResponse {
     public void setFechaSolicitud(LocalDate fechaSolicitud) {
         this.fechaSolicitud = fechaSolicitud;
     }
-    public LocalDate getFechaInicio() {
+    public LocalDateTime getFechaInicio() {
         return fechaInicio;
     }
-    public void setFechaInicio(LocalDate fechaInicio) {
+    public void setFechaInicio(LocalDateTime fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
-    public LocalDate getFechaFin() {
+    public LocalDateTime getFechaFin() {
         return fechaFin;
     }
-    public void setFechaFin(LocalDate fechaFin) {
+    public void setFechaFin(LocalDateTime fechaFin) {
         this.fechaFin = fechaFin;
     }
     public Double getDuracion() {
