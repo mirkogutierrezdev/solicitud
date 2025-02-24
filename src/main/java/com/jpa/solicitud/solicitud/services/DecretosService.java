@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.jpa.solicitud.solicitud.apimodels.SmcContrato;
 import com.jpa.solicitud.solicitud.models.dto.DecretosDto;
 import com.jpa.solicitud.solicitud.models.dto.DecretosResponse;
 import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
@@ -27,9 +28,13 @@ public class DecretosService {
 
     private final IAprobacionRepository aprobacionRepository;
 
-    public DecretosService(IDecretosRepository decretosRepository, IAprobacionRepository aprobacionRepository) {
+    private final SmcService smcService;
+
+    public DecretosService(IDecretosRepository decretosRepository, IAprobacionRepository aprobacionRepository,
+            SmcService smcService) {
         this.decretoRepository = decretosRepository;
         this.aprobacionRepository = aprobacionRepository;
+        this.smcService = smcService;
     }
 
     @Transactional
@@ -95,6 +100,10 @@ public class DecretosService {
                             decretoResponse.setFechaFin(solicitud.getFechaFin().atZone(zoneId).toLocalDateTime());
                             decretoResponse.setDuracion(solicitud.getDuracion());
                             decretoResponse.setUrlPdf(aprob.getUrlPdf());
+                            
+                            SmcContrato contrato = smcService.getContratoSmc(aprob.getSolicitud().getFuncionario().getRut());
+
+                            decretoResponse.setTipoContrato(contrato.getNombrecontrato());
 
                             List<Derivacion> derivacion = solicitud.getDerivaciones();
                             if (!derivacion.isEmpty()) {

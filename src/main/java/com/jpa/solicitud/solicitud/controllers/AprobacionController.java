@@ -5,6 +5,7 @@ import com.jpa.solicitud.solicitud.models.dto.AprobacionesSinDecretoDto;
 import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
 import com.jpa.solicitud.solicitud.services.AprobacionService;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,14 @@ public class AprobacionController {
     public ResponseEntity<Object> createAprobacion(@RequestBody AprobacionDto aprobacionDto) {
         try {
             Aprobacion nuevaAprobacion = aprobacionService.saveAprobacion(aprobacionDto);
+
+            if (nuevaAprobacion == null) {
+                // Si el recurso es null, lanzamos una excepción personalizada o devolvemos un error con ResponseEntity
+               HashMap<String,String> response = new HashMap<>();
+
+               response.put("error","La aprobacion no puede superar los 30 días");
+               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
             return ResponseEntity.ok(nuevaAprobacion);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

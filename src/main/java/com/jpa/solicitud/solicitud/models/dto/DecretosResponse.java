@@ -17,6 +17,7 @@ public class DecretosResponse {
     private Double duracion;
     private String depto;
     private String aprobadoPor;
+    private String tipoContrato;
     private String urlPdf;
 
     
@@ -97,6 +98,12 @@ public class DecretosResponse {
     }
     public void setUrlPdf(String urlPdf) {
         this.urlPdf = urlPdf;
+    }
+    public String getTipoContrato() {
+        return tipoContrato;
+    }
+    public void setTipoContrato(String tipoContrato) {
+        this.tipoContrato = tipoContrato;
     }
 
     
