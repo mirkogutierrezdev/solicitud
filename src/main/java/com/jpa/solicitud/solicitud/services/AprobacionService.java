@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import com.jpa.solicitud.solicitud.apimodels.SmcContrato;
 import com.jpa.solicitud.solicitud.apimodels.SmcFuncionario;
 import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
+import com.jpa.solicitud.solicitud.exceptions.AprobacionException;
 import com.jpa.solicitud.solicitud.models.dto.AprobacionDto;
 import com.jpa.solicitud.solicitud.models.dto.AprobacionesSinDecretoDto;
 import com.jpa.solicitud.solicitud.models.dto.PdfDto;
@@ -95,7 +96,7 @@ public class AprobacionService {
         Long diasDif = ChronoUnit.DAYS.between(solicitud.getFechaSolicitud(), LocalDateTime.now());
 
         if (diasDif > 30) {
-            return null;
+            throw new AprobacionException("La aprobación no puede superar los 30 dias a partir de la solicitud");
         }
 
         Optional<Visacion> optVisacion = visacionRepository.findBySolicitud(solicitud);
@@ -146,7 +147,11 @@ public class AprobacionService {
         // Llamar al método para generar el PDF y obtener la URL después de guardar la
         // aprobación
         String url = preparePdf(solicitud);
-    
+
+        if (url.contains("Error" ) || (url.contains("404"))) {
+            throw new AprobacionException("Imposible firmar la solicitud, respuesta de Api con errores. Revise su firma digital o comuníquse con el departamento de Informática.");
+        }
+
         // Asignar la URL generada a la aprobación ya guardada
         savedAprobacion.setUrlPdf(url);
 

@@ -1,5 +1,6 @@
 package com.jpa.solicitud.solicitud.controllers;
 
+import com.jpa.solicitud.solicitud.exceptions.AprobacionException;
 import com.jpa.solicitud.solicitud.models.dto.AprobacionDto;
 import com.jpa.solicitud.solicitud.models.dto.AprobacionesSinDecretoDto;
 import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
@@ -30,15 +31,13 @@ public class AprobacionController {
         try {
             Aprobacion nuevaAprobacion = aprobacionService.saveAprobacion(aprobacionDto);
 
-            if (nuevaAprobacion == null) {
-                // Si el recurso es null, lanzamos una excepción personalizada o devolvemos un error con ResponseEntity
-               HashMap<String,String> response = new HashMap<>();
-
-               response.put("error","La aprobacion no puede superar los 30 días");
-               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
+            
             return ResponseEntity.ok(nuevaAprobacion);
-        } catch (Exception e) {
+        } catch(AprobacionException e){
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al crear la aprobación: " + e.getMessage());
         }
@@ -54,16 +53,16 @@ public class AprobacionController {
                     .body("Error al leer la aprobación: " + e.getMessage());
         }
     }
-    
+
     @PostMapping("/repair/{idSolicitud}")
-    public ResponseEntity<Object> repair(@PathVariable Long idSolicitud){
+    public ResponseEntity<Object> repair(@PathVariable Long idSolicitud) {
         try {
-            
+
             Object repair = aprobacionService.replaceUrl(idSolicitud);
             return ResponseEntity.ok(repair);
         } catch (Exception e) {
         }
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @PostMapping("/createAprobaciones")
@@ -96,7 +95,6 @@ public class AprobacionController {
                     .body("Error al obtener  el listado de aprobaciones: " + e.getMessage());
         }
     }
-
 
     @GetMapping("/getaprobaciones")
     public ResponseEntity<Object> getAprobaciones() {

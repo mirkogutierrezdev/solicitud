@@ -9,7 +9,9 @@ public class DecretosResponse {
     private LocalDateTime fechaCreacion;
     private Long idSolicitud;
     private Integer rut;
-    private String nombre;
+    private String nombres;
+    private String paterno;
+    private String materno;
     private String tipoSolicitud;
     private LocalDate fechaSolicitud;
     private LocalDateTime fechaInicio;
@@ -21,6 +23,18 @@ public class DecretosResponse {
     private String urlPdf;
 
     
+    public String getPaterno() {
+        return paterno;
+    }
+    public void setPaterno(String paterno) {
+        this.paterno = paterno;
+    }
+    public String getMaterno() {
+        return materno;
+    }
+    public void setMaterno(String materno) {
+        this.materno = materno;
+    }
     public Long getId() {
         return id;
     }
@@ -45,11 +59,11 @@ public class DecretosResponse {
     public void setRut(Integer rut) {
         this.rut = rut;
     }
-    public String getNombre() {
-        return nombre;
+    public String getNombres() {
+        return nombres;
     }
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombres(String nombre) {
+        this.nombres = nombre;
     }
     public String getTipoSolicitud() {
         return tipoSolicitud;

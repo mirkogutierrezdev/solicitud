@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.jpa.solicitud.solicitud.apimodels.SmcContrato;
+import com.jpa.solicitud.solicitud.apimodels.SmcPersona;
 import com.jpa.solicitud.solicitud.models.dto.DecretosDto;
 import com.jpa.solicitud.solicitud.models.dto.DecretosResponse;
 import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
@@ -93,7 +94,13 @@ public class DecretosService {
 
                             decretoResponse.setIdSolicitud(solicitud.getId());
                             decretoResponse.setRut(solicitud.getFuncionario().getRut());
-                            decretoResponse.setNombre(solicitud.getFuncionario().getNombre());
+
+                            SmcPersona persona = smcService.getPersonaByRut(solicitud.getFuncionario().getRut());
+
+
+                            decretoResponse.setNombres(persona.getNombres());
+                            decretoResponse.setPaterno(persona.getApellidopaterno());
+                            decretoResponse.setMaterno(persona.getApellidomaterno());
                             decretoResponse.setTipoSolicitud(solicitud.getTipoSolicitud().getNombre());
                             decretoResponse.setFechaSolicitud(solicitud.getFechaSolicitud());
                             decretoResponse.setFechaInicio(solicitud.getFechaInicio().atZone(zoneId).toLocalDateTime());
@@ -103,7 +110,7 @@ public class DecretosService {
                             
                             SmcContrato contrato = smcService.getContratoSmc(aprob.getSolicitud().getFuncionario().getRut());
 
-                            decretoResponse.setTipoContrato(contrato.getNombrecontrato());
+                            decretoResponse.setTipoContrato(contrato.getNombrecontrato().trim());
 
                             List<Derivacion> derivacion = solicitud.getDerivaciones();
                             if (!derivacion.isEmpty()) {
