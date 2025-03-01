@@ -30,7 +30,7 @@ public class Subrogancia {
     private Departamento subDepartamento;
 
     @OneToOne
-    @JoinColumn(name = "solicitud_id", nullable = false)
+    @JoinColumn(name = "solicitud_id", nullable = true)
     private Solicitud solicitud; // Relación con la solicitud de vacaciones u otro tipo de solicitud de ausencia.
 
     @Column(nullable = false)

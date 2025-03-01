@@ -6,7 +6,6 @@ public class SubroganciaDto {
 
     private Integer rutJefe;
     private Integer rutSubrogante;
-    private Long idSolicitud;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private String depto;
@@ -28,12 +27,7 @@ public class SubroganciaDto {
     public void setRutSubrogante(Integer rutSubrogante) {
         this.rutSubrogante = rutSubrogante;
     }
-    public Long getIdSolicitud() {
-        return idSolicitud;
-    }
-    public void setIdSolicitud(Long idSolicitud) {
-        this.idSolicitud = idSolicitud;
-    }
+ 
     public LocalDate getFechaInicio() {
         return fechaInicio;
     }

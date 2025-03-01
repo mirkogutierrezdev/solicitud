@@ -2,7 +2,6 @@ package com.jpa.solicitud.solicitud.services;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -12,12 +11,10 @@ import com.jpa.solicitud.solicitud.models.dto.ViewSubroganciaDto;
 import com.jpa.solicitud.solicitud.models.entities.Departamento;
 import com.jpa.solicitud.solicitud.models.entities.Departamentos;
 import com.jpa.solicitud.solicitud.models.entities.Funcionario;
-import com.jpa.solicitud.solicitud.models.entities.Solicitud;
 import com.jpa.solicitud.solicitud.models.entities.Subrogancia;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentoRepository;
 import com.jpa.solicitud.solicitud.repositories.IDepartamentosRepository;
 import com.jpa.solicitud.solicitud.repositories.IFuncionarioRespository;
-import com.jpa.solicitud.solicitud.repositories.ISolicitudRespository;
 import com.jpa.solicitud.solicitud.repositories.ISubroganciaRepository;
 import com.jpa.solicitud.solicitud.utils.DepartamentoUtils;
 import com.jpa.solicitud.solicitud.utils.StringUtils;
@@ -29,7 +26,6 @@ public class SubroganciaService {
 
         private final SmcService smcService;
 
-        private final ISolicitudRespository solicitudRespository;
 
         private final IFuncionarioRespository funcionarioRespository;
 
@@ -38,12 +34,11 @@ public class SubroganciaService {
         private final IDepartamentoRepository departamentoRepository;
 
         public SubroganciaService(ISubroganciaRepository subroganciaRepository, SmcService smcService,
-                        ISolicitudRespository solicitudRespository, IFuncionarioRespository funcionarioRespository,
+                        IFuncionarioRespository funcionarioRespository,
                         IDepartamentosRepository departamentosRepository,
                         IDepartamentoRepository departamentoRepository) {
                 this.subroganciaRepository = subroganciaRepository;
                 this.smcService = smcService;
-                this.solicitudRespository = solicitudRespository;
                 this.funcionarioRespository = funcionarioRespository;
                 this.departamentosRepository = departamentosRepository;
                 this.departamentoRepository = departamentoRepository;
@@ -53,14 +48,11 @@ public class SubroganciaService {
 
                 Integer rutJefe = subroganciaDto.getRutJefe();
                 Integer rutSubrogante = subroganciaDto.getRutSubrogante();
-                Long idSolicitud = subroganciaDto.getIdSolicitud();
                 LocalDate fechaInicio = subroganciaDto.getFechaInicio();
                 LocalDate fechaFin = subroganciaDto.getFechaFin();
 
-                Optional<Solicitud> optSoliciutd = solicitudRespository.findById(idSolicitud);
+                
 
-                Solicitud solicitud = optSoliciutd
-                                .orElseThrow(() -> new IllegalArgumentException("No Existe el Id de la Solicitud"));
 
                 SmcPersona personaJefe = smcService.getPersonaByRut(rutJefe);
                 SmcPersona personaSubrogante = smcService.getPersonaByRut(rutSubrogante);
@@ -94,7 +86,6 @@ public class SubroganciaService {
                 subrogancia.setJefe(jefeDepto);
                 subrogancia.setSubrogante(jefeSubrogante);
                 subrogancia.setSubDepartamento(newDepto);
-                subrogancia.setSolicitud(solicitud);
                 subrogancia.setFechaInicio(fechaInicio);
                 subrogancia.setFechaFin(fechaFin);
 
@@ -115,7 +106,6 @@ public class SubroganciaService {
                                         dto.setFechaInicio(sub.getFechaInicio());
                                         dto.setFechaFin(sub.getFechaFin());
                                         dto.setDepto(sub.getSubDepartamento().getDeptoSmc().toString());
-                                        dto.setIdSolicitud(sub.getSolicitud().getId());
                                         if(DepartamentoUtils.esDireccion(sub.getSubDepartamento().getDepto().toString()) || DepartamentoUtils.esSubdir(sub.getSubDepartamento().getDepto().toString())){
                                                 dto.setEsDireccion(true);
                                         }else{
@@ -140,7 +130,6 @@ public class SubroganciaService {
                                         dto.setFechaInicio(sub.getFechaInicio());
                                         dto.setFechaFin(sub.getFechaFin());
                                         dto.setDepto(sub.getSubDepartamento().getDeptoSmc().toString());
-                                        dto.setIdSolicitud(sub.getSolicitud().getId());
 
                                         return dto;
 

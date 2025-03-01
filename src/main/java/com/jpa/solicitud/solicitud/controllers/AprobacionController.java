@@ -6,7 +6,6 @@ import com.jpa.solicitud.solicitud.models.dto.AprobacionesSinDecretoDto;
 import com.jpa.solicitud.solicitud.models.entities.Aprobacion;
 import com.jpa.solicitud.solicitud.services.AprobacionService;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -31,13 +30,12 @@ public class AprobacionController {
         try {
             Aprobacion nuevaAprobacion = aprobacionService.saveAprobacion(aprobacionDto);
 
-            
             return ResponseEntity.ok(nuevaAprobacion);
-        } catch(AprobacionException e){
+        } catch (AprobacionException e) {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al crear la aprobación: " + e.getMessage());
         }
@@ -61,8 +59,8 @@ public class AprobacionController {
             Object repair = aprobacionService.replaceUrl(idSolicitud);
             return ResponseEntity.ok(repair);
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @PostMapping("/createAprobaciones")
