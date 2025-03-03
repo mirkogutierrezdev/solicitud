@@ -15,24 +15,29 @@ import java.util.List;
 @Repository
 public interface ISubroganciaRepository extends JpaRepository<Subrogancia, Long> {
 
-    @Query("SELECT s FROM Subrogancia s WHERE s.subrogante.rut = :rutSubrogante AND s.fechaInicio >= :fechaInicio AND s.fechaFin <= :fechaFin")
-    List<Subrogancia> findBySubroganteRutAndDates(@Param("rutSubrogante") Integer rutSubrogante,
-            @Param("fechaInicio") LocalDate fechaInicio,
-            @Param("fechaFin") LocalDate fechaFin);
+        @Query("SELECT s FROM Subrogancia s WHERE s.subrogante.rut = :rutSubrogante AND s.fechaInicio >= :fechaInicio AND s.fechaFin <= :fechaFin")
+        List<Subrogancia> findBySubroganteRutAndDates(@Param("rutSubrogante") Integer rutSubrogante,
+                        @Param("fechaInicio") LocalDate fechaInicio,
+                        @Param("fechaFin") LocalDate fechaFin);
 
-    List<Subrogancia> findBySubrogante(Funcionario subrogante);
+        List<Subrogancia> findBySubrogante(Funcionario subrogante);
 
-    List<Subrogancia> findBySubDepartamentoAndFechaInicioAndFechaFin(Departamento subDepartamento,
-            LocalDate fechaInicio, LocalDate fechaFin);
+        List<Subrogancia> findBySubDepartamentoAndFechaInicioAndFechaFin(Departamento subDepartamento,
+                        LocalDate fechaInicio, LocalDate fechaFin);
 
-    List<Subrogancia> findBySubroganteRut(Integer rut);
+        List<Subrogancia> findBySubroganteRut(Integer rut);
 
-    @Query("SELECT s FROM Subrogancia s WHERE s.subDepartamento.depto = :codigoDepartamento AND s.fechaInicio >= :fechaInicio AND s.fechaFin <= :fechaFin")
-    List<Subrogancia> findByDeptoAndDates(@Param("codigoDepartamento") String codigoDepartamento,
-            @Param("fechaInicio") LocalDate fechaInicio,
-            @Param("fechaFin") LocalDate fechaFin);
+        @Query("SELECT s FROM Subrogancia s WHERE s.subDepartamento.depto = :codigoDepartamento AND s.fechaInicio >= :fechaInicio AND s.fechaFin <= :fechaFin")
+        List<Subrogancia> findByDeptoAndDates(@Param("codigoDepartamento") String codigoDepartamento,
+                        @Param("fechaInicio") LocalDate fechaInicio,
+                        @Param("fechaFin") LocalDate fechaFin);
 
-            @Query("SELECT s FROM Subrogancia s WHERE s.subrogante.rut = :rutSubrogante AND :fecha BETWEEN s.fechaInicio AND s.fechaFin")
-    List<Subrogancia> findByDeptoAndFechaInicio(@Param("rutSubrogante") Integer rutSubrogante,
-            @Param("fecha") LocalDate fechaInicio);
+        @Query("SELECT s FROM Subrogancia s WHERE s.subrogante.rut = :rutSubrogante AND :fecha BETWEEN s.fechaInicio AND s.fechaFin")
+        List<Subrogancia> findByDeptoAndFechaInicio(@Param("rutSubrogante") Integer rutSubrogante,
+                        @Param("fecha") LocalDate fechaInicio);
+
+        @Query("SELECT s FROM Subrogancia s WHERE  s.fechaInicio >= :fechaInicio AND s.fechaFin <= :fechaFin")
+        List<Subrogancia> findByFechaInicioAndFechaFin(@Param("fechaInicio") LocalDate fechaInicio,
+                        @Param("fechaFin") LocalDate fechaFin);
+
 }

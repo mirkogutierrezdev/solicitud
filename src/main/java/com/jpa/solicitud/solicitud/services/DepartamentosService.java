@@ -12,8 +12,6 @@ public class DepartamentosService {
 
     private final IDepartamentosRepository departamentosRepository;
 
-    
-
     public DepartamentosService(IDepartamentosRepository departamentosRepository) {
         this.departamentosRepository = departamentosRepository;
     }
@@ -40,13 +38,16 @@ public class DepartamentosService {
     public boolean esSub(Long depto) {
 
         Departamentos departamentos = departamentosRepository.findByDepto(depto);
-     
 
-        if(departamentos.getSubidireccion() == null){
+        if (departamentos.getSubidireccion() == null) {
             return false;
         }
-       
 
         return departamentos.getSubidireccion();
+    }
+
+    public List<Departamentos> buscarDepartamentoNombre(String nombre){
+        return departamentosRepository.findByNombreDepartamentoLike(nombre);
+
     }
 }

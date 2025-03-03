@@ -26,7 +26,6 @@ public class SubroganciaService {
 
         private final SmcService smcService;
 
-
         private final IFuncionarioRespository funcionarioRespository;
 
         private final IDepartamentosRepository departamentosRepository;
@@ -50,9 +49,6 @@ public class SubroganciaService {
                 Integer rutSubrogante = subroganciaDto.getRutSubrogante();
                 LocalDate fechaInicio = subroganciaDto.getFechaInicio();
                 LocalDate fechaFin = subroganciaDto.getFechaFin();
-
-                
-
 
                 SmcPersona personaJefe = smcService.getPersonaByRut(rutJefe);
                 SmcPersona personaSubrogante = smcService.getPersonaByRut(rutSubrogante);
@@ -81,7 +77,6 @@ public class SubroganciaService {
 
                 newDepto = departamentoRepository.save(newDepto);
 
-
                 Subrogancia subrogancia = new Subrogancia();
                 subrogancia.setJefe(jefeDepto);
                 subrogancia.setSubrogante(jefeSubrogante);
@@ -106,9 +101,12 @@ public class SubroganciaService {
                                         dto.setFechaInicio(sub.getFechaInicio());
                                         dto.setFechaFin(sub.getFechaFin());
                                         dto.setDepto(sub.getSubDepartamento().getDeptoSmc().toString());
-                                        if(DepartamentoUtils.esDireccion(sub.getSubDepartamento().getDepto().toString()) || DepartamentoUtils.esSubdir(sub.getSubDepartamento().getDepto().toString())){
+                                        if (DepartamentoUtils
+                                                        .esDireccion(sub.getSubDepartamento().getDepto().toString())
+                                                        || DepartamentoUtils.esSubdir(sub.getSubDepartamento()
+                                                                        .getDepto().toString())) {
                                                 dto.setEsDireccion(true);
-                                        }else{
+                                        } else {
                                                 dto.setEsDireccion(false);
                                         }
                                         return dto;
@@ -119,7 +117,8 @@ public class SubroganciaService {
 
         public List<SubroganciaDto> findByDeptoAndFechaInicio(Integer rutSubrogante, LocalDate fechaInicio) {
 
-                List<Subrogancia> subrogancias = subroganciaRepository.findByDeptoAndFechaInicio(rutSubrogante, fechaInicio);
+                List<Subrogancia> subrogancias = subroganciaRepository.findByDeptoAndFechaInicio(rutSubrogante,
+                                fechaInicio);
 
                 return subrogancias.stream()
                                 .map(sub -> {
@@ -136,7 +135,6 @@ public class SubroganciaService {
                                 }).toList();
 
         }
-
 
         public List<ViewSubroganciaDto> getSubroganciasByRut(Integer rutSubrogante, LocalDate fechaInicio,
                         LocalDate fechaFin) {
@@ -156,30 +154,46 @@ public class SubroganciaService {
                                         dto.setNombreSubrogante(
                                                         sub.getSubrogante() != null ? sub.getSubrogante().getNombre()
                                                                         : "Sin Subrogante");
-                                        dto.setEstadoSolicitud(sub.getSolicitud() != null
-                                                        && sub.getSolicitud().getEstado() != null
-                                                                        ? sub.getSolicitud().getEstado().getNombre()
-                                                                        : "Estado Desconocido");
+                             
+                                     
+                                        dto.setId(sub.getId());
+                                        dto.setFechaInicio(sub.getFechaInicio());
+                                        dto.setFechaFin(sub.getFechaFin());
+                                       
+                                        // Devolver el DTO
+                                        return dto;
+                                })
+                                .toList();
+        }
+
+        public List<ViewSubroganciaDto> getSubroganciasByFechas(LocalDate fechaInicio,
+                        LocalDate fechaFin) {
+
+                List<Subrogancia> subrogancias = subroganciaRepository.findByFechaInicioAndFechaFin(
+                                fechaInicio,
+                                fechaFin);
+
+                return subrogancias.stream()
+                                .map(sub -> {
+                                        // Crear instancia del DTO
+                                        ViewSubroganciaDto dto = new ViewSubroganciaDto();
+
+                                        // Validaciones para evitar excepciones por datos nulos
+                                        dto.setNombreJefe(
+                                                        sub.getJefe() != null ? sub.getJefe().getNombre() : "Sin Jefe");
+                                        dto.setNombreSubrogante(
+                                                        sub.getSubrogante() != null ? sub.getSubrogante().getNombre()
+                                                                        : "Sin Subrogante");
+                                      
 
                                         // Obtener el primer departamento, si existe
-                                        if (sub.getSolicitud() != null && sub.getSolicitud().getDerivaciones() != null
-                                                        && !sub.getSolicitud().getDerivaciones().isEmpty()) {
-                                                dto.setDepto(sub.getSolicitud().getDerivaciones().get(0)
-                                                                .getDepartamento().getDepto());
-                                                dto.setNombreDepto(sub.getSolicitud().getDerivaciones().get(0)
-                                                                .getDepartamento().getNombre());
-                                        } else {
-                                                dto.setDepto(null);
-                                                dto.setNombreDepto("Departamento Desconocido");
-                                        }
+                                       
+                                        dto.setNombreDepto(sub.getSubDepartamento().getNombre());
 
                                         dto.setId(sub.getId());
                                         dto.setFechaInicio(sub.getFechaInicio());
                                         dto.setFechaFin(sub.getFechaFin());
-                                        dto.setSubDepartamento(
-                                                        sub.getSubDepartamento() != null
-                                                                        ? sub.getSubDepartamento().getDeptoSmc()
-                                                                        : null);
+                                     
 
                                         // Devolver el DTO
                                         return dto;

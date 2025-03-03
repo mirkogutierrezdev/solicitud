@@ -1,5 +1,7 @@
 package com.jpa.solicitud.solicitud.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +23,10 @@ public interface IDepartamentosRepository extends JpaRepository<Departamentos, L
     @Query
     ("SELECT d FROM Departamentos d WHERE d.rutJefe = :rutJefe")
     Departamentos findByRutJefe(@Param("rutJefe") String rutJefe);
+
+
+    @Query("SELECT d FROM Departamentos d WHERE d.nombreDepartamento LIKE %:nombreDepartamento%")
+    List<Departamentos> findByNombreDepartamentoLike(@Param("nombreDepartamento") String nombreDepartamento);
 
     
 

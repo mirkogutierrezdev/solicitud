@@ -72,4 +72,10 @@ public class DepartamentosController {
 
     }
 
+    @GetMapping("/find/{nombreDepto}")
+    public List<Departamentos> getDeptoPorNombre(@PathVariable String nombreDepto) {
+        return departamentosService.buscarDepartamentoNombre(nombreDepto);
+
+    }
+
 }

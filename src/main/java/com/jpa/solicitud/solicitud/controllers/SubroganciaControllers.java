@@ -94,4 +94,22 @@ public class SubroganciaControllers {
         }
     }
 
+
+    @GetMapping("/view/fechas")
+    public ResponseEntity<List<ViewSubroganciaDto>> getSubroganciasByFechaInicioAndFechaFin(@RequestParam LocalDate fechaInicio,
+    @RequestParam LocalDate fechaFin) {
+        try {
+            List<ViewSubroganciaDto> subrogancias = subroganciaService.getSubroganciasByFechas(fechaInicio, fechaFin);
+            if(subrogancias.isEmpty()){
+                return ResponseEntity.noContent().build();
+
+            }
+            return ResponseEntity.ok(subrogancias);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
+
 }

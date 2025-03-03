@@ -6,12 +6,9 @@ public class ViewSubroganciaDto {
     private Long id;
     private String nombreJefe;
     private String nombreSubrogante;
-    private Long depto;
     private String nombreDepto;
-    private String estadoSolicitud;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
-    private Long subDepartamento;
 
     // Constructor
 
@@ -42,13 +39,6 @@ public class ViewSubroganciaDto {
         this.nombreSubrogante = nombreSubrogante;
     }
 
-    public Long getDepto() {
-        return depto;
-    }
-
-    public void setDepto(Long depto) {
-        this.depto = depto;
-    }
 
     public String getNombreDepto() {
         return nombreDepto;
@@ -58,13 +48,7 @@ public class ViewSubroganciaDto {
         this.nombreDepto = nombreDepto;
     }
 
-    public String getEstadoSolicitud() {
-        return estadoSolicitud;
-    }
 
-    public void setEstadoSolicitud(String estadoSolicitud) {
-        this.estadoSolicitud = estadoSolicitud;
-    }
 
     public LocalDate getFechaInicio() {
         return fechaInicio;
@@ -82,13 +66,6 @@ public class ViewSubroganciaDto {
         this.fechaFin = fechaFin;
     }
 
-    public Long getSubDepartamento() {
-        return subDepartamento;
-    }
-
-    public void setSubDepartamento(Long subDepartamento) {
-        this.subDepartamento = subDepartamento;
-    }
 
 
 
