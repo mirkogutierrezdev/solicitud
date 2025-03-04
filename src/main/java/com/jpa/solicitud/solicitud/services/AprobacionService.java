@@ -322,15 +322,20 @@ public class AprobacionService {
                     asd.setIdSolicitud(apr.getSolicitud().getId());
 
                     int hour = apr.getSolicitud().getFechaInicio().getHour();
+                   
 
-                    if (hour == 12) {
-                        asd.setJornada("AM");
+                    switch (hour) {
+                      case 12 -> {
+                          asd.setJornada("AM");
+                      }
+                      case 17 -> {
+                          asd.setJornada("PM");
+                      }
+                      default -> {
+                          asd.setJornada("Día");
+                      }
                     }
-                    if (hour == 17) {
-                        asd.setJornada("PM");
-                    } else {
-                        asd.setJornada("Día");
-                    }
+                    
 
                     asd.setTipoSolicitud(apr.getSolicitud().getTipoSolicitud().getNombre());
                     asd.setUrl(apr.getUrlPdf());
