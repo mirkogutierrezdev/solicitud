@@ -21,7 +21,7 @@ import com.jpa.solicitud.solicitud.services.SubroganciaService;
 
 @RestController
 @RequestMapping("/api/sub")
-@CrossOrigin(origins = "http://appx.laflorida.cl")
+@CrossOrigin(origins = "https://appx.laflorida.cl")
 public class SubroganciaControllers {
 
     private final SubroganciaService subroganciaService;
