@@ -3,6 +3,7 @@ package com.jpa.solicitud.solicitud.services;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,55 +80,82 @@ public class DerivacionService {
     @Transactional
     public Derivacion saveDerivacion(DerivacionDto derivacionDto) {
 
-        Long depto = derivacionDto.getDepto();
         Long idSolicitud = derivacionDto.getSolicitudId();
         String estado = derivacionDto.getEstado();
         Date fechaDerivacion = Date.valueOf(LocalDate.now());
-    
+
         // Crear y configurar la entidad Derivacion
         Derivacion derivacion = new Derivacion();
-    
+
         // Buscar la solicitud relacionada
         Optional<Solicitud> solicitudOpt = solicitudRespository.findById(idSolicitud);
         if (!solicitudOpt.isPresent()) {
             throw new EntityNotFoundException("Solicitud no encontrada con ID: " + idSolicitud);
         }
-        Solicitud solicitud = solicitudOpt.get();
-    
+
+        // Obtiene la solicitud si está presente, sino lanza una excepción
+        Solicitud solicitud = solicitudOpt.orElseThrow(() -> new IllegalStateException("Solicitud no encontrada"));
+
+        // Verifica si tiene derivaciones antes de buscar la última
+        Derivacion ultimaDerivacion = (solicitud.getDerivaciones() == null || solicitud.getDerivaciones().isEmpty())
+                ? null
+                : solicitud.getDerivaciones()
+                        .stream()
+                        .max(Comparator.comparing(Derivacion::getFechaDerivacion))
+                        .orElse(null);
+
+        if (ultimaDerivacion == null || ultimaDerivacion.getDepartamento() == null) {
+            throw new IllegalStateException("No hay derivaciones o el departamento es nulo");
+        }
+
         // Busca el departamento actual en SMC
-        Departamentos deptoActualSmc = departamentosRepository.findByDepto(depto);
+        Departamentos deptoActualSmc = departamentosRepository
+                .findByDepto(ultimaDerivacion.getDepartamento().getDeptoSmc());
+        if (deptoActualSmc == null) {
+            throw new IllegalStateException("Departamento actual no encontrado en SMC");
+        }
+
         Long deptoInt = deptoActualSmc.getDeptoInt();
-    
-        // Determinar el departamento de destino
+
+        // Determina la derivación
         String strDeptoDestino = DepartamentoUtils.determinaDerivacion(deptoInt);
-        Long intDepto = Long.parseLong(strDeptoDestino);
-    
+        Long intDepto;
+        try {
+            intDepto = Long.parseLong(strDeptoDestino);
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException("Error al convertir departamento destino a número", e);
+        }
+
+        // Busca el departamento de destino
         Departamentos deptoDestinoSmc = departamentosRepository.findByDeptoInt(intDepto);
-    
+        if (deptoDestinoSmc == null) {
+            throw new IllegalStateException("Departamento de destino no encontrado en SMC");
+        }
+
         // Crear y configurar el departamento de origen
         Departamento deptoOrigen = new Departamento();
         deptoOrigen.setDepto(deptoActualSmc.getDeptoInt());
         deptoOrigen.setDeptoSmc(deptoActualSmc.getDepto());
         deptoOrigen.setNombre(deptoActualSmc.getNombreDepartamento());
-    
+
         // Guardar el departamento de origen
         deptoOrigen = departamentoRepository.save(deptoOrigen);
-    
+
         // Crear y configurar el departamento de destino
         Departamento deptoDestino = new Departamento();
         deptoDestino.setDepto(deptoDestinoSmc.getDeptoInt());
         deptoDestino.setDeptoSmc(deptoDestinoSmc.getDepto());
         deptoDestino.setNombre(deptoDestinoSmc.getNombreDepartamento());
-    
+
         // Guardar el departamento de destino
         deptoDestino = departamentoRepository.save(deptoDestino);
-    
+
         // Crear y configurar la entidad Estado
         Long codEstado = estadoRepository.findIdByNombre(estado);
         Estado estadoSol = new Estado();
         estadoSol.setId(codEstado);
         estadoSol.setNombre(estado);
-    
+
         // Crear y configurar la entidad Funcionario
         SmcPersona persona = smcService.getPersonaByRut(derivacionDto.getRut());
         Funcionario funcionario = new Funcionario();
@@ -136,26 +164,26 @@ public class DerivacionService {
                 StringUtils.buildName(persona.getNombres(), persona.getApellidopaterno(),
                         persona.getApellidomaterno()));
         funcionario = funcionarioRespository.save(funcionario);
-    
+
         String rutJefe = deptoActualSmc.getRutJefe();
-    
+
         SmcPersona personaJefe = smcService.getPersonaByRut(Integer.parseInt(rutJefe));
-    
+
         Funcionario jefeDepto = new Funcionario();
         jefeDepto.setRut(personaJefe.getRut());
         jefeDepto.setNombre(StringUtils.buildName(personaJefe.getNombres(), personaJefe.getApellidopaterno(),
                 personaJefe.getApellidomaterno()));
-    
+
         jefeDepto = funcionarioRespository.save(jefeDepto);
-    
+
         Visacion visacion = new Visacion();
         visacion.setSolicitud(solicitud);
         visacion.setFuncionario(jefeDepto);
         visacion.setFechaVisacion(LocalDate.now());
         visacion.setTransaccion(LocalDateTime.now());
-    
+
         visacionRepository.save(visacion);
-    
+
         // Configurar la entidad Derivacion con las entidades relacionadas
         derivacion.setSolicitud(solicitud);
         derivacion.setDepartamento(deptoDestino); // Departamento destino
@@ -163,22 +191,21 @@ public class DerivacionService {
         derivacion.setFechaDerivacion(fechaDerivacion);
         derivacion.setLeida(false);
         derivacion.setFuncionario(funcionario);
-    
+
         // Guardar la derivacion
         derivacion = derivacionRepository.save(derivacion);
-    
+
         // Crear y configurar la entidad Salida
         salidaService.saveSalida(derivacion, funcionario);
-    
+
         // Enviar correo al jefe del departamento destino
         String mail = getMail(deptoDestino.getDepto());
         String nombreJefe = getNombreJefe(deptoDestino.getDepto());
         apiService.sendEmail("1", nombreJefe, solicitud.getTipoSolicitud().getNombre(), mail);
-    
+
         return derivacion;
     }
-    
-  
+
     @Transactional
     public Derivacion saveDerivacion(Departamento departamento, Solicitud solicitud, Funcionario funcionario) {
 
@@ -224,5 +251,4 @@ public class DerivacionService {
 
     }
 
-   
 }
