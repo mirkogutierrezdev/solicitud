@@ -1,13 +1,13 @@
 package com.jpa.solicitud.solicitud.apimodels;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class SmcAusencia {
 
     private Integer ident;
     private String descripcion;
-    private Date fechaInicio;
-    private Date fechaTermino;
+    private LocalDate fechaInicio;
+    private LocalDate fechaTermino;
     private Long diasAusencia;
     private Integer diasFeriados;
 
@@ -27,19 +27,19 @@ public class SmcAusencia {
         this.descripcion = descripcion;
     }
 
-    public Date getFechaInicio() {
+    public LocalDate getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(Date fechaInicio) {
+    public void setFechaInicio(LocalDate fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
-    public Date getFechaTermino() {
+    public LocalDate getFechaTermino() {
         return fechaTermino;
     }
 
-    public void setFechaTermino(Date fechaTermino) {
+    public void setFechaTermino(LocalDate fechaTermino) {
         this.fechaTermino = fechaTermino;
     }
 

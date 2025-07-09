@@ -152,5 +152,32 @@ public class PdfDto {
     public void setNombreSolicitud(String nombreSolicitud) {
         this.nombreSolicitud = nombreSolicitud;
     }
+    @Override
+    public String toString() {
+        return "\r\n" + //
+                        "   tipoSolicitud: " + tipoSolicitud+"\r\n"+ //
+                        "    jornada:" + jornada+ "\\r\\n" + //
+                        "   nroIniDia :"+nroIniDia+"\r\n" + //
+                        "     mesIni : "+mesIni+"\r\n" + //
+                        "     nroFinDia " + nroFinDia+"\r\n" + //
+                        "    mesFin: "+ mesFin+"\r\n" + //
+                        "     diasTomados: " + diasTomados+"\r\n" + //
+                        "     rut : "+rut+"\r\n" + //
+                        "     vrut : "+vrut+"\r\n" + //
+                        "     paterno : "+paterno+"\r\n" + //
+                        "   materno: "+materno+"\r\n" + //
+                        "     nombres : " + nombres+"\r\n" + //
+                        "     depto : " + depto + "\r\n" + //
+                        "     escalafon : "+ escalafon+"\r\n" + //
+                        "     grado : " + grado + "\r\n" + //
+                        "     telefono: " + telefono + "\r\n" + //
+                        "     rutJefe : " + rutJefe +"\r\n" + //
+                        "     nombreJefe: " + nombreJefe + "\r\n" + //
+                        "     rutDirector: " + rutDirector+"\r\n" + //
+                        "     nombreDirector : "+ nombreDirector +"\r\n" + //
+                        "     nombreSolicitud : "+ nombreSolicitud;
+    }
+    
+
     
 }

@@ -15,4 +15,6 @@ public interface IVisacionRepository extends JpaRepository<Visacion,Long> {
 
     Optional<Visacion> findBySolicitud(Solicitud solicitud);
 
+    Visacion findTopBySolicitudId(Long id);
+
 }

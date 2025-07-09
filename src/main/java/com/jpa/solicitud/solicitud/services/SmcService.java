@@ -61,8 +61,8 @@ public class SmcService {
         return response.getBody();
     }
 
-    public boolean isJefe(Integer rut) {
-        String url = "http://localhost:8080/api/smc/funcionario/esjefe/" + rut;
+    public boolean isJefe(Integer rut, String depto) {
+        String url = "http://localhost:8080/api/smc/funcionario/esjefe/" + rut+"/"+depto;
         ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
         return response.getBody() != null && Boolean.TRUE.equals(response.getBody()); // Retornar true si es jefe
     }

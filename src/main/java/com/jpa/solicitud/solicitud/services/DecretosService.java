@@ -109,7 +109,9 @@ public class DecretosService {
                             decretoResponse.setUrlPdf(aprob.getUrlPdf());
                             
                             SmcContrato contrato = smcService.getContratoSmc(aprob.getSolicitud().getFuncionario().getRut());
-
+                            if(contrato == null){
+                                decretoResponse.setTipoContrato("");
+                            }
                             decretoResponse.setTipoContrato(contrato.getNombrecontrato().trim());
 
                             List<Derivacion> derivacion = solicitud.getDerivaciones();

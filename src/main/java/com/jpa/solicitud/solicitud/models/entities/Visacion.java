@@ -70,4 +70,9 @@ public class Visacion {
         this.funcionario = funcionario;
     }
 
+    public Integer getRutFuncionario(){
+        return this.funcionario.getRut() != null ?  this.funcionario.getRut() : null;
+
+    }
+
 }

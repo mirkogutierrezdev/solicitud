@@ -128,6 +128,19 @@ public class DerivacionService {
 
         // Busca el departamento de destino
         Departamentos deptoDestinoSmc = departamentosRepository.findByDeptoInt(intDepto);
+
+        if (deptoDestinoSmc.getSubidireccion() == null) {
+
+            strDeptoDestino = DepartamentoUtils.determinaDerivacion(deptoDestinoSmc.getDeptoInt());
+            try {
+                intDepto = Long.parseLong(strDeptoDestino);
+            } catch (NumberFormatException e) {
+                throw new IllegalStateException("Error al convertir departamento destino a número", e);
+            }
+
+            deptoDestinoSmc = departamentosRepository.findByDeptoInt(intDepto);
+        }
+
         if (deptoDestinoSmc == null) {
             throw new IllegalStateException("Departamento de destino no encontrado en SMC");
         }

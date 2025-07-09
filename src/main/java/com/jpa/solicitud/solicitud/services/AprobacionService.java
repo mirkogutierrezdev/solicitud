@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -86,7 +85,7 @@ public class AprobacionService {
         funcionario.setNombre(
                 StringUtils.buildName(persona.getNombres(), persona.getApellidopaterno(),
                         persona.getApellidomaterno()));
-        funcionario = funcionarioRepository.save(funcionario); // Guardar el funcionario antes de asignarlo
+        funcionario = funcionarioRepository.save(funcionario);
 
         Solicitud solicitud = solicitudRepository.findById(aprobacionDto.getSolicitudId()).orElse(null);
         if (solicitud == null) {
@@ -97,19 +96,6 @@ public class AprobacionService {
 
         if (diasDif > 30) {
             throw new AprobacionException("La aprobación no puede superar los 30 dias a partir de la solicitud");
-        }
-
-        Optional<Visacion> optVisacion = visacionRepository.findBySolicitud(solicitud);
-
-        if (optVisacion.isEmpty()) { // Mejor usar isEmpty() para verificar si está vacío
-
-            Visacion visacion = new Visacion();
-
-            visacion.setFechaVisacion(LocalDate.now());
-            visacion.setFuncionario(funcionario);
-            visacion.setSolicitud(solicitud);
-            visacion.setTransaccion(LocalDateTime.now());
-            visacionRepository.save(visacion);
         }
 
         List<Derivacion> derivaciones = derivacionRepository.findBySolicitudId(solicitud.getId());
@@ -148,8 +134,10 @@ public class AprobacionService {
         // aprobación
         String url = preparePdf(solicitud);
 
-        if (url.contains("Error" ) || (url.contains("404"))) {
-            throw new AprobacionException("Imposible firmar la solicitud, respuesta de Api con errores. Revise su firma digital o comuníquse con el departamento de Informática.");
+        if (url.contains("Error")) {
+            throw new AprobacionException(
+                    "Imposible firmar la solicitud, respuesta de Api con errores. Revise su firma digital o comuníquse con el departamento de Informática. "
+                            + url);
         }
 
         // Asignar la URL generada a la aprobación ya guardada
@@ -211,10 +199,19 @@ public class AprobacionService {
         String mesFin = fechaTermino.getMonth().getDisplayName(TextStyle.FULL,
                 new Locale.Builder().setLanguage("es").setRegion("ES").build());
 
+        String rutJefe = "";
+         String nombreJefe="";
+
         // Obtener rut visador (jefe)
-        Visacion visacion = visacionRepository.findBySolicitudId(solicitud.getId());
-        String rutJefe = visacion.getFuncionario().getRut().toString();
-        String nombreJefe = visacion.getFuncionario().getNombre();
+        Visacion visacion = visacionRepository.findTopBySolicitudId(solicitud.getId());
+        if(visacion != null){
+             rutJefe = visacion.getFuncionario().getRut().toString();
+             nombreJefe = visacion.getFuncionario().getNombre();
+
+        }
+        
+
+        
 
         Aprobacion aprobacion = servGetAprobacionBySolicitud(solicitud.getId());
 
@@ -322,20 +319,18 @@ public class AprobacionService {
                     asd.setIdSolicitud(apr.getSolicitud().getId());
 
                     int hour = apr.getSolicitud().getFechaInicio().getHour();
-                   
 
                     switch (hour) {
-                      case 12 -> {
-                          asd.setJornada("AM");
-                      }
-                      case 17 -> {
-                          asd.setJornada("PM");
-                      }
-                      default -> {
-                          asd.setJornada("Día");
-                      }
+                        case 12 -> {
+                            asd.setJornada("AM");
+                        }
+                        case 17 -> {
+                            asd.setJornada("PM");
+                        }
+                        default -> {
+                            asd.setJornada("Día");
+                        }
                     }
-                    
 
                     asd.setTipoSolicitud(apr.getSolicitud().getTipoSolicitud().getNombre());
                     asd.setUrl(apr.getUrlPdf());

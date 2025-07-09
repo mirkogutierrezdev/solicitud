@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -206,11 +207,9 @@ public class SolicitudService {
         // Crear y guardar la salida asociada
         salidaService.saveSalida(derivacion, funcionario);
 
-        // Busca mail y nombre del jefe del departamento de destino
         String mail = getMail(departamentoDestino.getDepto());
         String nombreJefe = getNombreJefe(departamentoDestino.getDepto());
 
-        // Enviar correo utilizando la API
         apiService.sendEmail("1", nombreJefe,
                 solicitud.getTipoSolicitud().getNombre(), mail);
 
@@ -218,31 +217,92 @@ public class SolicitudService {
     }
 
     private Departamento determinarDepartamentoDestino(Departamentos departamentoRequest, Funcionario funcionario) {
-        boolean esJefe = smcService.isJefe(funcionario.getRut());
-        Departamento departamentoDestino = new Departamento();
+        Departamentos deptoActual = obtenerDepartamentoInicial(departamentoRequest);
+        Integer rutFuncionario = obtenerRutFuncionario(funcionario);
 
-        if (departamentoRequest.getRutJefe() == null || departamentoRequest.getRutJefe().trim().isEmpty() || esJefe) {
-            // Derivar al departamento supervisor
-            Long codigoDepartamentoDestino = Long
-                    .parseLong(DepartamentoUtils.determinaDerivacion(departamentoRequest.getDeptoInt()));
-
-            Departamentos departmentSupervisor = departamentosRepository.findByDeptoInt(codigoDepartamentoDestino);
-            if (departmentSupervisor == null) {
-                throw new IllegalArgumentException(
-                        "No se encontró el departamento supervisor para el código: " + codigoDepartamentoDestino);
-            }
-
-            departamentoDestino.setDepto(departmentSupervisor.getDeptoInt());
-            departamentoDestino.setDeptoSmc(departmentSupervisor.getDepto());
-            departamentoDestino.setNombre(departmentSupervisor.getNombreDepartamento());
-        } else {
-            // Mantener en el departamento actual
-            departamentoDestino.setDepto(departamentoRequest.getDeptoInt());
-            departamentoDestino.setDeptoSmc(departamentoRequest.getDepto());
-            departamentoDestino.setNombre(departamentoRequest.getNombreDepartamento());
+        if (rutFuncionario == null) {
+            return mapearDepartamento(deptoActual);
         }
 
-        return departamentoDestino;
+        if(rutFuncionario.equals(16091531)){
+            return mapearDepartamento(deptoActual);
+        }
+
+        Departamentos deptoEnRevision = buscarDepartamentoConJefeValido(deptoActual, rutFuncionario);
+        return mapearDepartamento(deptoEnRevision != null ? deptoEnRevision : deptoActual);
+    }
+
+    private Departamentos obtenerDepartamentoInicial(Departamentos departamentoRequest) {
+        Long codigoDeptoActual = departamentoRequest.getDeptoInt();
+        Departamentos depto = departamentosRepository.findByDeptoInt(codigoDeptoActual);
+
+        if (depto == null) {
+            throw new IllegalArgumentException("No se encontró el departamento con código: " + codigoDeptoActual);
+        }
+
+        return depto;
+    }
+
+    private Integer obtenerRutFuncionario(Funcionario funcionario) {
+        String strRut = funcionario.getRut() != null ? funcionario.getRut().toString() : null;
+        if (strRut == null || strRut.isBlank()) {
+            return null;
+        }
+
+        return Integer.parseInt(strRut);
+    }
+
+    private Departamentos buscarDepartamentoConJefeValido(Departamentos deptoInicial, Integer rutFuncionario) {
+        Departamentos deptoEnRevision = deptoInicial;
+
+        while (deptoEnRevision != null) {
+            if (tieneJefeValido(deptoEnRevision, rutFuncionario)) {
+                return deptoEnRevision;
+            }
+
+            deptoEnRevision = obtenerDepartamentoSupervisor(deptoEnRevision);
+        }
+
+        return null;
+    }
+
+    private Departamentos obtenerDepartamentoSupervisor(Departamentos depto) {
+        String codigoSupervisorStr = DepartamentoUtils.determinaDerivacion(depto.getDeptoInt());
+
+        if (codigoSupervisorStr == null || codigoSupervisorStr.isBlank()) {
+            return null;
+        }
+
+        try {
+            Long codigoSupervisor = Long.parseLong(codigoSupervisorStr);
+            return departamentosRepository.findByDeptoInt(codigoSupervisor);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private boolean tieneJefeValido(Departamentos depto, Integer rutFuncionario) {
+        String rutJefeStr = depto.getRutJefe();
+
+        if (rutJefeStr == null || rutJefeStr.trim().isEmpty()) {
+            return false;
+        }
+
+        try {
+            Integer rutJefe = Integer.parseInt(rutJefeStr.trim());
+            return !rutJefe.equals(rutFuncionario);
+        } catch (NumberFormatException _) {
+            // Si el RUT del jefe no es un número válido, lo consideramos inválido
+            return false;
+        }
+    }
+
+    private Departamento mapearDepartamento(Departamentos depto) {
+        Departamento destino = new Departamento();
+        destino.setDepto(depto.getDeptoInt());
+        destino.setDeptoSmc(depto.getDepto());
+        destino.setNombre(depto.getNombreDepartamento());
+        return destino;
     }
 
     public List<Solicitud> findAll() {
@@ -256,12 +316,15 @@ public class SolicitudService {
         List<Derivacion> derivaciones = derivacionRepository.findByDepartamentoDepto(departamentos.getDeptoInt());
 
         // Obtener todas las solicitudes a partir de las derivaciones
+
+
         List<Solicitud> solicitudes = derivaciones.stream()
                 .map(Derivacion::getSolicitud)
+                
                 .distinct()
                 .toList();
 
-        // Crear el DTO para cada solicitud
+        // Crear el DTO para cada solicitudh
         return solicitudes.stream().map(solicitud -> {
             List<Derivacion> derivacionesSolicitud = derivacionRepository.findBySolicitudId(solicitud.getId());
             List<Entrada> entradas = derivacionesSolicitud.stream()
@@ -337,8 +400,9 @@ public class SolicitudService {
 
     }
 
-    public  Solicitud getSolicitud(Long id){
-        return solicitudRespository.findById(id).orElseThrow(()->new IllegalArgumentException("No existe la solicitud"));
+    public Solicitud getSolicitud(Long id) {
+        return solicitudRespository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No existe la solicitud"));
 
     }
 }
